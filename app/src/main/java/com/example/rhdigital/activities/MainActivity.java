@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.example.rhdigital.R;
+import com.example.rhdigital.adapters.SectionsStatePagerAdapter;
+import com.example.rhdigital.view.CustomViewPager;
 
 public class MainActivity extends AppCompatActivity {
 

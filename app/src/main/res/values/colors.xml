@@ -5,4 +5,7 @@
     <color name="colorAccent">#D81B60</color>
     <color name="colorWhite">#fff</color>
     <color name="colorTransWhite">#38ffffff</color>
+
+    <color name="offWhite">#F1F0EA</color>
+    <color name="boneWhite"></color>
 </resources>
