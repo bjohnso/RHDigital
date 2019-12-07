@@ -1,13 +1,7 @@
 package com.example.rhdigital.activities.courses.listeners;
 
-import android.app.Activity;
-import android.view.MenuItem;
-
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import com.example.rhdigital.R;
-import com.example.rhdigital.activities.courses.CoursesActivity;
 import com.example.rhdigital.activities.courses.fragments.CoursesTabFragment;
 import com.google.android.material.tabs.TabLayout;
 
