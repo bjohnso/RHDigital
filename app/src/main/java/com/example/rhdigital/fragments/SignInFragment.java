@@ -22,7 +22,7 @@ public class SignInFragment extends Fragment {
     AutoCompleteTextView emailInput;
     AutoCompleteTextView passwordInput;
     Button submit;
-    TextView disclaimer;
+    TextView resetPasswordRedirect;
     TextView signUpRedirect;
 
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -32,7 +32,7 @@ public class SignInFragment extends Fragment {
         emailInput = (AutoCompleteTextView) view.findViewById(R.id.sign_in_email_input);
         passwordInput = (AutoCompleteTextView) view.findViewById(R.id.sign_in_password_input);
         submit = (Button) view.findViewById(R.id.sign_in_submit_btn);
-        disclaimer = (TextView) view.findViewById(R.id.sign_up_disclaimer_text);
+        resetPasswordRedirect = (TextView) view.findViewById(R.id.sign_in_reset_password_redirect_text);
         signUpRedirect = (TextView) view.findViewById(R.id.sign_in_sign_up_redirect_text);
 
         return view;

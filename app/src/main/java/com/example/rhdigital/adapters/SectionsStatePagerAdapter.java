@@ -4,34 +4,32 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
 
 public class SectionsStatePagerAdapter extends FragmentStatePagerAdapter {
 
-    private final Map<String, Fragment> mFragmentMap = new HashMap<>();
+    private final ArrayList<Fragment> mFragmentList = new ArrayList<>();
 
     public SectionsStatePagerAdapter(FragmentManager fm) {
         super(fm);
     }
 
-    public void addFragment(String name, Fragment fragment){
-        if (mFragmentMap.get(name) == null && mFragmentMap.get(fragment) == null){
-            mFragmentMap.put(name, fragment);
+    public void addFragment(Fragment fragment){
+        for (Fragment f : mFragmentList){
+            if (fragment == f){
+                return ;
+            }
         }
-    }
-
-    public Fragment getItem(String name){
-        return mFragmentMap.get(name);
+        mFragmentList.add(fragment);
     }
 
     @Override
     public Fragment getItem(int position) {
-        return null;
+        return mFragmentList.get(position);
     }
 
     @Override
     public int getCount() {
-        return mFragmentMap.size();
+        return mFragmentList.size();
     }
 }
