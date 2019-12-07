@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/nav_courses"
+        android:id="@+id/courses_bottom_nav_courses"
         android:icon="@drawable/scholar_inactive"
         android:title="Courses" />
 
     <item
-        android:id="@+id/nav_workbooks"
+        android:id="@+id/courses_bottom_nav_workbooks"
         android:icon="@drawable/book_inactive"
         android:title="Workbooks"/>
 
     <item
-        android:id="@+id/nav_research"
+        android:id="@+id/courses_bottom_nav_research"
         android:icon="@drawable/magnify_inactive"
         android:title="Research"/>
 </menu>

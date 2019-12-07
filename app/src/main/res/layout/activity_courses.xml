@@ -6,11 +6,33 @@
     android:layout_height="match_parent"
     android:background="@drawable/background">
 
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/topNavigationView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/darkBlue" />
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
     <com.example.rhdigital.view.CustomViewPager
         android:id="@+id/container_courses"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="60dp"/>
+        android:layout_marginTop="60dp"
+        android:layout_marginBottom="60dp">
+
+    </com.example.rhdigital.view.CustomViewPager>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"
@@ -19,7 +41,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:itemIconTint="@drawable/bottom_nav_colors"
         app:itemTextColor="@drawable/bottom_nav_colors"
-        app:menu="@menu/courses_menu_bottom"/>
+        app:menu="@menu/courses_menu_bottom"
+        android:background="@color/darkBlue"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
