@@ -12,7 +12,7 @@ import com.example.rhdigital.fragments.MyResearchFragment;
 import com.example.rhdigital.fragments.MyWorkbooksFragment;
 import com.example.rhdigital.view.CustomViewPager;
 
-public class MainActivity extends AppCompatActivity {
+public class CoursesActivity extends AppCompatActivity {
 
     //Components
     CustomViewPager mCustomViewPager;
@@ -20,9 +20,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_courses);
 
-        mCustomViewPager = findViewById(R.id.container_main);
+        mCustomViewPager = findViewById(R.id.container_courses);
         setUpViewPager(mCustomViewPager);
     }
 

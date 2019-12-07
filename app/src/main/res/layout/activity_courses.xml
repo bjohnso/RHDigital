@@ -7,7 +7,7 @@
     android:background="@drawable/background">
 
     <com.example.rhdigital.view.CustomViewPager
-        android:id="@+id/courses_container"
+        android:id="@+id/container_courses"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="60dp"/>
@@ -17,7 +17,9 @@
         android:layout_width="match_parent"
         android:layout_height="60dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:menu="@menu/courses_menu_bottom" />
+        app:itemIconTint="@drawable/bottom_nav_colors"
+        app:itemTextColor="@drawable/bottom_nav_colors"
+        app:menu="@menu/courses_menu_bottom"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

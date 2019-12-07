@@ -1,9 +1,7 @@
 package com.example.rhdigital.activities;
 
 import android.os.Bundle;
-import android.os.PersistableBundle;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.rhdigital.R;
@@ -20,9 +18,9 @@ public class AuthActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_auth);
 
-        mCustomViewPager = findViewById(R.id.container_main);
+        mCustomViewPager = findViewById(R.id.container_auth);
         setUpViewPager(mCustomViewPager);
     }
 

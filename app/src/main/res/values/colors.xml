@@ -8,4 +8,6 @@
 
     <color name="offWhite">#F1F0EA</color>
     <color name="boneWhite"></color>
+    <color name="activeBlue">#17A7CB</color>
+    <color name="deepGrey">#474348</color>
 </resources>

@@ -6,16 +6,13 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.example.rhdigital.R;
-import com.example.rhdigital.adapters.SectionsStatePagerAdapter;
-import com.example.rhdigital.view.CustomViewPager;
 
 public class SplashActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, CoursesActivity.class);
         this.startActivity(intent);
     }
 }
