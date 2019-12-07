@@ -1,4 +1,4 @@
-package com.example.rhdigital.activities;
+package com.example.rhdigital.activities.auth;
 
 import android.os.Bundle;
 
@@ -6,13 +6,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.rhdigital.R;
 import com.example.rhdigital.adapters.SectionsStatePagerAdapter;
-import com.example.rhdigital.fragments.DiscoverCoursesFragment;
-import com.example.rhdigital.fragments.MyCoursesFragment;
-import com.example.rhdigital.fragments.MyResearchFragment;
-import com.example.rhdigital.fragments.MyWorkbooksFragment;
+import com.example.rhdigital.activities.auth.fragments.SignInFragment;
+import com.example.rhdigital.activities.auth.fragments.SignUpFragment;
 import com.example.rhdigital.view.CustomViewPager;
 
-public class CoursesActivity extends AppCompatActivity {
+public class AuthActivity extends AppCompatActivity {
 
     //Components
     CustomViewPager mCustomViewPager;
@@ -20,18 +18,16 @@ public class CoursesActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_courses);
+        setContentView(R.layout.activity_auth);
 
-        mCustomViewPager = findViewById(R.id.container_courses);
+        mCustomViewPager = findViewById(R.id.container_auth);
         setUpViewPager(mCustomViewPager);
     }
 
     private void setUpViewPager(CustomViewPager customViewPager){
         SectionsStatePagerAdapter sectionsStatePagerAdapter = new SectionsStatePagerAdapter(getSupportFragmentManager());
-        sectionsStatePagerAdapter.addFragment(new MyCoursesFragment());
-        sectionsStatePagerAdapter.addFragment(new DiscoverCoursesFragment());
-        sectionsStatePagerAdapter.addFragment(new MyWorkbooksFragment());
-        sectionsStatePagerAdapter.addFragment(new MyResearchFragment());
+        sectionsStatePagerAdapter.addFragment(new SignInFragment());
+        sectionsStatePagerAdapter.addFragment(new SignUpFragment());
         customViewPager.setAdapter(sectionsStatePagerAdapter);
     }
 
@@ -42,5 +38,4 @@ public class CoursesActivity extends AppCompatActivity {
     public void setViewPager(int position){
         mCustomViewPager.setCurrentItem(position);
     }
-
 }

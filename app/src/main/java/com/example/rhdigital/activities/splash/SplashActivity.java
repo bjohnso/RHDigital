@@ -1,11 +1,11 @@
-package com.example.rhdigital.activities;
+package com.example.rhdigital.activities.splash;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.example.rhdigital.R;
+import com.example.rhdigital.activities.courses.CoursesActivity;
 
 public class SplashActivity extends AppCompatActivity {
 

@@ -1,4 +1,4 @@
-package com.example.rhdigital.fragments;
+package com.example.rhdigital.activities.courses.fragments;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,17 +11,15 @@ import androidx.fragment.app.Fragment;
 
 import com.example.rhdigital.R;
 
-public class DiscoverCoursesFragment extends Fragment {
+public class MyCoursesFragment extends Fragment {
 
     //Components
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.discover_courses_layout, container, false);
+        View view = inflater.inflate(R.layout.my_courses_layout, container, false);
 
         return view;
     }
-
 }
-

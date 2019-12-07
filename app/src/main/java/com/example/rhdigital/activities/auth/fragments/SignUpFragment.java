@@ -1,4 +1,4 @@
-package com.example.rhdigital.fragments;
+package com.example.rhdigital.activities.auth.fragments;
 
 import android.os.Bundle;
 import android.text.Html;
