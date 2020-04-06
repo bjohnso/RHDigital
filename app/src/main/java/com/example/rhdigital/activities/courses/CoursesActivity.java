@@ -9,10 +9,10 @@ import androidx.appcompat.widget.Toolbar;
 import com.example.rhdigital.R;
 import com.example.rhdigital.activities.courses.fragments.CoursesTabFragment;
 import com.example.rhdigital.activities.courses.listeners.BottomNavOnClick;
-import com.example.rhdigital.adapters.SectionsStatePagerAdapter;
+import com.example.rhdigital.ui.adapters.SectionsStatePagerAdapter;
 import com.example.rhdigital.activities.courses.fragments.MyResearchFragment;
 import com.example.rhdigital.activities.courses.fragments.MyWorkbooksFragment;
-import com.example.rhdigital.view.CustomViewPager;
+import com.example.rhdigital.ui.view.CustomViewPager;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import static com.example.rhdigital.R.menu.courses_menu_top;
@@ -54,6 +54,7 @@ public class CoursesActivity extends AppCompatActivity {
         sectionsStatePagerAdapter.addFragment(new MyWorkbooksFragment());
         sectionsStatePagerAdapter.addFragment(new MyResearchFragment());
         customViewPager.setAdapter(sectionsStatePagerAdapter);
+        customViewPager.setSwipeable(false);
     }
 
     public int getViewPager(){

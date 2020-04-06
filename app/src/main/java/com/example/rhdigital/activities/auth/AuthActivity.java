@@ -5,10 +5,10 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.rhdigital.R;
-import com.example.rhdigital.adapters.SectionsStatePagerAdapter;
+import com.example.rhdigital.ui.adapters.SectionsStatePagerAdapter;
 import com.example.rhdigital.activities.auth.fragments.SignInFragment;
 import com.example.rhdigital.activities.auth.fragments.SignUpFragment;
-import com.example.rhdigital.view.CustomViewPager;
+import com.example.rhdigital.ui.view.CustomViewPager;
 
 public class AuthActivity extends AppCompatActivity {
 

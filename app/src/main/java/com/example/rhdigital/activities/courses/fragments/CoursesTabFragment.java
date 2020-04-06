@@ -11,8 +11,8 @@ import androidx.fragment.app.Fragment;
 
 import com.example.rhdigital.R;
 import com.example.rhdigital.activities.courses.listeners.TabLayoutOnClick;
-import com.example.rhdigital.adapters.SectionsStatePagerAdapter;
-import com.example.rhdigital.view.CustomViewPager;
+import com.example.rhdigital.ui.adapters.SectionsStatePagerAdapter;
+import com.example.rhdigital.ui.view.CustomViewPager;
 import com.google.android.material.tabs.TabLayout;
 
 public class CoursesTabFragment extends Fragment {
@@ -43,6 +43,7 @@ public class CoursesTabFragment extends Fragment {
         sectionsStatePagerAdapter.addFragment(new MyCoursesFragment());
         sectionsStatePagerAdapter.addFragment(new DiscoverCoursesFragment());
         customViewPager.setAdapter(sectionsStatePagerAdapter);
+        customViewPager.setSwipeable(false);
     }
 
     public int getViewPager(){

@@ -38,7 +38,7 @@
         app:layout_constraintTop_toTopOf="parent"
         android:background="@color/darkBlue"/>
 
-    <com.example.rhdigital.view.CustomViewPager
+    <com.example.rhdigital.ui.view.CustomViewPager
         android:id="@+id/courses_tab_layout_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

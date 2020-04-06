@@ -1,4 +1,4 @@
-package com.example.rhdigital.view;
+package com.example.rhdigital.ui.view;
 
 import android.content.Context;
 import android.util.AttributeSet;

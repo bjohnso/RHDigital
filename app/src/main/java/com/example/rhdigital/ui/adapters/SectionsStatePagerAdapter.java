@@ -1,4 +1,4 @@
-package com.example.rhdigital.adapters;
+package com.example.rhdigital.ui.adapters;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
