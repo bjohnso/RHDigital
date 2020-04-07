@@ -11,6 +11,7 @@ import com.example.rhdigital.database.RHDatabase;
 import com.example.rhdigital.database.model.Course;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class RHRepository {
     private CourseDAO courseDAO;
@@ -20,7 +21,7 @@ public class RHRepository {
         courseDAO = db.courseDAO();
     }
 
-    public LiveData<ArrayList<Course>> getAllCourses() {
+    public LiveData<List<Course>> getAllCourses() {
         return courseDAO.getAllCourses();
     }
 

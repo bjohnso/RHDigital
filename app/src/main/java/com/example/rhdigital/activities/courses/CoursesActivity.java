@@ -50,9 +50,11 @@ public class CoursesActivity extends AppCompatActivity {
 
     private void setUpViewPager(CustomViewPager customViewPager){
         SectionsStatePagerAdapter sectionsStatePagerAdapter = new SectionsStatePagerAdapter(getSupportFragmentManager());
+        // Fragments
         sectionsStatePagerAdapter.addFragment(new CoursesTabFragment());
         sectionsStatePagerAdapter.addFragment(new MyWorkbooksFragment());
         sectionsStatePagerAdapter.addFragment(new MyResearchFragment());
+
         customViewPager.setAdapter(sectionsStatePagerAdapter);
         customViewPager.setSwipeable(false);
     }

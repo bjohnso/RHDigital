@@ -24,5 +24,5 @@ public interface CourseDAO {
     int deleteById(int id);
 
     @Query("SELECT * FROM courses ORDER BY name DESC")
-    LiveData<ArrayList<Course>> getAllCourses();
+    LiveData<List<Course>> getAllCourses();
 }

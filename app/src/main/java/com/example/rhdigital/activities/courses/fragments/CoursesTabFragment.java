@@ -40,8 +40,10 @@ public class CoursesTabFragment extends Fragment {
 
     private void setUpViewPager(CustomViewPager customViewPager){
         SectionsStatePagerAdapter sectionsStatePagerAdapter = new SectionsStatePagerAdapter(getActivity().getSupportFragmentManager());
+        // Fragments
         sectionsStatePagerAdapter.addFragment(new MyCoursesFragment());
         sectionsStatePagerAdapter.addFragment(new DiscoverCoursesFragment());
+
         customViewPager.setAdapter(sectionsStatePagerAdapter);
         customViewPager.setSwipeable(false);
     }

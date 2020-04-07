@@ -10,6 +10,7 @@ import com.example.rhdigital.database.model.Course;
 import com.example.rhdigital.database.repository.RHRepository;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class CourseViewModel extends AndroidViewModel {
     private RHRepository rhRepository;
@@ -19,7 +20,7 @@ public class CourseViewModel extends AndroidViewModel {
         rhRepository = new RHRepository(application);
     }
 
-    public LiveData<ArrayList<Course>> getAllCourses() {
+    public LiveData<List<Course>> getAllCourses() {
         return rhRepository.getAllCourses();
     }
 
