@@ -1,10 +1,13 @@
 package com.example.rhdigital.activities.courses;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentStatePagerAdapter;
 
 import com.example.rhdigital.R;
 import com.example.rhdigital.activities.courses.fragments.CoursesTabFragment;
@@ -20,6 +23,7 @@ import static com.example.rhdigital.R.menu.courses_menu_top;
 public class CoursesActivity extends AppCompatActivity {
 
     //Components
+    SectionsStatePagerAdapter sectionsStatePagerAdapter;
     CustomViewPager mCustomViewPager;
     Toolbar mToolbar;
     BottomNavigationView mBottomNavigationView;
@@ -36,10 +40,10 @@ public class CoursesActivity extends AppCompatActivity {
         //Setup Toolbar
         setSupportActionBar(mToolbar);
 
+        setUpViewPager(mCustomViewPager);
+
         //Set Listeners
         mBottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavOnClick(this));
-
-        setUpViewPager(mCustomViewPager);
     }
 
     @Override
@@ -49,7 +53,7 @@ public class CoursesActivity extends AppCompatActivity {
     }
 
     private void setUpViewPager(CustomViewPager customViewPager){
-        SectionsStatePagerAdapter sectionsStatePagerAdapter = new SectionsStatePagerAdapter(getSupportFragmentManager());
+        sectionsStatePagerAdapter = new SectionsStatePagerAdapter(getSupportFragmentManager());
         // Fragments
         sectionsStatePagerAdapter.addFragment(new CoursesTabFragment());
         sectionsStatePagerAdapter.addFragment(new MyWorkbooksFragment());
@@ -64,7 +68,17 @@ public class CoursesActivity extends AppCompatActivity {
     }
 
     public void setViewPager(int position){
+        int preserve = -1;
+        CoursesTabFragment frag = null;
+        if (position == 0) {
+            frag = (CoursesTabFragment) sectionsStatePagerAdapter.getItem(position);
+            preserve = frag.getViewPager();
+        }
         mCustomViewPager.setCurrentItem(position);
+
+        if (preserve != -1) {
+            frag.getTabLayout().getTabAt(preserve).select();
+        }
     }
 
 }

@@ -6,8 +6,7 @@
         android:allowBackup="true"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AppCompat.NoActionBar"
-        android:screenOrientation="portrait">
+        android:theme="@style/Theme.AppCompat.NoActionBar">
         <activity android:name=".activities.splash.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -18,7 +17,8 @@
 
         <activity android:name=".activities.auth.AuthActivity"/>
 
-        <activity android:name=".activities.courses.CoursesActivity"/>
+        <activity android:name=".activities.courses.CoursesActivity"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

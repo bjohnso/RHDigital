@@ -4,15 +4,48 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:paddingBottom="20dp"
+    android:paddingTop="10dp">
 
-    <TextView
-        android:id="@+id/courses_item_text"
-        android:layout_width="173dp"
-        android:layout_height="273dp"
-        android:text="TextView"
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/courses_card_item"
+        android:layout_width="300dp"
+        android:layout_height="330dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        app:cardElevation="20dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/courses_text_header_item"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:textSize="19dp"/>
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_below="@+id/courses_text_header_item"
+                android:id="@+id/courses_card_item_image_view"
+                android:src="@drawable/training1"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"/>
+
+            <TextView
+                android:layout_below="@id/courses_card_item_image_view"
+                android:id="@+id/courses_text_item"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"/>
+
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -23,6 +23,6 @@ public interface CourseDAO {
     @Query("DELETE FROM courses WHERE id = :id")
     int deleteById(int id);
 
-    @Query("SELECT * FROM courses ORDER BY name DESC")
+    @Query("SELECT * FROM courses")
     LiveData<List<Course>> getAllCourses();
 }

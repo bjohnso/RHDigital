@@ -7,10 +7,13 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.rhdigital.R;
 import com.example.rhdigital.database.model.Course;
+
+import org.w3c.dom.Text;
 
 import java.util.List;
 
@@ -32,7 +35,8 @@ public class CoursesRecyclerViewAdapter extends RecyclerView.Adapter<CoursesRecy
     public void onBindViewHolder(@NonNull CoursesRecyclerViewAdapter.CoursesViewHolder holder, int position) {
         if (courses != null) {
             Course course = courses.get(position);
-            holder.textView.setText("Name: " + course.getName());
+            holder.headerView.setText(course.getName());
+            holder.textView.setText("Description: " + course.getDescription() + "\nURL: " + course.getVideoURL());
         } else {
             holder.textView.setText("No Courses");
         }
@@ -52,10 +56,12 @@ public class CoursesRecyclerViewAdapter extends RecyclerView.Adapter<CoursesRecy
 
     public static class CoursesViewHolder extends RecyclerView.ViewHolder {
         private TextView textView;
+        private TextView headerView;
 
         public CoursesViewHolder(@NonNull View itemView) {
             super(itemView);
-            textView = itemView.findViewById(R.id.courses_item_text);
+            textView = itemView.findViewById(R.id.courses_text_item);
+            headerView = itemView.findViewById(R.id.courses_text_header_item);
         }
     }
 }

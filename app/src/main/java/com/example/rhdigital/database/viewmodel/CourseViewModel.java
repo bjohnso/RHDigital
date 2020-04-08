@@ -9,7 +9,6 @@ import androidx.lifecycle.LiveData;
 import com.example.rhdigital.database.model.Course;
 import com.example.rhdigital.database.repository.RHRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class CourseViewModel extends AndroidViewModel {

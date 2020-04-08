@@ -14,13 +14,17 @@ import com.example.rhdigital.R;
 public class MyResearchFragment extends Fragment {
 
     //Components
+    View view;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.my_research_layout, container, false);
-
+        view = inflater.inflate(R.layout.my_research_layout, container, false);
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
 }

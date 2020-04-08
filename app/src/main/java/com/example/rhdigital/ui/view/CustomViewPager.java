@@ -35,6 +35,11 @@ public class CustomViewPager extends ViewPager {
         return false;
     }
 
+    @Override
+    public int getCurrentItem() {
+        return super.getCurrentItem();
+    }
+
     public void setSwipeable(boolean swipeable){
         this.swipeable = swipeable;
     }

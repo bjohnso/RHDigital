@@ -32,9 +32,7 @@ public class BottomNavOnClick implements BottomNavigationView.OnNavigationItemSe
             case R.id.courses_bottom_nav_research:
                 coursesActivity.setViewPager(2);
                 return true;
-
-                default:
-                    return false;
         }
+        return false;
     }
 }

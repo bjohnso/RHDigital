@@ -1,6 +1,7 @@
 package com.example.rhdigital.activities.courses.fragments;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +9,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentStatePagerAdapter;
 
 import com.example.rhdigital.R;
 import com.example.rhdigital.activities.courses.listeners.TabLayoutOnClick;
@@ -15,9 +17,10 @@ import com.example.rhdigital.ui.adapters.SectionsStatePagerAdapter;
 import com.example.rhdigital.ui.view.CustomViewPager;
 import com.google.android.material.tabs.TabLayout;
 
-public class CoursesTabFragment extends Fragment {
+public class CoursesTabFragment extends Fragment implements RHFragment {
 
     //Components
+    private boolean isParent = true;
     CustomViewPager mCustomViewPager;
     TabLayout mTabLayout;
 
@@ -38,8 +41,12 @@ public class CoursesTabFragment extends Fragment {
         return view;
     }
 
+    public TabLayout getTabLayout() {
+        return mTabLayout;
+    }
+
     private void setUpViewPager(CustomViewPager customViewPager){
-        SectionsStatePagerAdapter sectionsStatePagerAdapter = new SectionsStatePagerAdapter(getActivity().getSupportFragmentManager());
+        SectionsStatePagerAdapter sectionsStatePagerAdapter = new SectionsStatePagerAdapter(getChildFragmentManager());
         // Fragments
         sectionsStatePagerAdapter.addFragment(new MyCoursesFragment());
         sectionsStatePagerAdapter.addFragment(new DiscoverCoursesFragment());
@@ -56,4 +63,13 @@ public class CoursesTabFragment extends Fragment {
         mCustomViewPager.setCurrentItem(position);
     }
 
+    @Override
+    public boolean isParent() {
+        return this.isParent;
+    }
+
+    @Override
+    public void setIsParent(boolean parent) {
+
+    }
 }
