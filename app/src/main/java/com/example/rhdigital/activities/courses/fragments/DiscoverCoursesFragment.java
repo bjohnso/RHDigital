@@ -55,6 +55,9 @@ public class DiscoverCoursesFragment extends Fragment {
 
         // Initialise RecyclerView
         recyclerView.setHasFixedSize(true);
+        recyclerView.setItemViewCacheSize(20);
+        recyclerView.setDrawingCacheEnabled(true);
+        recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
         recyclerView.setAdapter(coursesRecyclerViewAdapter);
 

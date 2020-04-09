@@ -4,21 +4,20 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.rhdigital.R;
 import com.example.rhdigital.database.model.Course;
 
-import org.w3c.dom.Text;
-
 import java.util.List;
 
 public class CoursesRecyclerViewAdapter extends RecyclerView.Adapter<CoursesRecyclerViewAdapter.CoursesViewHolder> {
     private List<Course> courses;
+    private ViewGroup parent;
 
     public CoursesRecyclerViewAdapter() {
     }
@@ -27,6 +26,7 @@ public class CoursesRecyclerViewAdapter extends RecyclerView.Adapter<CoursesRecy
     @Override
     public CoursesRecyclerViewAdapter.CoursesViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+        this.parent = parent;
         View view = inflater.inflate(R.layout.courses_recyclerview_item, parent, false);
         return new CoursesViewHolder(view);
     }
@@ -36,9 +36,10 @@ public class CoursesRecyclerViewAdapter extends RecyclerView.Adapter<CoursesRecy
         if (courses != null) {
             Course course = courses.get(position);
             holder.headerView.setText(course.getName());
-            holder.textView.setText("Description: " + course.getDescription() + "\nURL: " + course.getVideoURL());
+            int id = parent.getResources().getIdentifier(course.getThumb(), "drawable", parent.getContext().getPackageName());
+            holder.imageView.setImageResource(id);
         } else {
-            holder.textView.setText("No Courses");
+
         }
     }
 
@@ -55,12 +56,12 @@ public class CoursesRecyclerViewAdapter extends RecyclerView.Adapter<CoursesRecy
     }
 
     public static class CoursesViewHolder extends RecyclerView.ViewHolder {
-        private TextView textView;
         private TextView headerView;
+        private ImageView imageView;
 
         public CoursesViewHolder(@NonNull View itemView) {
             super(itemView);
-            textView = itemView.findViewById(R.id.courses_text_item);
+            imageView = itemView.findViewById(R.id.courses_card_item_image_view);
             headerView = itemView.findViewById(R.id.courses_text_header_item);
         }
     }

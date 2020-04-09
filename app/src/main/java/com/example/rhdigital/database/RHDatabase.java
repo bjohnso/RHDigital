@@ -12,7 +12,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 import com.example.rhdigital.database.DAO.CourseDAO;
 import com.example.rhdigital.database.model.Course;
 
-@Database(entities = {Course.class}, version = 1)
+@Database(entities = {Course.class}, version = 2)
 public abstract class RHDatabase extends RoomDatabase {
 
     private static volatile RHDatabase INSTANCE;
@@ -25,6 +25,7 @@ public abstract class RHDatabase extends RoomDatabase {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                             RHDatabase.class, "RHDatabase")
                             .addCallback(roomDatabaseCallback)
+                            .fallbackToDestructiveMigration()
                             .build();
                 }
             }
@@ -53,21 +54,25 @@ public abstract class RHDatabase extends RoomDatabase {
             courseDAO.insert(
                     new Course("How to be a Millionare",
                             "Becoming super Swag easy!",
+                            "stock1",
                             "https://swagmoney.com/millionare")
             );
             courseDAO.insert(
                     new Course("How to be a Billionare",
                             "Becoming super Swag easy!",
+                            "stock2",
                             "https://swagmoney.com/millionare")
             );
             courseDAO.insert(
                     new Course("How to be a Trillionare",
                             "Becoming super Swag easy!",
+                            "stock3",
                             "https://swagmoney.com/millionare")
             );
             courseDAO.insert(
                     new Course("How to be a Quadrillionare",
                             "Becoming super Swag easy!",
+                            "stock4",
                             "https://swagmoney.com/millionare")
             );
             return null;

@@ -7,8 +7,11 @@
     <color name="colorTransWhite">#38ffffff</color>
 
     <color name="offWhite">#F1F0EA</color>
-    <color name="boneWhite"></color>
     <color name="activeBlue">#17A7CB</color>
     <color name="deepGrey">#474348</color>
     <color name="darkBlue">#23272F</color>
+    <color name="lightGrey">#3E4045</color>
+    <color name="royalBlue">#324875</color>
+    <color name="warmBlue">#295E76</color>
+    <color name="yellow">#F8CF42</color>
 </resources>
