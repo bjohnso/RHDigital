@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.rhdigital.R;
 import com.example.rhdigital.database.model.Course;
+import com.example.rhdigital.database.model.CourseWithWorkbooks;
 import com.example.rhdigital.database.model.Workbook;
 import com.example.rhdigital.database.viewmodel.WorkbookViewModel;
 import com.example.rhdigital.ui.adapters.WorkbooksRecyclerViewAdapter;
@@ -37,25 +38,25 @@ public class MyWorkbooksFragment extends Fragment {
         View view = inflater.inflate(R.layout.my_workbooks_layout, container, false);
         recyclerView = view.findViewById(R.id.workbooks_recycler_view);
 
-//        //Initialise View Model
-//        workbookViewModel = new WorkbookViewModel(getActivity().getApplication());
-//
-//        //Initialise Adapter
-//        workbooksRecyclerViewAdapter = new WorkbooksRecyclerViewAdapter();
-//
-//        //Create an Observer
-//        final Observer<List<Workbook>> workbookObserver = workbooks -> workbooksRecyclerViewAdapter.setWorkbooks(workbooks);
-//
-//        // Initialise RecyclerView
-//        recyclerView.setHasFixedSize(true);
-//        recyclerView.setItemViewCacheSize(20);
-//        recyclerView.setDrawingCacheEnabled(true);
-//        recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
-//        recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
-//        recyclerView.setAdapter(workbooksRecyclerViewAdapter);
-//
-//        //Call Observer
-//        workbookViewModel.getAllWorkbooks().observe(getActivity(), workbookObserver);
+        //Initialise View Model
+        workbookViewModel = new WorkbookViewModel(getActivity().getApplication());
+
+        //Initialise Adapter
+        workbooksRecyclerViewAdapter = new WorkbooksRecyclerViewAdapter();
+
+        //Create an Observer
+        final Observer<List<CourseWithWorkbooks>> workbookObserver = courseWithWorkbooks -> workbooksRecyclerViewAdapter.setWorkbooks(courseWithWorkbooks);
+
+        // Initialise RecyclerView
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setItemViewCacheSize(20);
+        recyclerView.setDrawingCacheEnabled(true);
+        recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+        recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
+        recyclerView.setAdapter(workbooksRecyclerViewAdapter);
+
+        //Call Observer
+        workbookViewModel.getAllCoursesWithWorkbooks().observe(getActivity(), workbookObserver);
 
         return view;
     }

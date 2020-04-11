@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
+import com.example.rhdigital.database.model.CourseWithWorkbooks;
 import com.example.rhdigital.database.model.Workbook;
 import com.example.rhdigital.database.repository.RHRepository;
 
@@ -22,6 +23,8 @@ public class WorkbookViewModel extends AndroidViewModel {
     public LiveData<List<Workbook>> getAllWorkbooks() {
         return rhRepository.getAllWorkbooks();
     }
+
+    public LiveData<List<CourseWithWorkbooks>> getAllCoursesWithWorkbooks() { return rhRepository.getAllCoursesWithWorkbooks(); }
 
     public LiveData<List<Workbook>> getWorkbooksById(@NonNull int courseId) {
         return rhRepository.getWorkbooksById(courseId);

@@ -21,9 +21,8 @@
         app:cardBackgroundColor="@color/lightGrey" >
 
         <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="20dp">
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/courses_card_item_image_view"
@@ -35,7 +34,7 @@
                 android:layout_below="@id/courses_card_item_image_view"
                 android:id="@+id/courses_card_item_title_holder"
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
+                android:layout_height="40dp"
                 android:orientation="vertical"
                 android:background="@color/deepGrey">
 
@@ -54,24 +53,22 @@
                 android:layout_below="@id/courses_card_item_title_holder"
                 android:id="@+id/courses_card_item_view_info"
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:orientation="horizontal"
-                android:background="@color/lightGrey">
+                android:layout_height="50dp">
 
                 <Button
-                    android:paddingTop="10dp"
-                    android:paddingBottom="10dp"
-                    android:paddingRight="15dp"
-                    android:id="@+id/info_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:background="@color/lightGrey"
-                    style="@style/Widget.AppCompat.Button.Borderless"
-                    android:layout_alignParentRight="true"
-                    android:text="Info"
-                    android:textSize="17dp"
-                    android:textAllCaps="false"
-                    android:drawableRight="@drawable/ic_arrow_right">
+                  android:id="@+id/info_button"
+                  android:layout_width="wrap_content"
+                  android:layout_height="match_parent"
+                  android:layout_alignParentRight="true"
+                  android:paddingTop="10dp"
+                  android:paddingBottom="10dp"
+                  android:layout_marginRight="20dp"
+                  style="@style/Widget.AppCompat.Button.Borderless"
+                  android:text="Info"
+                  android:textSize="16dp"
+                  android:textAllCaps="false"
+                  android:drawableRight="@drawable/ic_arrow_right"
+                  android:drawablePadding="10dp">
                 </Button>
 
             </RelativeLayout>

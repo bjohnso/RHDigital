@@ -7,9 +7,11 @@ import androidx.lifecycle.LiveData;
 
 import com.example.rhdigital.database.DAO.BaseDAO;
 import com.example.rhdigital.database.DAO.CourseDAO;
+import com.example.rhdigital.database.DAO.CourseWithWorkbooksDAO;
 import com.example.rhdigital.database.DAO.WorkbookDAO;
 import com.example.rhdigital.database.RHDatabase;
 import com.example.rhdigital.database.model.Course;
+import com.example.rhdigital.database.model.CourseWithWorkbooks;
 import com.example.rhdigital.database.model.Workbook;
 
 import java.util.List;
@@ -20,12 +22,14 @@ import java.util.concurrent.Executors;
 public class RHRepository {
     private CourseDAO courseDAO;
     private WorkbookDAO workbookDAO;
+    private CourseWithWorkbooksDAO courseWithWorkbooksDAO;
     private ExecutorService executorService;
 
     public RHRepository(Application application) {
         RHDatabase db = RHDatabase.getDatabase(application);
         courseDAO = db.courseDAO();
         workbookDAO = db.workbookDAO();
+        courseWithWorkbooksDAO = db.courseWithWorkbooksDAO();
         executorService = Executors.newCachedThreadPool();
     }
 
@@ -34,6 +38,8 @@ public class RHRepository {
     }
 
     public LiveData<List<Workbook>> getAllWorkbooks() { return workbookDAO.getAllWorkbooks(); }
+
+    public LiveData<List<CourseWithWorkbooks>> getAllCoursesWithWorkbooks() { return courseWithWorkbooksDAO.getAllCoursesWithWorkbooks(); }
 
     public LiveData<List<Workbook>> getWorkbooksById(@NonNull int courseId) { return workbookDAO.getWorkbooksByCourseId(courseId); }
 

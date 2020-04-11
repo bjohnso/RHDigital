@@ -8,12 +8,13 @@ import androidx.room.Ignore;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
+import static androidx.room.ForeignKey.CASCADE;
+
 @Entity(tableName = "workbooks",
-        foreignKeys = @ForeignKey(
+        foreignKeys = @ForeignKey(onDelete = CASCADE,
                 entity = Course.class,
                 parentColumns = "id",
-                childColumns = "course_id",
-                onDelete = ForeignKey.NO_ACTION
+                childColumns = "course_id"
         ), indices = {@Index("course_id")})
 public class Workbook {
     @ColumnInfo(name = "id")
@@ -25,10 +26,6 @@ public class Workbook {
     private String name;
 
     @NonNull
-    @ColumnInfo(name = "description")
-    private String description;
-
-    @NonNull
     @ColumnInfo(name = "workbookURL")
     private String workbookURL;
 
@@ -36,15 +33,13 @@ public class Workbook {
     private long courseId;
 
     @Ignore
-    public Workbook(@NonNull String name, @NonNull String description, @NonNull String workbookURL) {
+    public Workbook(@NonNull String name, @NonNull String workbookURL) {
         this.name = name;
-        this.description = description;
         this.workbookURL = workbookURL;
     }
 
-    public Workbook(@NonNull String name, @NonNull String description, @NonNull String workbookURL, @NonNull long courseId) {
+    public Workbook(@NonNull String name, @NonNull String workbookURL, @NonNull long courseId) {
         this.name = name;
-        this.description = description;
         this.workbookURL = workbookURL;
         this.courseId = courseId;
     }
@@ -52,11 +47,6 @@ public class Workbook {
     @NonNull
     public String getName() {
         return name;
-    }
-
-    @NonNull
-    public String getDescription() {
-        return description;
     }
 
     @NonNull
@@ -78,10 +68,6 @@ public class Workbook {
 
     public void setId(long id) {
         this.id = id;
-    }
-
-    public void setDescription(@NonNull String description) {
-        this.description = description;
     }
 
     public void setWorkbookURL(@NonNull String workbookURL) {
