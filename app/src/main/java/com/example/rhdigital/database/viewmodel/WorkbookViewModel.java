@@ -6,24 +6,25 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
-import com.example.rhdigital.database.model.Course;
+import com.example.rhdigital.database.model.Workbook;
 import com.example.rhdigital.database.repository.RHRepository;
 
 import java.util.List;
 
-public class CourseViewModel extends AndroidViewModel {
+public class WorkbookViewModel extends AndroidViewModel {
     private RHRepository rhRepository;
 
-    public CourseViewModel(@NonNull Application application) {
+    public WorkbookViewModel(@NonNull Application application) {
         super(application);
         rhRepository = new RHRepository(application);
     }
 
-    public LiveData<List<Course>> getAllCourses() {
-        return rhRepository.getAllCourses();
+    public LiveData<List<Workbook>> getAllWorkbooks() {
+        return rhRepository.getAllWorkbooks();
     }
 
-    public long insert(Course course) {
-        return rhRepository.insert(course);
+    public LiveData<List<Workbook>> getWorkbooksById(@NonNull int courseId) {
+        return rhRepository.getWorkbooksById(courseId);
     }
+
 }

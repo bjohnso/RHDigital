@@ -18,7 +18,7 @@
         app:layout_constraintVertical_bias="0.0"
         app:cardCornerRadius="20dp"
         app:cardElevation="5dp"
-        app:cardBackgroundColor="@color/lightGrey">
+        app:cardBackgroundColor="@color/lightGrey" >
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -58,26 +58,21 @@
                 android:orientation="horizontal"
                 android:background="@color/lightGrey">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Info"
-                    android:layout_gravity="center"
-                    android:fontFamily="sans-serif"
-                    android:layout_toLeftOf="@+id/info_button"
-                    android:layout_centerInParent="true"
-                    android:textSize="20dp"/>
-
-                <ImageButton
+                <Button
                     android:paddingTop="10dp"
                     android:paddingBottom="10dp"
+                    android:paddingRight="15dp"
                     android:id="@+id/info_button"
-                    android:layout_width="50dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:background="@color/lightGrey"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/ic_arrow_right"
-                    android:layout_alignParentRight="true"/>
+                    style="@style/Widget.AppCompat.Button.Borderless"
+                    android:layout_alignParentRight="true"
+                    android:text="Info"
+                    android:textSize="17dp"
+                    android:textAllCaps="false"
+                    android:drawableRight="@drawable/ic_arrow_right">
+                </Button>
 
             </RelativeLayout>
 

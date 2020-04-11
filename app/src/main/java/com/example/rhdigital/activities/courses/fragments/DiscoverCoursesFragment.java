@@ -46,12 +46,7 @@ public class DiscoverCoursesFragment extends Fragment {
         coursesRecyclerViewAdapter = new CoursesRecyclerViewAdapter();
 
         // Create an Observer
-        final Observer<List<Course>> courseObserver = new Observer<List<Course>>() {
-            @Override
-            public void onChanged(List<Course> courses) {
-                coursesRecyclerViewAdapter.setCourses(courses);
-            }
-        };
+        final Observer<List<Course>> courseObserver = courses -> coursesRecyclerViewAdapter.setCourses(courses);
 
         // Initialise RecyclerView
         recyclerView.setHasFixedSize(true);

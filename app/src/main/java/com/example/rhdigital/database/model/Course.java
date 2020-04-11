@@ -7,8 +7,9 @@ import androidx.room.PrimaryKey;
 
 @Entity(tableName = "courses")
 public class Course {
+    @ColumnInfo(name = "id")
     @PrimaryKey(autoGenerate = true)
-    private int id;
+    private long id;
 
     @NonNull
     @ColumnInfo(name = "name")
@@ -33,7 +34,7 @@ public class Course {
         this.videoURL = videoURL;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
@@ -61,7 +62,7 @@ public class Course {
         this.description = description;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
