@@ -39,7 +39,7 @@ public class WorkbooksRecyclerViewAdapter extends RecyclerView.Adapter<Workbooks
           Course course = courseWithWorkbooks.getCourse();
 
           //Set image to ImageView
-          int id = parent.getResources().getIdentifier(course.getThumb(), "drawable", parent.getContext().getPackageName());
+          int id = parent.getResources().getIdentifier(course.getThumbnailURL(), "drawable", parent.getContext().getPackageName());
           holder.imageView.setImageResource(id);
 
           //Set courseName

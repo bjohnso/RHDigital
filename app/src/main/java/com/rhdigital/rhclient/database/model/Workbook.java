@@ -31,7 +31,10 @@ public class Workbook {
     private String workbookURL;
 
     @ColumnInfo(name = "course_id")
-    private long courseId;
+    private String courseId;
+
+    @Ignore
+    public Workbook() {}
 
     @Ignore
     public Workbook(@NonNull String id, @NonNull String name, @NonNull String workbookURL) {
@@ -40,7 +43,7 @@ public class Workbook {
       this.workbookURL = workbookURL;
     }
 
-    public Workbook(@NonNull String id, @NonNull String name, @NonNull String workbookURL, @NonNull long courseId) {
+    public Workbook(@NonNull String id, @NonNull String name, @NonNull String workbookURL, @NonNull String courseId) {
       this.id = id;
       this.name = name;
       this.workbookURL = workbookURL;
@@ -57,7 +60,7 @@ public class Workbook {
         return workbookURL;
     }
 
-    public long getCourseId() {
+    public String getCourseId() {
         return courseId;
     }
 
@@ -77,7 +80,20 @@ public class Workbook {
         this.workbookURL = workbookURL;
     }
 
-    public void setCourseId(long courseId) {
+    public void setCourseId(String courseId) {
         this.courseId = courseId;
     }
+
+  @NonNull
+  @Override
+  public String toString() {
+    return "Id: "
+      + this.id
+      + "\nName: "
+      + this.name
+      + "\nWorkbookURL: "
+      + this.workbookURL
+      + "\nCourseId: "
+      + this.courseId;
+  }
 }

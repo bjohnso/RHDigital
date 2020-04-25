@@ -35,7 +35,7 @@ public class CoursesRecyclerViewAdapter extends RecyclerView.Adapter<CoursesRecy
         if (courses != null) {
             Course course = courses.get(position);
             holder.headerView.setText(course.getName());
-            int id = parent.getResources().getIdentifier(course.getThumb(), "drawable", parent.getContext().getPackageName());
+            int id = parent.getResources().getIdentifier(course.getThumbnailURL(), "drawable", parent.getContext().getPackageName());
             holder.imageView.setImageResource(id);
         } else {
 
