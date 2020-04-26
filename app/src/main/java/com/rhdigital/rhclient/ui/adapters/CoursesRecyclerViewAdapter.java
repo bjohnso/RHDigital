@@ -1,5 +1,7 @@
 package com.rhdigital.rhclient.ui.adapters;
 
+import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,9 +11,14 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.rhdigital.rhclient.R;
 import com.rhdigital.rhclient.database.model.Course;
+import com.rhdigital.rhclient.util.RemoteImageConnector;
 
+import java.util.HashMap;
 import java.util.List;
 
 public class CoursesRecyclerViewAdapter extends RecyclerView.Adapter<CoursesRecyclerViewAdapter.CoursesViewHolder> {
@@ -33,12 +40,20 @@ public class CoursesRecyclerViewAdapter extends RecyclerView.Adapter<CoursesRecy
     @Override
     public void onBindViewHolder(@NonNull CoursesRecyclerViewAdapter.CoursesViewHolder holder, int position) {
         if (courses != null) {
-            Course course = courses.get(position);
-            holder.headerView.setText(course.getName());
-            int id = parent.getResources().getIdentifier(course.getThumbnailURL(), "drawable", parent.getContext().getPackageName());
-            holder.imageView.setImageResource(id);
-        } else {
+          Course course = courses.get(position);
+          holder.headerView.setText(course.getName());
 
+          // Build URL for this image
+          RemoteImageConnector
+            .getInstance()
+            .getResourceURL(parent.getContext(), course.getThumbnailURL())
+            .getDownloadUrl().addOnSuccessListener(uri -> {
+              // Fetch image from firebase cloud
+              Glide
+                .with(parent.getContext())
+                .load(uri)
+                .into(holder.imageView);
+            });
         }
     }
 

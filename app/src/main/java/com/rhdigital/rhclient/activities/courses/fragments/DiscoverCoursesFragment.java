@@ -57,6 +57,5 @@ public class DiscoverCoursesFragment extends Fragment {
         courseViewModel.getAllCourses().observe(getActivity(), courseObserver);
         return view;
     }
-
 }
 

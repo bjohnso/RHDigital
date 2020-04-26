@@ -9,10 +9,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.rhdigital.rhclient.R;
 import com.rhdigital.rhclient.database.model.Course;
 import com.rhdigital.rhclient.database.model.CourseWithWorkbooks;
 import com.rhdigital.rhclient.database.model.Workbook;
+import com.rhdigital.rhclient.util.RemoteImageConnector;
 
 import java.util.List;
 
@@ -38,9 +40,17 @@ public class WorkbooksRecyclerViewAdapter extends RecyclerView.Adapter<Workbooks
           CourseWithWorkbooks courseWithWorkbooks = this.coursesWithWorkbooks.get(position);
           Course course = courseWithWorkbooks.getCourse();
 
-          //Set image to ImageView
-          int id = parent.getResources().getIdentifier(course.getThumbnailURL(), "drawable", parent.getContext().getPackageName());
-          holder.imageView.setImageResource(id);
+          // Build URL for this image
+          RemoteImageConnector
+            .getInstance()
+            .getResourceURL(parent.getContext(), course.getThumbnailURL())
+            .getDownloadUrl().addOnSuccessListener(uri -> {
+            // Fetch image from firebase cloud
+            Glide
+              .with(parent.getContext())
+              .load(uri)
+              .into(holder.imageView);
+          });
 
           //Set courseName
           holder.headerView.setText(course.getName());

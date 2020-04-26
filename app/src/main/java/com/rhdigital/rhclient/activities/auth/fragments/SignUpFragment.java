@@ -14,6 +14,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.rhdigital.rhclient.R;
+import com.rhdigital.rhclient.activities.auth.listeners.SignInRedirectOnClickListener;
+import com.rhdigital.rhclient.activities.auth.listeners.SignUpOnClickListener;
 
 public class SignUpFragment extends Fragment {
 
@@ -36,7 +38,20 @@ public class SignUpFragment extends Fragment {
 
         disclaimer.setText(Html.fromHtml(getString(R.string.disclaimer)));
 
+        //Set Listeners
+        signInRedirect.setOnClickListener(new SignInRedirectOnClickListener(this));
+        submit.setOnClickListener(
+          new SignUpOnClickListener(this)
+        );
+
         return view;
     }
 
+    public String getEmailText() {
+      return this.emailInput.getText().toString();
+    }
+
+    public String getPasswordText() {
+      return this.passwordInput.getText().toString();
+    }
 }

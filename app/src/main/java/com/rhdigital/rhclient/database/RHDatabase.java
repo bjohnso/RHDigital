@@ -102,8 +102,6 @@ public abstract class RHDatabase extends RoomDatabase {
                 doc.get("videoURL").toString()
               )
             );
-            Log.d("Firestore", "Course: " + doc.getId());
-            Log.d("Firestore", "Course: " + doc.getData().toString());
           }
 
           for (QueryDocumentSnapshot doc : fireStoreData[1]) {
@@ -115,10 +113,7 @@ public abstract class RHDatabase extends RoomDatabase {
                 doc.get("courseId").toString()
               )
             );
-            Log.d("Firestore", "Workbook: " + doc.getId());
-            Log.d("Firestore", "Workbook: " + doc.getData().toString());
           }
-
           return null;
         }
     }
