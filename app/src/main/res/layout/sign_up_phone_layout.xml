@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:layout_width="match_parent"
+    android:layout_height="match_parent"
+  android:background="@color/background">
+
+  <LinearLayout
+    android:id="@+id/sign_up_phone_container"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="10dp"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent">
+
+    <AutoCompleteTextView
+      android:id="@+id/sign_up_phone_input"
+      android:layout_width="match_parent"
+      android:layout_height="40dp"
+      android:layout_marginBottom="10dp"
+      android:background="@drawable/input"
+      android:drawablePadding="5dp"
+      android:hint="Phone number"
+      android:inputType="phone"
+      android:paddingStart="10dp"
+      android:textColor="@color/offWhite"
+      android:textSize="12sp" />
+
+    <androidx.appcompat.widget.AppCompatButton
+      android:id="@+id/sign_up_phone_submit_btn"
+      android:layout_width="match_parent"
+      android:layout_height="40dp"
+      android:layout_gravity="center"
+      android:textAllCaps="false"
+      android:text="Next"
+      android:textColor="@color/submit_text"
+      android:background="@drawable/submit_active" />
+  </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

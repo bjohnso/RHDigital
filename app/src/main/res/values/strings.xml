@@ -1,4 +1,10 @@
 <resources>
-    <string name="app_name">RH DIGITAL</string>
-    <string name="disclaimer">&lt;p&gt;By signing up you agree to the &lt;u&gt;Privacy Policy&lt;/u&gt; &amp; &lt;u&gt;Terms of use&lt;/u&gt;.&lt;/p&gt;</string>
+  <string name="app_name">RH DIGITAL</string>
+  <string name="disclaimer">&lt;p&gt;By signing up you agree to the &lt;u&gt;Privacy Policy&lt;/u&gt; &amp; &lt;u&gt;Terms of use&lt;/u&gt;.&lt;/p&gt;</string>
+  <string name="sign_in_disclaimer"><p>"Forgotten your login details?"</p></string>
+  <string name="sign_in_helper"><p>"Get help with signing in."</p></string>
+  <string name="sign_up_disclaimer"><p>"Don't have an account?"</p></string>
+  <string name="sign_up_helper"><p>Sign up.</p></string>
+  <string name="sign_up_redirect_disclaimer"><p>"Already have an account?"</p></string>
+  <string name="sign_up_redirect_action"><p>Log in.</p></string>
 </resources>

@@ -15,8 +15,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:cardCornerRadius="10dp"
         app:cardElevation="5dp"
-        app:cardBackgroundColor="@color/lightGrey"
-        android:background="@drawable/stock3">
+        app:cardBackgroundColor="@color/lightGrey">
 
         <RelativeLayout
           android:layout_width="wrap_content"
@@ -31,7 +30,6 @@
               android:id="@+id/workbooks_image_item"
               android:layout_width="match_parent"
               android:layout_height="80dp"
-              android:src="@drawable/stock3"
               android:scaleType="centerCrop" />
               <RelativeLayout
                 android:id="@+id/workbooks_card_header_holder"

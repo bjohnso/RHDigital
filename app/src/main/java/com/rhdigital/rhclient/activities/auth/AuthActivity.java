@@ -52,6 +52,7 @@ public class AuthActivity extends AppCompatActivity {
     sectionsStatePagerAdapter.addFragment(new SignInFragment());
     sectionsStatePagerAdapter.addFragment(new SignUpFragment());
     customViewPager.setAdapter(sectionsStatePagerAdapter);
+    customViewPager.setSwipeable(false);
   }
 
   public int getViewPager(){

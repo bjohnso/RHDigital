@@ -19,6 +19,6 @@ public class SignUpOnClickListener implements View.OnClickListener {
   public void onClick(View view) {
     AuthActivity activity = (AuthActivity) fragment.getActivity();
     SignUpFragment frag = (SignUpFragment) fragment;
-    activity.Register(frag.getEmailText(), frag.getPasswordText());
+    //activity.Register(frag.getEmailText(), frag.getPasswordText());
   }
 }

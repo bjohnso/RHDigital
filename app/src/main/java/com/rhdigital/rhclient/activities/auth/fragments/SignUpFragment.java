@@ -7,51 +7,74 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.material.tabs.TabLayout;
 import com.rhdigital.rhclient.R;
 import com.rhdigital.rhclient.activities.auth.listeners.SignInRedirectOnClickListener;
 import com.rhdigital.rhclient.activities.auth.listeners.SignUpOnClickListener;
+import com.rhdigital.rhclient.activities.auth.listeners.SignUpTabLayoutOnClickListener;
+import com.rhdigital.rhclient.activities.courses.fragments.DiscoverCoursesFragment;
+import com.rhdigital.rhclient.activities.courses.fragments.MyCoursesFragment;
+import com.rhdigital.rhclient.activities.courses.fragments.RHFragment;
+import com.rhdigital.rhclient.ui.adapters.SectionsStatePagerAdapter;
+import com.rhdigital.rhclient.ui.view.CustomViewPager;
 
-public class SignUpFragment extends Fragment {
+public class SignUpFragment extends Fragment implements RHFragment {
 
-    //Components
-    AutoCompleteTextView emailInput;
-    AutoCompleteTextView passwordInput;
-    Button submit;
-    TextView disclaimer;
-    TextView signInRedirect;
+  // Components
+  private boolean isParent = true;
+  private TabLayout tabLayout;
+  private LinearLayout signInRedirect;
+  private CustomViewPager customViewPager;
 
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.sign_up_layout, container, false);
+  public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    View view = inflater.inflate(R.layout.sign_up_layout, container, false);
 
-        //Initialise Components
-        emailInput = (AutoCompleteTextView) view.findViewById(R.id.sign_up_email_input);
-        passwordInput = (AutoCompleteTextView) view.findViewById(R.id.sign_up_password_input);
-        submit = (Button) view.findViewById(R.id.sign_up_submit_btn);
-        disclaimer = (TextView) view.findViewById(R.id.sign_up_disclaimer_text);
-        signInRedirect = (TextView) view.findViewById(R.id.sign_up_sign_in_redirect_text);
+    // Initialise Components
+    tabLayout = (TabLayout) view.findViewById(R.id.sign_up_tab_layout);
+    signInRedirect = (LinearLayout) view.findViewById(R.id.sign_up_redirect);
+    customViewPager = (CustomViewPager) view.findViewById(R.id.sign_up_view_pager);
 
-        disclaimer.setText(Html.fromHtml(getString(R.string.disclaimer)));
+    // Set Listeners
+    tabLayout.addOnTabSelectedListener(new SignUpTabLayoutOnClickListener(this));
+    signInRedirect.setOnClickListener(new SignInRedirectOnClickListener(this));
 
-        //Set Listeners
-        signInRedirect.setOnClickListener(new SignInRedirectOnClickListener(this));
-        submit.setOnClickListener(
-          new SignUpOnClickListener(this)
-        );
+    setUpViewPager(customViewPager);
 
-        return view;
-    }
+    return view;
+  }
 
-    public String getEmailText() {
-      return this.emailInput.getText().toString();
-    }
+  private void setUpViewPager(CustomViewPager customViewPager){
+    SectionsStatePagerAdapter sectionsStatePagerAdapter = new SectionsStatePagerAdapter(getChildFragmentManager());
+    // Fragments
+    sectionsStatePagerAdapter.addFragment(new SignUpPhoneFragment());
+    sectionsStatePagerAdapter.addFragment(new SignUpEmailFragment());
 
-    public String getPasswordText() {
-      return this.passwordInput.getText().toString();
-    }
+    customViewPager.setAdapter(sectionsStatePagerAdapter);
+    customViewPager.setSwipeable(false);
+  }
+
+  public int getViewPager(){
+    return customViewPager.getCurrentItem();
+  }
+
+  public void setViewPager(int position){
+    customViewPager.setCurrentItem(position);
+  }
+
+  @Override
+  public boolean isParent() {
+    return false;
+  }
+
+  @Override
+  public void setIsParent(boolean parent) {
+
+  }
 }

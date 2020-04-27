@@ -1,17 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#008577</color>
-    <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#D81B60</color>
-    <color name="colorWhite">#fff</color>
-    <color name="colorTransWhite">#38ffffff</color>
+  <color name="colorPrimary">#008577</color>
+  <color name="colorPrimaryDark">#00574B</color>
+  <color name="colorAccent">#D81B60</color>
+  <color name="colorWhite">#fff</color>
+  <color name="colorTransWhite">#38ffffff</color>
 
-    <color name="offWhite">#F1F0EA</color>
-    <color name="activeBlue">#17A7CB</color>
-    <color name="deepGrey">#474348</color>
-    <color name="darkBlue">#23272F</color>
-    <color name="lightGrey">#3E4045</color>
-    <color name="royalBlue">#324875</color>
-    <color name="warmBlue">#295E76</color>
-    <color name="yellow">#F8CF42</color>
+  <color name="offWhite">#F1F0EA</color>
+  <color name="activeBlue">#17A7CB</color>
+  <color name="deepGrey">#474348</color>
+  <color name="darkBlue">#23272F</color>
+  <color name="lightGrey">#3E4045</color>
+  <color name="royalBlue">#324875</color>
+  <color name="warmBlue">#295E76</color>
+  <color name="yellow">#F8CF42</color>
+
+  <color name="background">#050309</color>
+  <color name="submit_active">#DFBD13</color>
+  <color name="submit_active_alt">#705F0A</color>
+  <color name="submit_text">#050309</color>
+  <color name="submit_inactive">#707070</color>
+  <color name="input">#2A2A2A</color>
+  <color name="input_details">#BEB3B3</color>
+  <color name="link_text_faded">#746D6D</color>
+  <color name="link_text_highlight">#FFFFFF</color>
 </resources>

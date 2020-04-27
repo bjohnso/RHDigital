@@ -1,0 +1,8 @@
+Background : #050309
+Submit Active : #DFBD13 - #705F0A
+Submit Text : #050309
+Submit Inactive : #707070
+Input : #2A2A2A
+Input Details : #BEB3B3
+Link Text Faded : #746D6D
+Link Text Highlight : #FFFFFF
