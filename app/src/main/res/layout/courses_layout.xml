@@ -13,20 +13,21 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:tabTextAppearance="@style/TabLayoutTextAppearance"
-        android:background="@color/darkBlue"
-        app:tabSelectedTextColor="@color/activeBlue"
-        app:tabTextColor="@color/offWhite"
+        android:background="@drawable/bar"
+        app:tabSelectedTextColor="@color/white"
+        app:tabTextColor="@color/inactive"
+        app:tabIndicatorColor="@color/white"
         >
 
         <com.google.android.material.tabs.TabItem
             android:layout_height="wrap_content"
             android:layout_width="20dp"
-            android:text="My Courses" />
+            android:text="Enrolled" />
 
         <com.google.android.material.tabs.TabItem
             android:layout_height="wrap_content"
             android:layout_width="20dp"
-            android:text="Discover Courses" />
+            android:text="Discover" />
     </com.google.android.material.tabs.TabLayout>
 
 
@@ -36,7 +37,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/tab_layout"
         app:layout_constraintTop_toTopOf="parent"
-        android:background="@color/darkBlue"/>
+        android:background="@color/bar"/>
 
     <com.rhdigital.rhclient.ui.view.CustomViewPager
         android:id="@+id/courses_tab_layout_container"

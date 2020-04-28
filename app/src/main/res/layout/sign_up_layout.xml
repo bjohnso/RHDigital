@@ -11,7 +11,7 @@
     android:layout_width="match_parent"
     android:layout_height="200dp"
     android:scaleType="fitCenter"
-    android:src="@drawable/rh_logo"
+    android:src="@drawable/ic_rh_logo"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintHorizontal_bias="1.0"
@@ -25,7 +25,9 @@
     android:layout_height="40dp"
     android:layout_marginTop="10dp"
     android:layout_marginBottom="20dp"
-    android:background="@drawable/rhdigital"
+    android:gravity="center"
+    android:text="RH DIGITAL"
+    android:textSize="20sp"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintHorizontal_bias="0.498"
@@ -37,10 +39,9 @@
     android:id="@+id/sign_up_tab_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-
     app:layout_constraintTop_toBottomOf="@+id/sign_in_title"
-    app:tabIndicatorColor="@color/colorWhite"
-    app:tabSelectedTextColor="@color/colorWhite"
+    app:tabIndicatorColor="@color/white"
+    app:tabSelectedTextColor="@color/white"
     app:tabTextColor="@color/link_text_faded">
 
     <com.google.android.material.tabs.TabItem

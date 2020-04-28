@@ -2,7 +2,7 @@
 <shape android:shape="rectangle"
   xmlns:android="http://schemas.android.com/apk/res/android">
 
-  <solid android:color="@color/submit_inactive"></solid>
+  <solid android:color="@color/inactive"></solid>
 
 </shape>
 

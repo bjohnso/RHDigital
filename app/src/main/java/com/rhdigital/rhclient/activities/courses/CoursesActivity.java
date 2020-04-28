@@ -33,6 +33,7 @@ public class CoursesActivity extends AppCompatActivity {
         mCustomViewPager = findViewById(R.id.container_courses);
         mToolbar = findViewById(R.id.topNavigationView);
         mBottomNavigationView = findViewById(R.id.bottomNavigationView);
+        mToolbar.setTitle("Courses");
 
         //Setup Toolbar
         setSupportActionBar(mToolbar);
