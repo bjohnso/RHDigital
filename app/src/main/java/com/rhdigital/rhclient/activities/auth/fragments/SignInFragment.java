@@ -51,6 +51,10 @@ public class SignInFragment extends Fragment {
       }
     };
 
+    // Temp Animation Testing
+    AnimatedVectorDrawable anim;
+    ImageView logo;
+
     //Components
     AutoCompleteTextView emailInput;
     AutoCompleteTextView passwordInput;
@@ -68,6 +72,22 @@ public class SignInFragment extends Fragment {
         submit = (Button) view.findViewById(R.id.sign_in_submit_btn);
         resetPasswordRedirect = (LinearLayout) view.findViewById(R.id.sign_in_helper);
         signUpRedirect = (LinearLayout) view.findViewById(R.id.sign_in_redirect);
+
+        //Animation Testing
+
+        anim = (AnimatedVectorDrawable) getContext().getDrawable(R.drawable.rh_vector_animated);
+        logo = view.findViewById(R.id.sign_in_logo);
+
+        anim.registerAnimationCallback(new Animatable2.AnimationCallback() {
+          @Override
+          public void onAnimationEnd(Drawable drawable) {
+            anim.start();
+          }
+        });
+
+        logo.setImageDrawable(anim);
+
+        anim.start();
 
         //Set Listeners
         signUpRedirect.setOnClickListener(new SignUpRedirectOnClickListener(this));

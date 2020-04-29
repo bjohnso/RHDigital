@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animated-vector android:drawable="@drawable/rh_vector"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <target
+    android:name="rh_outer_fill"
+    android:animation="@anim/rh_outer_fill_animator" />
+
+  <target
+    android:name="rh_inner_fill"
+    android:animation="@anim/rh_inner_fill_animator" />
+
+  <target
+    android:name="rh_aux_fill"
+    android:animation="@anim/rh_aux_fill_animator" />
+
+  <target
+    android:name="rh_outer"
+    android:animation="@anim/rh_outer_animator" />
+
+  <target
+    android:name="rh_inner"
+    android:animation="@anim/rh_inner_animator" />
+
+  <target
+    android:name="rh_aux"
+    android:animation="@anim/rh_aux_animator" />
+
+</animated-vector>

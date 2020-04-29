@@ -4,6 +4,6 @@
 
   <target
     android:name="infinity"
-    android:animation="@anim/spinner_animation" />
+    android:animation="@anim/spinner_animation" />z
 
 </animated-vector>

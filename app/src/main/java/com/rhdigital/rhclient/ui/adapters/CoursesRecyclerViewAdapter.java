@@ -55,7 +55,7 @@ public class CoursesRecyclerViewAdapter extends RecyclerView.Adapter<CoursesRecy
           holder.headerView.setText(course.getName());
 
           // Initialise A Loader Animation
-          AnimatedVectorDrawable loader = (AnimatedVectorDrawable) this.parent.getContext().getDrawable(R.drawable.spinner_animation);
+          AnimatedVectorDrawable loader = (AnimatedVectorDrawable) this.parent.getContext().getDrawable(R.drawable.rh_vector_animated);
           // TODO : Make Animation Listener Backwards Compatible
           loader.registerAnimationCallback(new Animatable2.AnimationCallback() {
             @Override
@@ -65,9 +65,9 @@ public class CoursesRecyclerViewAdapter extends RecyclerView.Adapter<CoursesRecy
           });
           loader.start();
 
-          holder.imageView.requestLayout();
-          holder.imageView.getLayoutParams().height = 100;
-          holder.imageView.getLayoutParams().width = 100;
+//          holder.imageView.requestLayout();
+//          holder.imageView.getLayoutParams().height = 100;
+//          holder.imageView.getLayoutParams().width = 100;
 
           // Build URL for this image
           RemoteImageConnector
@@ -94,7 +94,7 @@ public class CoursesRecyclerViewAdapter extends RecyclerView.Adapter<CoursesRecy
                     if (!isFromMemoryCache) {
                       loader.clearAnimationCallbacks();
                       loader.stop();
-                      holder.imageView.setLayoutParams(new LinearLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT));
+//                      holder.imageView.setLayoutParams(new LinearLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT));
                       holder.imageView.setImageDrawable(resource);
                     }
                     return true;
