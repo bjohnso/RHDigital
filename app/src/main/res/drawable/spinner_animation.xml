@@ -1,9 +1,0 @@
-<?xml version="1.0"?>
-<animated-vector xmlns:aapt="http://schemas.android.com/aapt" xmlns:android="http://schemas.android.com/apk/res/android"
-  android:drawable="@drawable/spinner_infinity">
-
-  <target
-    android:name="infinity"
-    android:animation="@anim/spinner_animation" />z
-
-</animated-vector>
