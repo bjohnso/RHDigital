@@ -26,6 +26,12 @@
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
+          <FrameLayout
+            android:id="@+id/loader"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"
+            android:layout_width="80dp"
+            android:layout_height="50dp" />
             <LinearLayout
               android:id="@+id/courses_card_item_image_view_holder"
               android:layout_width="match_parent"
@@ -42,12 +48,12 @@
                 android:id="@+id/courses_card_item_title_holder"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:orientation="vertical"
+                android:orientation="horizontal"
                 android:background="@color/bar_dark">
 
                 <TextView
                     android:id="@+id/courses_text_header_item"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:textAlignment="viewStart"

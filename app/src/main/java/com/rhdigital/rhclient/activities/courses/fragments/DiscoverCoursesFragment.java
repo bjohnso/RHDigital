@@ -1,6 +1,14 @@
 package com.rhdigital.rhclient.activities.courses.fragments;
 
+import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,16 +16,25 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.BitmapRequestBuilder;
+import com.bumptech.glide.Glide;
 import com.rhdigital.rhclient.R;
 import com.rhdigital.rhclient.database.model.Course;
 import com.rhdigital.rhclient.database.viewmodel.CourseViewModel;
 import com.rhdigital.rhclient.ui.adapters.CoursesRecyclerViewAdapter;
+import com.rhdigital.rhclient.util.RemoteImageConnector;
 
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.BitSet;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Observable;
 
 public class DiscoverCoursesFragment extends Fragment {
 
@@ -27,8 +44,19 @@ public class DiscoverCoursesFragment extends Fragment {
     //Adapters
     private CoursesRecyclerViewAdapter coursesRecyclerViewAdapter;
 
+    private List<Course> courses;
+
+    //Observables
+    private LiveData<HashMap<String, Bitmap>> uriObservable;
+    private LiveData<List<Course>> courseObservable;
+
     //Components
     private RecyclerView recyclerView;
+
+    private boolean hasAttachedRecycler = false;
+
+    private int width = 0;
+    private int height = 0;
 
     @Nullable
     @Override
@@ -40,22 +68,66 @@ public class DiscoverCoursesFragment extends Fragment {
         courseViewModel = new CourseViewModel(getActivity().getApplication());
 
         // Initialise Adapter
-        coursesRecyclerViewAdapter = new CoursesRecyclerViewAdapter();
+        coursesRecyclerViewAdapter = new CoursesRecyclerViewAdapter(getContext());
 
-        // Create an Observer
-        final Observer<List<Course>> courseObserver = courses -> coursesRecyclerViewAdapter.setCourses(courses);
+        calculateImageDimensions();
+
+        // Create Observers
+      final Observer<HashMap<String, Bitmap>> uriObserver = new Observer<HashMap<String, Bitmap>>() {
+        @Override
+        public void onChanged(HashMap<String, Bitmap> stringBitmapHashMap) {
+          if (courses.size() == stringBitmapHashMap.size()) {
+            Log.d("OBSERVER", "DESTROYED");
+            uriObservable.removeObserver(this);
+          }
+          coursesRecyclerViewAdapter.setImageUriMap(stringBitmapHashMap);
+          if (!hasAttachedRecycler) {
+            hasAttachedRecycler = true;
+            recyclerView.setAdapter(coursesRecyclerViewAdapter);
+          }
+        }
+      };
+
+      final Observer<List<Course>> courseObserver = new Observer<List<Course>>() {
+        @Override
+        public void onChanged(List<Course> c) {
+          courseObservable.removeObserver(this);
+          coursesRecyclerViewAdapter.setCourses(c);
+          courses = c;
+          uriObservable = courseViewModel.getAllUri(getContext(), c, width, height);
+          uriObservable.observe(getActivity(), uriObserver);
+        }
+      };
 
         // Initialise RecyclerView
         recyclerView.setHasFixedSize(true);
-        recyclerView.setItemViewCacheSize(20);
+        recyclerView.setItemViewCacheSize(10);
         recyclerView.setDrawingCacheEnabled(true);
-        recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+        recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_AUTO);
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
-        recyclerView.setAdapter(coursesRecyclerViewAdapter);
 
         // Call Observer
-        courseViewModel.getAllCourses().observe(getActivity(), courseObserver);
+        courseObservable = courseViewModel.getAllCourses();
+        courseObservable.observe(getActivity(), courseObserver);
         return view;
     }
+
+    private void calculateImageDimensions() {
+      float dip = 230f;
+      Resources r = getResources();
+      float px = TypedValue.applyDimension(
+        TypedValue.COMPLEX_UNIT_DIP,
+        dip,
+        r.getDisplayMetrics()
+      );
+
+      DisplayMetrics displayMetrics = new DisplayMetrics();
+      getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+      width = displayMetrics.widthPixels;
+      height = Math.round(px);
+    }
+
 }
+
+
 

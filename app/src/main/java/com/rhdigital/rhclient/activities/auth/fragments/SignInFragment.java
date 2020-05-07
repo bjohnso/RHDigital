@@ -75,18 +75,9 @@ public class SignInFragment extends Fragment {
 
         //Animation Testing
 
-        anim = (AnimatedVectorDrawable) getContext().getDrawable(R.drawable.rh_vector_animated);
+        anim = (AnimatedVectorDrawable) getContext().getDrawable(R.drawable.rh_vector_animation);
         logo = view.findViewById(R.id.sign_in_logo);
-
-        anim.registerAnimationCallback(new Animatable2.AnimationCallback() {
-          @Override
-          public void onAnimationEnd(Drawable drawable) {
-            anim.start();
-          }
-        });
-
         logo.setImageDrawable(anim);
-
         anim.start();
 
         //Set Listeners
