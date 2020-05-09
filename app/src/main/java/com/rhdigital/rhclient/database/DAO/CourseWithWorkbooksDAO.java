@@ -16,4 +16,8 @@ public abstract class CourseWithWorkbooksDAO {
   @Query("SELECT * FROM courses")
   abstract public LiveData<List<CourseWithWorkbooks>> getAllCoursesWithWorkbooks();
 
+  @Transaction
+  @Query("SELECT * FROM courses WHERE isAuthorised = 1;")
+  abstract public LiveData<List<CourseWithWorkbooks>> getAllAuthorisedCoursesWithWorkbooks();
+
 }

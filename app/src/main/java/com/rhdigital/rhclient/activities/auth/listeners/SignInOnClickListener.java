@@ -20,6 +20,9 @@ public class SignInOnClickListener implements View.OnClickListener {
     AuthActivity authActivity = (AuthActivity) fragment.getActivity();
     SignInFragment frag = (SignInFragment) fragment;
     frag.setSubmitDisableTimeout();
-    authActivity.Login(frag.getEmailText(), frag.getPasswordText());
+
+    authActivity
+      .getAuthenticator()
+      .authenticateEmail(frag.getEmailText(), frag.getPasswordText());
   }
 }

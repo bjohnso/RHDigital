@@ -1,5 +1,6 @@
 package com.rhdigital.rhclient.database;
 
+import android.content.AbstractThreadedSyncAdapter;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -17,6 +18,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.rhdigital.rhclient.database.DAO.CourseDAO;
 import com.rhdigital.rhclient.database.DAO.CourseWithWorkbooksDAO;
+import com.rhdigital.rhclient.database.DAO.UserDAO;
 import com.rhdigital.rhclient.database.DAO.WorkbookDAO;
 import com.rhdigital.rhclient.database.model.Course;
 import com.rhdigital.rhclient.database.model.Workbook;
@@ -33,6 +35,7 @@ public abstract class RHDatabase extends RoomDatabase {
     private static volatile RHDatabase INSTANCE;
     public abstract CourseDAO courseDAO();
     public abstract WorkbookDAO workbookDAO();
+    public abstract UserDAO userDAO();
     public abstract CourseWithWorkbooksDAO courseWithWorkbooksDAO();
 
     public static RHDatabase getDatabase(final Context context) {

@@ -29,6 +29,9 @@ public class Course {
     @ColumnInfo(name = "videoURL")
     private String videoURL;
 
+    @ColumnInfo(name = "isAuthorised")
+    private boolean isAuthorised = false;
+
     @Ignore
     public Course() { }
 
@@ -64,7 +67,15 @@ public class Course {
         return videoURL;
     }
 
-    public void setDescription(@NonNull String description) {
+  public void setAuthorised(boolean authorised) {
+    isAuthorised = authorised;
+  }
+
+  public boolean isAuthorised() {
+    return isAuthorised;
+  }
+
+  public void setDescription(@NonNull String description) {
         this.description = description;
     }
 
