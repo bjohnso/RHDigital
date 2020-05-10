@@ -41,8 +41,7 @@ public class WorkbooksRecyclerViewAdapter extends RecyclerView.Adapter<Workbooks
           Course course = courseWithWorkbooks.getCourse();
 
           // Build URL for this image
-          RemoteImageConnector
-            .getInstance()
+          new RemoteImageConnector()
             .getResourceURL(parent.getContext(), course.getThumbnailURL())
             .getDownloadUrl().addOnSuccessListener(uri -> {
             // Fetch image from firebase cloud

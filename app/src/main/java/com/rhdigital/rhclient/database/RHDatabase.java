@@ -21,7 +21,9 @@ import com.rhdigital.rhclient.database.DAO.CourseWithWorkbooksDAO;
 import com.rhdigital.rhclient.database.DAO.UserDAO;
 import com.rhdigital.rhclient.database.DAO.WorkbookDAO;
 import com.rhdigital.rhclient.database.model.Course;
+import com.rhdigital.rhclient.database.model.User;
 import com.rhdigital.rhclient.database.model.Workbook;
+import com.rhdigital.rhclient.database.util.PopulateRoomAsync;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,7 +31,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-@Database(entities = {Course.class, Workbook.class}, version = 1, exportSchema = false)
+@Database(entities = {Course.class, Workbook.class, User.class}, version = 2, exportSchema = false)
 public abstract class RHDatabase extends RoomDatabase {
 
     private static volatile RHDatabase INSTANCE;
@@ -57,67 +59,6 @@ public abstract class RHDatabase extends RoomDatabase {
         @Override
         public void onOpen(@NonNull SupportSQLiteDatabase db) {
           super.onOpen(db);
-          FirebaseFirestore firestore = FirebaseFirestore.getInstance();
-          firestore.collection("courses")
-            .get()
-            .addOnCompleteListener(courseTask -> {
-              if (courseTask.isSuccessful()) {
-                firestore.collectionGroup("workbooks")
-                  .get()
-                  .addOnCompleteListener(workbookTask -> {
-                    if (workbookTask.isSuccessful()) {
-                      new PopulateDbAsync(
-                        INSTANCE,
-                        courseTask.getResult(),
-                        workbookTask.getResult()).execute();
-                    }
-                  });
-              }
-            });
         }
     };
-
-    private static class PopulateDbAsync extends AsyncTask<Void, Void, Void> {
-        private final CourseDAO courseDAO;
-        private final WorkbookDAO workbookDAO;
-        private final CourseWithWorkbooksDAO courseWithWorkbooksDAO;
-        private final QuerySnapshot[] fireStoreData;
-
-        public PopulateDbAsync(RHDatabase instance, QuerySnapshot... snapshots) {
-            courseDAO = instance.courseDAO();
-            workbookDAO = instance.workbookDAO();
-            courseWithWorkbooksDAO = instance.courseWithWorkbooksDAO();
-            this.fireStoreData = snapshots;
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-          workbookDAO.deleteAll();
-          courseDAO.deleteAll();
-
-          for (QueryDocumentSnapshot doc : fireStoreData[0]) {
-            courseDAO.insert(
-              new Course(
-                doc.getId(),
-                doc.get("name").toString(),
-                doc.get("description").toString(),
-                doc.get("thumbnailURL").toString(),
-                doc.get("videoURL").toString()
-              )
-            );
-          }
-
-          for (QueryDocumentSnapshot doc : fireStoreData[1]) {
-            workbookDAO.insert(
-              new Workbook(
-                doc.getId(),
-                doc.get("name").toString(),
-                doc.get("workbookURL").toString(),
-                doc.get("courseId").toString()
-              )
-            );
-          }
-          return null;
-        }
-    }
 }

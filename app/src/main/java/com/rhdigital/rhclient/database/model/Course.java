@@ -105,6 +105,8 @@ public class Course {
       + "\nthumbnailURL: "
       + this.thumbnailURL
       + "\nvideoURL: "
-      + this.videoURL;
+      + this.videoURL
+      + "\nauthorised: "
+      + this.isAuthorised;
   }
 }

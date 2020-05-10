@@ -1,9 +1,12 @@
 package com.rhdigital.rhclient.database.repository;
 
 import android.app.Application;
+import android.content.Intent;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import com.rhdigital.rhclient.database.DAO.BaseDAO;
 import com.rhdigital.rhclient.database.DAO.CourseDAO;
@@ -16,6 +19,8 @@ import com.rhdigital.rhclient.database.model.CourseWithWorkbooks;
 import com.rhdigital.rhclient.database.model.User;
 import com.rhdigital.rhclient.database.model.Workbook;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -52,25 +57,24 @@ public class RHRepository {
     public LiveData<List<Workbook>> getWorkbooksById(@NonNull int courseId) { return workbookDAO.getWorkbooksByCourseId(courseId); }
 
     public void authoriseCourse(String id) {
-      courseDAO.authorise(id);
-    }
-
-    public long insert(User user) {
       try {
-        return executorService.submit(new InsertService(userDAO, user)).get();
+        executorService.submit(new AuthCourseService(courseDAO, id)).get();
       } catch (Exception e) {
         e.printStackTrace();
       }
-      return -1;
     }
 
-    public long insert(Course course) {
+    public Long insert(Object o) {
         try {
-            return executorService.submit(new InsertService(courseDAO, course)).get();
+          if (o.getClass().getSimpleName().equalsIgnoreCase(Course.class.getSimpleName())) {
+            return executorService.submit(new InsertService(courseDAO, o)).get();
+          } else if (o.getClass().getSimpleName().equalsIgnoreCase(User.class.getSimpleName())) {
+            return executorService.submit(new InsertService(userDAO, o)).get();
+          }
         } catch (Exception e) {
-            e.printStackTrace();
+          e.printStackTrace();
         }
-        return -1;
+        return null;
     }
 
     private class InsertService implements Callable<Long> {
@@ -83,7 +87,21 @@ public class RHRepository {
 
         @Override
         public Long call() throws Exception {
-            return this.dao.insert(this.obj);
+          return this.dao.insert(obj);
         }
     }
+
+  private class AuthCourseService implements Callable<Integer> {
+    private CourseDAO courseDAO;
+    private String id;
+    public AuthCourseService(CourseDAO courseDAO, String id) {
+      this.courseDAO = courseDAO;
+      this.id = id;
+    }
+
+    @Override
+    public Integer call() throws Exception {
+      return this.courseDAO.authorise(id);
+    }
+  }
 }

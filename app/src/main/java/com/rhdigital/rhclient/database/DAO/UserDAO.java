@@ -17,6 +17,6 @@ public abstract class UserDAO extends BaseDAO<User>{
   @Query("DELETE FROM users WHERE id = :id")
   abstract public int deleteById(int id);
 
-  @Query("SELECT * FROM courses")
+  @Query("SELECT * FROM users")
   abstract public LiveData<List<User>> getAllUsers();
 }

@@ -9,8 +9,9 @@ import androidx.room.PrimaryKey;
 @Entity(tableName = "users")
 public class User {
 
+  @ColumnInfo(name = "id")
   @NonNull
-  @PrimaryKey(autoGenerate = false)
+  @PrimaryKey
   private String id;
 
   @ColumnInfo(name = "username")
@@ -31,7 +32,7 @@ public class User {
   @Ignore
   public User() { }
 
-  public User(@ NonNull String id, String username, String email, String cell, String name, String surname) {
+  public User(@NonNull String id, String username, String email, String cell, String name, String surname) {
     this.id = id;
     this.username = username;
     this.email = email;

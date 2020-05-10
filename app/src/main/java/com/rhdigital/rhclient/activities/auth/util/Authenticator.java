@@ -3,6 +3,8 @@ package com.rhdigital.rhclient.activities.auth.util;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -17,14 +19,15 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.rhdigital.rhclient.database.RHDatabase;
 import com.rhdigital.rhclient.database.model.User;
 import com.rhdigital.rhclient.database.repository.RHRepository;
+import com.rhdigital.rhclient.database.util.PopulateRoomAsync;
 
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 public class Authenticator {
@@ -37,7 +40,7 @@ public class Authenticator {
 
   public Authenticator(Context context) {
     this.context = context;
-    rhRepository = new RHRepository((Application) context);
+    rhRepository = new RHRepository(((Activity) context).getApplication());
     firebaseAuth = FirebaseAuth.getInstance();
   }
 
@@ -48,30 +51,39 @@ public class Authenticator {
     }
   }
 
+  //RePopulates Room
+  public MutableLiveData<ArrayList<Long>> populateRoomFromUpstream() {
+    PopulateRoomAsync
+      .getInstance()
+      .populateFromUpstream(RHDatabase.getDatabase(context));
+    return PopulateRoomAsync.getInstance().getInserts();
+  }
+
   // This Method must be called upon registering of MutableLiveData to confirm user initialisation in users node
   // -inserts newly created user upstream if none exists and persists the user locally as well,
   // Updates the authorisation status of the local store of courses for the newly created user
-  public void postAuthenticate(FirebaseUser firebaseUser) {
+  public void postAuthenticate(FirebaseUser firebaseUser, Intent intent) {
     db.collection("users")
-      .document(firebaseUser.getUid())
-      .get()
-      .addOnCompleteListener(userTask -> {
+      .document(firebaseUser.getUid()).get().addOnCompleteListener(userTask -> {
         if (userTask.isSuccessful()) {
+          Log.d("AUTH", userTask.getResult().getId());
           User user = new User(firebaseUser.getUid(),
-            "",
+            "test",
             firebaseUser.getEmail(),
-            "",
-            "",
-            "");
+            "test",
+            "test",
+            "test");
           if (!userTask.getResult().exists()) {
             insertUserUpstream(user);
           }
           insertLocal(user);
-          db.collectionGroup("courses")
+          userTask.getResult().getReference()
+            .collection("myCourses")
             .get()
             .addOnCompleteListener(courseTask -> {
               if (courseTask.isSuccessful()) {
                 authoriseCourses(courseTask.getResult());
+                context.startActivity(intent);
               }
             });
         }
@@ -138,6 +150,7 @@ public class Authenticator {
                 task.getException().getMessage(),
                 Toast.LENGTH_LONG).show();
             }
+            firebaseUser.setValue(null);
           }
         });
     } else {
@@ -201,6 +214,9 @@ public class Authenticator {
   }
 
   public MutableLiveData<FirebaseUser> getFirebaseUser() {
+    if (firebaseUser == null) {
+      firebaseUser = new MutableLiveData<>();
+    }
     return firebaseUser;
   }
 }

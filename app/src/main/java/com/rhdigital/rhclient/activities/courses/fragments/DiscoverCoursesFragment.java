@@ -3,8 +3,6 @@ package com.rhdigital.rhclient.activities.courses.fragments;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -21,20 +19,15 @@ import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.BitmapRequestBuilder;
-import com.bumptech.glide.Glide;
 import com.rhdigital.rhclient.R;
 import com.rhdigital.rhclient.database.model.Course;
 import com.rhdigital.rhclient.database.viewmodel.CourseViewModel;
 import com.rhdigital.rhclient.ui.adapters.CoursesRecyclerViewAdapter;
-import com.rhdigital.rhclient.util.RemoteImageConnector;
 
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.BitSet;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Observable;
+import java.util.Map;
 
 public class DiscoverCoursesFragment extends Fragment {
 
@@ -77,10 +70,15 @@ public class DiscoverCoursesFragment extends Fragment {
         @Override
         public void onChanged(HashMap<String, Bitmap> stringBitmapHashMap) {
           if (courses.size() == stringBitmapHashMap.size()) {
-            Log.d("OBSERVER", "DESTROYED");
             uriObservable.removeObserver(this);
           }
           coursesRecyclerViewAdapter.setImageUriMap(stringBitmapHashMap);
+          Iterator<Map.Entry<String, Bitmap>> it = stringBitmapHashMap.entrySet().iterator();
+          int i = 0;
+          while (it.hasNext()) {
+            Map.Entry<String, Bitmap> pair = it.next();
+            Log.d("DISCOVER", pair.getKey() + " : " + ++i);
+          }
           if (!hasAttachedRecycler) {
             hasAttachedRecycler = true;
             recyclerView.setAdapter(coursesRecyclerViewAdapter);
@@ -88,15 +86,11 @@ public class DiscoverCoursesFragment extends Fragment {
         }
       };
 
-      final Observer<List<Course>> courseObserver = new Observer<List<Course>>() {
-        @Override
-        public void onChanged(List<Course> c) {
-          courseObservable.removeObserver(this);
-          coursesRecyclerViewAdapter.setCourses(c);
-          courses = c;
-          uriObservable = courseViewModel.getAllUri(getContext(), c, width, height);
-          uriObservable.observe(getActivity(), uriObserver);
-        }
+      final Observer<List<Course>> courseObserver = c -> {
+        coursesRecyclerViewAdapter.setCourses(c);
+        courses = c;
+        uriObservable = courseViewModel.getAllUri(getContext(), c, width, height);
+        uriObservable.observe(getActivity(), uriObserver);
       };
 
         // Initialise RecyclerView
@@ -126,7 +120,6 @@ public class DiscoverCoursesFragment extends Fragment {
       width = displayMetrics.widthPixels;
       height = Math.round(px);
     }
-
 }
 
 

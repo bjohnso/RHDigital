@@ -37,13 +37,12 @@ import java.util.concurrent.FutureTask;
 
 public class RemoteImageConnector {
 
-  private static RemoteImageConnector instance = null;
   private HashMap<String, StorageReference> urlMap = new HashMap<>();
   private FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
   private MutableLiveData<HashMap<String, Bitmap>> liveUriMap;
   HashMap<String, Bitmap> map = new HashMap<>();
 
-  private RemoteImageConnector() {
+  public RemoteImageConnector() {
     StorageReference root = firebaseStorage.getReference();
     urlMap.put("l", root.child("courses/posters/drawable-ldpi"));
     urlMap.put("m", root.child("courses/posters/drawable-mdpi"));
@@ -51,13 +50,6 @@ public class RemoteImageConnector {
     urlMap.put("x", root.child("courses/posters/drawable-xhdpi"));
     urlMap.put("xx", root.child("courses/posters/drawable-xxhdpi"));
     urlMap.put("xxx", root.child("courses/posters/drawable-xxxhdpi"));
-  }
-
-  public static RemoteImageConnector getInstance() {
-    if (instance == null) {
-      instance = new RemoteImageConnector();
-    }
-    return instance;
   }
 
   public StorageReference getResourceURL(Context context, String endpoint) {
@@ -93,8 +85,7 @@ public class RemoteImageConnector {
   private void loadUri(Context context, List<Course> courses, int width, int height) {
 
     for (Course c : courses) {
-      RemoteImageConnector.getInstance()
-        .getResourceURL(
+      getResourceURL(
           context,
           c.getThumbnailURL())
         .getDownloadUrl()
