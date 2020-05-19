@@ -7,21 +7,33 @@ import android.net.Uri;
 
 import android.os.Build.VERSION_CODES;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
+
+import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.source.MediaSource;
+import com.google.android.exoplayer2.source.ProgressiveMediaSource;
+import com.google.android.exoplayer2.ui.PlayerView;
+import com.google.android.exoplayer2.upstream.DataSource;
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
+import com.google.android.exoplayer2.util.Util;
 import com.rhdigital.rhclient.R;
+import com.rhdigital.rhclient.activities.courses.listeners.CourseItemViewBackOnClick;
+import com.rhdigital.rhclient.activities.courses.listeners.CourseItemViewWatchNowOnClick;
 import com.rhdigital.rhclient.database.model.Course;
 import com.rhdigital.rhclient.ui.view.CustomLoaderFactory;
 
@@ -33,6 +45,7 @@ public class CoursesRecyclerViewAdapter extends RecyclerView.Adapter<CoursesRecy
     private List<Course> courses;
     private Context context;
     private HashMap<String, Bitmap> bitMap;
+    private HashMap<String, Uri> videoURIMap;
 
     public CoursesRecyclerViewAdapter(Context context) {
       this.context = context;
@@ -43,7 +56,7 @@ public class CoursesRecyclerViewAdapter extends RecyclerView.Adapter<CoursesRecy
     public CoursesRecyclerViewAdapter.CoursesViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
       LayoutInflater inflater = LayoutInflater.from(parent.getContext());
       ViewGroup view = (ViewGroup) inflater.inflate(R.layout.courses_recyclerview_item, parent, false);
-      return new CoursesViewHolder(view);
+      return new CoursesViewHolder(view, context);
     }
 
     @RequiresApi(api = VERSION_CODES.M)
@@ -54,16 +67,34 @@ public class CoursesRecyclerViewAdapter extends RecyclerView.Adapter<CoursesRecy
           holder.headerView.setText(course.getName());
           // Load Image Bitmap
           holder.imageView.setImageBitmap(bitMap.get(course.getId()));
+          if (course.isAuthorised()) {
+            holder.actionButton.setText("Watch Now");
+            holder.videoTitle.setText(course.getName());
+            holder.setVideoUri(videoURIMap.get(course.getId()));
+            holder.initVideoPlayer();
+          }
         }
     }
 
-    public void setCourses(List<Course> courses) {
+  @Override
+  public void onViewDetachedFromWindow(@NonNull CoursesViewHolder holder) {
+    super.onViewDetachedFromWindow(holder);
+    holder.disableVideo();
+    holder.destroyVideo();
+  }
+
+  public void setCourses(List<Course> courses) {
         this.courses = courses;
         notifyDataSetChanged();
     }
 
     public void setImageUriMap(HashMap<String, Bitmap> map) {
       this.bitMap = map;
+      notifyDataSetChanged();
+    }
+
+    public void setVideoURIMap(HashMap<String, Uri> map) {
+      this.videoURIMap = map;
       notifyDataSetChanged();
     }
 
@@ -76,19 +107,43 @@ public class CoursesRecyclerViewAdapter extends RecyclerView.Adapter<CoursesRecy
 
     public static class CoursesViewHolder extends RecyclerView.ViewHolder {
         private TextView headerView;
+        private TextView videoTitle;
         private ImageView imageView;
+        private Button actionButton;
+        private ImageButton backButton;
         private FrameLayout frameLayout;
+        private PlayerView videoPlayer;
+        private RelativeLayout videoContainer;
+        private RelativeLayout itemContent;
+        private SimpleExoPlayer player;
         private CustomLoaderFactory customLoaderFactory = null;
         private int imageWidth = 0;
         private int imageHeight = 0;
 
-        public CoursesViewHolder(@NonNull View itemView) {
+        private Context context;
+        private Uri videUri;
+        private MediaSource mediaSource;
+
+        public CoursesViewHolder(@NonNull View itemView, Context context) {
           super(itemView);
+
+          this.context = context;
+
+          videoTitle = itemView.findViewById(R.id.video_title);
+          videoContainer = itemView.findViewById(R.id.video_container);
+          itemContent = itemView.findViewById(R.id.item_content);
           imageView = itemView.findViewById(R.id.courses_card_item_image_view);
           headerView = itemView.findViewById(R.id.courses_text_header_item);
           frameLayout = (FrameLayout) itemView.findViewById(R.id.loader);
+          videoPlayer = (PlayerView) itemView.findViewById(R.id.video_player);
+          actionButton = itemView.findViewById(R.id.courses_item_action_button);
+          backButton = itemView.findViewById(R.id.video_back_button);
 
+          // OnClickListeners
+          actionButton.setOnClickListener(new CourseItemViewWatchNowOnClick(itemView.getContext(), this));
+          backButton.setOnClickListener(new CourseItemViewBackOnClick(itemView.getContext(), this));
 
+          // View Tree Management
           imageView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
@@ -111,6 +166,47 @@ public class CoursesRecyclerViewAdapter extends RecyclerView.Adapter<CoursesRecy
           });
         }
 
+        // Video Player
+        public void setVideoUri(Uri uri) {
+          this.videUri = uri;
+        }
+
+        public void initVideoPlayer() {
+          if (player == null) {
+            player = new SimpleExoPlayer.Builder(context).build();
+            videoPlayer.setPlayer(player);
+            DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(context,
+              Util.getUserAgent(context, context.getString(R.string.app_name)));
+            mediaSource = new ProgressiveMediaSource.Factory(dataSourceFactory)
+              .createMediaSource(videUri);
+          }
+        }
+
+        public void enableVideo() {
+          videoContainer.setVisibility(View.VISIBLE);
+          itemContent.setVisibility(View.GONE);
+        }
+
+        public void disableVideo() {
+          videoContainer.setVisibility(View.GONE);
+          itemContent.setVisibility(View.VISIBLE);
+        }
+
+        public void startVideo() {
+          if (player == null) {
+            initVideoPlayer();
+          }
+          enableVideo();
+          player.prepare(this.mediaSource);
+        }
+
+        public void destroyVideo() {
+          disableVideo();
+          player.release();
+          player = null;
+        }
+
+        // Loader
         private boolean initLoaderFactory() {
           if (frameLayout.getHeight() > 0 && frameLayout.getWidth() > 0) {
             if (customLoaderFactory == null) {

@@ -24,6 +24,7 @@
         app:cardBackgroundColor="@color/bar_dark" >
 
         <RelativeLayout
+          android:id="@+id/item_content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
           <FrameLayout
@@ -73,7 +74,7 @@
                 <Button
                   android:paddingStart="0dp"
                   android:paddingEnd="0dp"
-                  android:id="@+id/info_button"
+                  android:id="@+id/courses_item_action_button"
                   android:layout_width="match_parent"
                   android:layout_height="match_parent"
                   android:layout_alignParentRight="true"
@@ -92,6 +93,37 @@
             </RelativeLayout>
 
         </RelativeLayout>
+
+      <RelativeLayout
+        android:visibility="gone"
+        android:id="@+id/video_container"
+        android:layout_width="match_parent"
+        android:layout_height="320dp">
+        <com.google.android.exoplayer2.ui.PlayerView
+          android:background="@color/colorBlack"
+          android:id="@+id/video_player"
+          android:layout_width="match_parent"
+          android:layout_height="320dp"
+          app:resize_mode="fit"/>
+
+        <ImageButton
+          android:id="@+id/video_back_button"
+          android:background="@null"
+          style="@style/Widget.AppCompat.Button.Borderless"
+          android:layout_marginLeft="10dp"
+          android:layout_width="50dp"
+          android:layout_height="50dp"
+          android:src="@drawable/ic_arrow_back_black"/>
+
+        <TextView
+          android:id="@+id/video_title"
+          android:layout_marginTop="15dp"
+          android:layout_alignParentRight="true"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:textColor="@color/white"
+          android:textSize="18dp"/>
+      </RelativeLayout>
 
     </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>

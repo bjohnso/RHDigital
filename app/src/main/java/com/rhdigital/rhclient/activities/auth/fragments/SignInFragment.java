@@ -60,7 +60,7 @@ public class SignInFragment extends Fragment {
     private ImageView logo;
     private CustomLoaderFactory customLoaderFactory = null;
 
-    //Components
+    // Components
     private AutoCompleteTextView emailInput;
     private AutoCompleteTextView passwordInput;
     private Button submit;
@@ -69,6 +69,7 @@ public class SignInFragment extends Fragment {
     private FrameLayout frameLayout;
 
     private TextView line;
+    private TextView welcome;
 
     private int loaderHeight = 0;
     private int loaderWidth = 0;
@@ -77,7 +78,7 @@ public class SignInFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.sign_in_layout, container, false);
 
-        //Initialise Components
+        // Initialise Components
         emailInput = (AutoCompleteTextView) view.findViewById(R.id.sign_in_email_input);
         passwordInput = (AutoCompleteTextView) view.findViewById(R.id.sign_in_password_input);
         submit = (Button) view.findViewById(R.id.sign_in_submit_btn);
@@ -86,8 +87,9 @@ public class SignInFragment extends Fragment {
         frameLayout = (FrameLayout) view.findViewById(R.id.loader);
 
         line = (TextView) view.findViewById(R.id.line);
+        welcome = (TextView) view.findViewById(R.id.welcome);
 
-        //Animation
+        // Animation
         anim = (AnimatedVectorDrawable) getContext().getDrawable(R.drawable.rh_vector_animation);
         logo = view.findViewById(R.id.sign_in_logo);
         logo.setImageDrawable(anim);
@@ -108,15 +110,13 @@ public class SignInFragment extends Fragment {
     }
 
     public void setFieldsValidated() {
-      signUpRedirect.setVisibility(View.INVISIBLE);
-      resetPasswordRedirect.setVisibility(View.INVISIBLE);
-      line.setVisibility(View.INVISIBLE);
+      this.signUpRedirect.setVisibility(View.INVISIBLE);
+      this.resetPasswordRedirect.setVisibility(View.INVISIBLE);
+      this.line.setVisibility(View.INVISIBLE);
       this.passwordInput.setVisibility(View.INVISIBLE);
       this.emailInput.setVisibility(View.INVISIBLE);
-      this.submit.setBackgroundResource(R.drawable.background_transparent);
-      this.submit.setTextColor(getActivity().getResources().getColor(R.color.active));
-      this.submit.setText("Welcome");
-
+      this.submit.setVisibility(View.INVISIBLE);
+      this.welcome.setVisibility(View.VISIBLE);
     }
 
     public void setSubmitDisableTimeout() {

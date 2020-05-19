@@ -22,12 +22,12 @@
         <com.google.android.material.tabs.TabItem
             android:layout_height="wrap_content"
             android:layout_width="20dp"
-            android:text="Enrolled" />
+            android:text="Discover" />
 
         <com.google.android.material.tabs.TabItem
             android:layout_height="wrap_content"
             android:layout_width="20dp"
-            android:text="Discover" />
+            android:text="Enrolled" />
     </com.google.android.material.tabs.TabLayout>
 
 

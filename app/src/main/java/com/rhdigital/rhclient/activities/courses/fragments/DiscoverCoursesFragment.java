@@ -54,56 +54,57 @@ public class DiscoverCoursesFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.discover_courses_layout, container, false);
-        recyclerView = view.findViewById(R.id.discover_courses_recycler);
-
-        //Initialise View Model
-        courseViewModel = new CourseViewModel(getActivity().getApplication());
-
-        // Initialise Adapter
-        coursesRecyclerViewAdapter = new CoursesRecyclerViewAdapter(getContext());
-
-        calculateImageDimensions();
-
-        // Create Observers
-      final Observer<HashMap<String, Bitmap>> uriObserver = new Observer<HashMap<String, Bitmap>>() {
-        @Override
-        public void onChanged(HashMap<String, Bitmap> stringBitmapHashMap) {
-          if (courses.size() == stringBitmapHashMap.size()) {
-            uriObservable.removeObserver(this);
-          }
-          coursesRecyclerViewAdapter.setImageUriMap(stringBitmapHashMap);
-          Iterator<Map.Entry<String, Bitmap>> it = stringBitmapHashMap.entrySet().iterator();
-          int i = 0;
-          while (it.hasNext()) {
-            Map.Entry<String, Bitmap> pair = it.next();
-            Log.d("DISCOVER", pair.getKey() + " : " + ++i);
-          }
-          if (!hasAttachedRecycler) {
-            hasAttachedRecycler = true;
-            recyclerView.setAdapter(coursesRecyclerViewAdapter);
-          }
-        }
-      };
-
-      final Observer<List<Course>> courseObserver = c -> {
-        coursesRecyclerViewAdapter.setCourses(c);
-        courses = c;
-        uriObservable = courseViewModel.getAllUri(getContext(), c, width, height);
-        uriObservable.observe(getActivity(), uriObserver);
-      };
-
-        // Initialise RecyclerView
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setItemViewCacheSize(10);
-        recyclerView.setDrawingCacheEnabled(true);
-        recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_AUTO);
-        recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
-
-        // Call Observer
-        courseObservable = courseViewModel.getAllCourses();
-        courseObservable.observe(getActivity(), courseObserver);
-        return view;
+//        View view = inflater.inflate(R.layout.discover_courses_layout, container, false);
+//        recyclerView = view.findViewById(R.id.discover_courses_recycler);
+//
+//        //Initialise View Model
+//        courseViewModel = new CourseViewModel(getActivity().getApplication());
+//
+//        // Initialise Adapter
+//        coursesRecyclerViewAdapter = new CoursesRecyclerViewAdapter(getContext());
+//
+//        calculateImageDimensions();
+//
+//        // Create Observers
+//      final Observer<HashMap<String, Bitmap>> uriObserver = new Observer<HashMap<String, Bitmap>>() {
+//        @Override
+//        public void onChanged(HashMap<String, Bitmap> stringBitmapHashMap) {
+//          if (courses.size() == stringBitmapHashMap.size()) {
+//            uriObservable.removeObserver(this);
+//          }
+//          coursesRecyclerViewAdapter.setImageUriMap(stringBitmapHashMap);
+//          Iterator<Map.Entry<String, Bitmap>> it = stringBitmapHashMap.entrySet().iterator();
+//          int i = 0;
+//          while (it.hasNext()) {
+//            Map.Entry<String, Bitmap> pair = it.next();
+//            Log.d("DISCOVER", pair.getKey() + " : " + ++i);
+//          }
+//          if (!hasAttachedRecycler) {
+//            hasAttachedRecycler = true;
+//            recyclerView.setAdapter(coursesRecyclerViewAdapter);
+//          }
+//        }
+//      };
+//
+//      final Observer<List<Course>> courseObserver = c -> {
+//        coursesRecyclerViewAdapter.setCourses(c);
+//        courses = c;
+//        uriObservable = courseViewModel.getAllBitmap(getContext(), c, width, height);
+//        uriObservable.observe(getActivity(), uriObserver);
+//      };
+//
+//        // Initialise RecyclerView
+//        recyclerView.setHasFixedSize(true);
+//        recyclerView.setItemViewCacheSize(10);
+//        recyclerView.setDrawingCacheEnabled(true);
+//        recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_AUTO);
+//        recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
+//
+//        // Call Observer
+//        courseObservable = courseViewModel.getAllCourses();
+//        courseObservable.observe(getActivity(), courseObserver);
+//        return view;
+      return null;
     }
 
     private void calculateImageDimensions() {

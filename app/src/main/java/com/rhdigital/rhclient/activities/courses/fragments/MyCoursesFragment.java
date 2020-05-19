@@ -2,6 +2,7 @@ package com.rhdigital.rhclient.activities.courses.fragments;
 
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -22,6 +23,7 @@ import com.rhdigital.rhclient.R;
 import com.rhdigital.rhclient.database.model.Course;
 import com.rhdigital.rhclient.database.viewmodel.CourseViewModel;
 import com.rhdigital.rhclient.ui.adapters.CoursesRecyclerViewAdapter;
+import com.rhdigital.rhclient.util.RemoteResourceConnector;
 
 import java.util.HashMap;
 import java.util.List;
@@ -37,7 +39,8 @@ public class MyCoursesFragment extends Fragment {
   private List<Course> courses;
 
   //Observables
-  private LiveData<HashMap<String, Bitmap>> uriObservable;
+  private LiveData<HashMap<String, Bitmap>> bitMapObservable;
+  private LiveData<HashMap<String, Uri>> videoUrlObservable;
   private LiveData<List<Course>> courseObservable;
 
   //Components
@@ -62,18 +65,30 @@ public class MyCoursesFragment extends Fragment {
 
       calculateImageDimensions();
 
-      // Create Observers
-      final Observer<HashMap<String, Bitmap>> uriObserver = new Observer<HashMap<String, Bitmap>>() {
+      // Observers
+      final Observer<HashMap<String, Uri>> videoUriObserver = new Observer<HashMap<String, Uri>>() {
         @Override
-        public void onChanged(HashMap<String, Bitmap> stringBitmapHashMap) {
-          if (courses.size() == stringBitmapHashMap.size()) {
-            uriObservable.removeObserver(this);
+        public void onChanged(HashMap<String, Uri> stringUriHashMap) {
+          if (courses.size() == stringUriHashMap.size()) {
+            videoUrlObservable.removeObserver(this);
           }
-          coursesRecyclerViewAdapter.setImageUriMap(stringBitmapHashMap);
+          coursesRecyclerViewAdapter.setVideoURIMap(stringUriHashMap);
           if (!hasAttachedRecycler) {
             hasAttachedRecycler = true;
             recyclerView.setAdapter(coursesRecyclerViewAdapter);
           }
+        }
+      };
+
+      final Observer<HashMap<String, Bitmap>> bitMapObserver = new Observer<HashMap<String, Bitmap>>() {
+        @Override
+        public void onChanged(HashMap<String, Bitmap> stringBitmapHashMap) {
+          if (courses.size() == stringBitmapHashMap.size()) {
+            bitMapObservable.removeObserver(this);
+            videoUrlObservable = courseViewModel.getAllVideoUri(courses, width, height);
+            videoUrlObservable.observe(getActivity(), videoUriObserver);
+          }
+          coursesRecyclerViewAdapter.setImageUriMap(stringBitmapHashMap);
         }
       };
 
@@ -83,8 +98,8 @@ public class MyCoursesFragment extends Fragment {
           courseObservable.removeObserver(this);
           coursesRecyclerViewAdapter.setCourses(c);
           courses = c;
-          uriObservable = courseViewModel.getAllUri(getContext(), c, width, height);
-          uriObservable.observe(getActivity(), uriObserver);
+          bitMapObservable = courseViewModel.getAllBitmap(getContext(), c, width, height);
+          bitMapObservable.observe(getActivity(), bitMapObserver);
         }
       };
 

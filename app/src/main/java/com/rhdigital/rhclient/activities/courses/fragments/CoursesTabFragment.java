@@ -46,8 +46,8 @@ public class CoursesTabFragment extends Fragment implements RHFragment {
     private void setUpViewPager(CustomViewPager customViewPager){
         SectionsStatePagerAdapter sectionsStatePagerAdapter = new SectionsStatePagerAdapter(getChildFragmentManager());
         // Fragments
-        sectionsStatePagerAdapter.addFragment(new MyCoursesFragment());
         sectionsStatePagerAdapter.addFragment(new DiscoverCoursesFragment());
+        sectionsStatePagerAdapter.addFragment(new MyCoursesFragment());
 
         customViewPager.setAdapter(sectionsStatePagerAdapter);
         customViewPager.setSwipeable(false);

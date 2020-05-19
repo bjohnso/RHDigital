@@ -3,6 +3,7 @@ package com.rhdigital.rhclient.util;
 import android.content.Context;
 import android.content.MutableContextWrapper;
 import android.graphics.Bitmap;
+import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.provider.ContactsContract;
@@ -35,14 +36,16 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 
-public class RemoteImageConnector {
+public class RemoteResourceConnector {
 
   private HashMap<String, StorageReference> urlMap = new HashMap<>();
   private FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
-  private MutableLiveData<HashMap<String, Bitmap>> liveUriMap;
-  HashMap<String, Bitmap> map = new HashMap<>();
+  private MutableLiveData<HashMap<String, Bitmap>> liveImageMap;
+  private MutableLiveData<HashMap<String, Uri>> liveVideoUriMap;
+  private HashMap<String, Bitmap> liveImageMapSurrogate = new HashMap<>();
+  private HashMap<String, Uri> liveVideoUriMapSurrogate = new HashMap<>();
 
-  public RemoteImageConnector() {
+  public RemoteResourceConnector() {
     StorageReference root = firebaseStorage.getReference();
     urlMap.put("l", root.child("courses/posters/drawable-ldpi"));
     urlMap.put("m", root.child("courses/posters/drawable-mdpi"));
@@ -50,40 +53,63 @@ public class RemoteImageConnector {
     urlMap.put("x", root.child("courses/posters/drawable-xhdpi"));
     urlMap.put("xx", root.child("courses/posters/drawable-xxhdpi"));
     urlMap.put("xxx", root.child("courses/posters/drawable-xxxhdpi"));
+    urlMap.put("v", root.child("courses/videos"));
   }
 
   public StorageReference getResourceURL(Context context, String endpoint) {
     float density = context.getResources().getDisplayMetrics().density;
     StorageReference ref = null;
-
-    if (density <= 0.75) {
-      ref = urlMap.get("l");
-    } else if (density <= 1.0) {
-      ref = urlMap.get("m");
-    } else if (density <= 1.5) {
-      ref = urlMap.get("h");
-    } else if (density <= 2.0) {
-      ref = urlMap.get("x");
-    } else if (density <= 3.0) {
-      ref = urlMap.get("xx");
-    } else if (density <= 4.0) {
-      ref = urlMap.get("xxx");
-    } else {
-      ref = urlMap.get("h");
-    }
-    return ref = ref.child(endpoint + ".png");
+      if (density <= 0.75) {
+        ref = urlMap.get("l");
+      } else if (density <= 1.0) {
+        ref = urlMap.get("m");
+      } else if (density <= 1.5) {
+        ref = urlMap.get("h");
+      } else if (density <= 2.0) {
+        ref = urlMap.get("x");
+      } else if (density <= 3.0) {
+        ref = urlMap.get("xx");
+      } else if (density <= 4.0) {
+        ref = urlMap.get("xxx");
+      } else {
+        ref = urlMap.get("h");
+      }
+      return ref = ref.child(endpoint + ".png");
   }
 
-  public LiveData<HashMap<String, Bitmap>> getAllURI(Context context, List<Course> courses, int width, int height) {
-    if (liveUriMap == null) {
-      liveUriMap = new MutableLiveData<>();
-      loadUri(context, courses, width, height);
-    }
-    return liveUriMap;
+  public StorageReference getVideoResourceURL(String endpoint) {
+    //TODO add screen density to check to determine best resolution to download
+    return urlMap.get("v").child(endpoint);
   }
 
-  private void loadUri(Context context, List<Course> courses, int width, int height) {
+  public LiveData<HashMap<String, Bitmap>> getAllBitmap(Context context, List<Course> courses, int width, int height) {
+    if (liveImageMap == null) {
+      liveImageMap = new MutableLiveData<>();
+      loadImageUri(context, courses, width, height);
+    }
+    return liveImageMap;
+  }
 
+  public LiveData<HashMap<String, Uri>> getAllVideoURI(List<Course> courses, int width, int height) {
+    if (liveVideoUriMap == null) {
+      liveVideoUriMap = new MutableLiveData<>();
+      loadVideoUri(courses, width, height);
+    }
+    return liveVideoUriMap;
+  }
+
+  public void loadVideoUri(List<Course> courses, int width, int height) {
+    for (Course c : courses) {
+      getVideoResourceURL(c.getVideoURL()).getDownloadUrl().addOnSuccessListener(uri -> {
+        liveVideoUriMapSurrogate.put(c.getId(), uri);
+        liveVideoUriMap.setValue(liveVideoUriMapSurrogate);
+        Log.d("REMOTE", "URI : " + uri);
+      });
+    }
+
+  }
+
+  private void loadImageUri(Context context, List<Course> courses, int width, int height) {
     for (Course c : courses) {
       getResourceURL(
           context,
@@ -100,8 +126,8 @@ public class RemoteImageConnector {
               @Override
               public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                 //Populate UriMapLiveData
-                map.put(c.getId(), resource);
-                liveUriMap.setValue(map);
+                liveImageMapSurrogate.put(c.getId(), resource);
+                liveImageMap.setValue(liveImageMapSurrogate);
               }
             });
         });
