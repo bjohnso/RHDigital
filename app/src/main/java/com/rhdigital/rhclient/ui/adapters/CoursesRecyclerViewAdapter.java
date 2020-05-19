@@ -68,10 +68,12 @@ public class CoursesRecyclerViewAdapter extends RecyclerView.Adapter<CoursesRecy
           // Load Image Bitmap
           holder.imageView.setImageBitmap(bitMap.get(course.getId()));
           if (course.isAuthorised()) {
-            holder.actionButton.setText("Watch Now");
+            holder.setIsAuthorisedMode(true);
             holder.videoTitle.setText(course.getName());
             holder.setVideoUri(videoURIMap.get(course.getId()));
             holder.initVideoPlayer();
+          } else {
+            holder.setIsAuthorisedMode(false);
           }
         }
     }
@@ -120,6 +122,8 @@ public class CoursesRecyclerViewAdapter extends RecyclerView.Adapter<CoursesRecy
         private int imageWidth = 0;
         private int imageHeight = 0;
 
+        private boolean isAuthorisedMode = false;
+
         private Context context;
         private Uri videUri;
         private MediaSource mediaSource;
@@ -140,7 +144,6 @@ public class CoursesRecyclerViewAdapter extends RecyclerView.Adapter<CoursesRecy
           backButton = itemView.findViewById(R.id.video_back_button);
 
           // OnClickListeners
-          actionButton.setOnClickListener(new CourseItemViewWatchNowOnClick(itemView.getContext(), this));
           backButton.setOnClickListener(new CourseItemViewBackOnClick(itemView.getContext(), this));
 
           // View Tree Management
@@ -164,6 +167,20 @@ public class CoursesRecyclerViewAdapter extends RecyclerView.Adapter<CoursesRecy
               }
             }
           });
+        }
+
+        public void setIsAuthorisedMode(boolean authorisedMode) {
+          this.isAuthorisedMode = authorisedMode;
+          if (actionButton.hasOnClickListeners()) {
+            actionButton.setOnClickListener(null);
+          }
+          if (isAuthorisedMode) {
+            actionButton.setOnClickListener(new CourseItemViewWatchNowOnClick(itemView.getContext(), this));
+            actionButton.setText("Watch Now");
+          } else {
+            //TODO: Enable More Info Functionality
+            actionButton.setText("More Info");
+          }
         }
 
         // Video Player
@@ -201,9 +218,11 @@ public class CoursesRecyclerViewAdapter extends RecyclerView.Adapter<CoursesRecy
         }
 
         public void destroyVideo() {
-          disableVideo();
-          player.release();
-          player = null;
+          if (player != null) {
+            disableVideo();
+            player.release();
+            player = null;
+          }
         }
 
         // Loader
