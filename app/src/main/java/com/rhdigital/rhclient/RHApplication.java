@@ -1,17 +1,30 @@
 package com.rhdigital.rhclient;
 
 import android.app.Application;
+import android.content.res.Configuration;
+
+import androidx.annotation.NonNull;
+
+import com.rhdigital.rhclient.activities.courses.services.VideoPlayerService;
 
 public class RHApplication extends Application {
 
-    private volatile RHApplication INSTANCE;
+  @Override
+  public void onCreate() {
+    super.onCreate();
+  }
 
-    private RHApplication() {}
+  @Override
+  public void onConfigurationChanged(@NonNull Configuration newConfig) {
+    super.onConfigurationChanged(newConfig);
+  }
 
-    public RHApplication getInstance() {
-        if (INSTANCE == null) {
-            INSTANCE = new RHApplication();
-        }
-        return INSTANCE;
+  @Override
+  public void onLowMemory() {
+    super.onLowMemory();
+  }
+
+  public VideoPlayerService getVideoPlayerService() {
+      return VideoPlayerService.getInstance();
     }
 }

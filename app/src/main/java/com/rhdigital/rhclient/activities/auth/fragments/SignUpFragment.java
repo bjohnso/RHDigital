@@ -18,6 +18,8 @@ import com.rhdigital.rhclient.common.view.RHFragment;
 import com.rhdigital.rhclient.common.adapters.SectionsStatePagerAdapter;
 import com.rhdigital.rhclient.common.loader.CustomViewPager;
 
+import java.util.HashMap;
+
 public class SignUpFragment extends Fragment implements RHFragment {
 
   // Components
@@ -46,8 +48,9 @@ public class SignUpFragment extends Fragment implements RHFragment {
   private void setUpViewPager(CustomViewPager customViewPager){
     SectionsStatePagerAdapter sectionsStatePagerAdapter = new SectionsStatePagerAdapter(getChildFragmentManager());
     // Fragments
-    sectionsStatePagerAdapter.addFragment(new SignUpPhoneFragment());
-    sectionsStatePagerAdapter.addFragment(new SignUpEmailFragment());
+    sectionsStatePagerAdapter.setFragmentPagingMap(new HashMap<Integer, String>(){
+      {put(0, SignUpPhoneFragment.class.getName());
+        put(1, SignUpEmailFragment.class.getName());}});
 
     customViewPager.setAdapter(sectionsStatePagerAdapter);
     customViewPager.setSwipeable(false);

@@ -3,6 +3,7 @@ package com.rhdigital.rhclient.activities.auth;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LifecycleOwner;
@@ -21,6 +22,7 @@ import com.rhdigital.rhclient.activities.auth.fragments.SignUpFragment;
 import com.rhdigital.rhclient.common.loader.CustomViewPager;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 public class AuthActivity extends AppCompatActivity {
@@ -81,9 +83,14 @@ public class AuthActivity extends AppCompatActivity {
 
     // Check Auth Status
     firebaseUser = firebaseAuth.getCurrentUser();
+
     if (firebaseUser != null) {
-      firebaseAuth.signOut();
+      startCourseActivity();
     }
+
+//    if (firebaseUser != null) {
+//      firebaseAuth.signOut();
+//    }
 
     userObservable = authenticator.getFirebaseUser();
     userObservable.observe(this, authObserver);
@@ -95,8 +102,10 @@ public class AuthActivity extends AppCompatActivity {
 
   private void setUpViewPager(CustomViewPager customViewPager){
     sectionsStatePagerAdapter = new SectionsStatePagerAdapter(getSupportFragmentManager());
-    sectionsStatePagerAdapter.addFragment(new SignInFragment());
-    sectionsStatePagerAdapter.addFragment(new SignUpFragment());
+    Log.d("AUTH", SignUpFragment.class.getName());
+    sectionsStatePagerAdapter.setFragmentPagingMap(new HashMap<Integer, String>(){
+      {put(0, SignInFragment.class.getName());
+      put(1, SignUpFragment.class.getName());}});
     customViewPager.setAdapter(sectionsStatePagerAdapter);
     customViewPager.setSwipeable(false);
   }

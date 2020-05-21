@@ -4,6 +4,7 @@
     package="com.rhdigital.rhclient">
     <uses-permission android:name="android.permission.INTERNET"/>
     <application
+        android:name=".RHApplication"
         android:allowBackup="true"
         android:label="@string/app_name"
         android:supportsRtl="true"
@@ -18,11 +19,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".activities.video.VideoActivity"
-            android:screenOrientation="landscape"
-            tools:ignore="LockedOrientationActivity" />
-
-        <activity android:name="com.rhdigital.rhclient.activities.auth.AuthActivity"
+      <activity android:name="com.rhdigital.rhclient.activities.auth.AuthActivity"
           android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
 

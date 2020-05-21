@@ -16,6 +16,8 @@ import com.rhdigital.rhclient.common.loader.CustomViewPager;
 import com.google.android.material.tabs.TabLayout;
 import com.rhdigital.rhclient.common.view.RHFragment;
 
+import java.util.HashMap;
+
 public class CoursesTabFragment extends Fragment implements RHFragment {
 
     //Components
@@ -45,10 +47,13 @@ public class CoursesTabFragment extends Fragment implements RHFragment {
     }
 
     private void setUpViewPager(CustomViewPager customViewPager){
-        SectionsStatePagerAdapter sectionsStatePagerAdapter = new SectionsStatePagerAdapter(getChildFragmentManager());
+        SectionsStatePagerAdapter sectionsStatePagerAdapter = new SectionsStatePagerAdapter(getChildFragmentManager(), getLifecycle());
         // Fragments
-        sectionsStatePagerAdapter.addFragment(new DiscoverCoursesFragment());
-        sectionsStatePagerAdapter.addFragment(new MyCoursesFragment());
+
+      sectionsStatePagerAdapter.setFragmentPagingMap(new HashMap<Integer, String>(){
+        {put(0, "DiscoverCoursesFragment");
+          put(1, "MyCoursesFragment");}});
+
 
         customViewPager.setAdapter(sectionsStatePagerAdapter);
         customViewPager.setSwipeable(false);
