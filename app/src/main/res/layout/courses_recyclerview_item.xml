@@ -56,10 +56,11 @@
                 android:id="@+id/courses_text_header_item"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
                 android:layout_marginLeft="20dp"
                 android:text="Header"
                 android:textAlignment="viewStart"
-                android:textSize="10dp" />
+                android:textSize="12dp" />
 
             </RelativeLayout>
 
@@ -84,7 +85,7 @@
                   style="@style/Widget.AppCompat.Button.Borderless"
                   android:text="Learn More"
                   android:textAlignment="textStart"
-                  android:textSize="8dp"
+                  android:textSize="10dp"
                   android:textAllCaps="false"
                   android:drawableRight="@drawable/ic_arrow_right">
                 </Button>
@@ -116,12 +117,12 @@
 
         <TextView
           android:id="@+id/video_title"
-          android:layout_marginTop="15dp"
+          android:layout_marginTop="10dp"
           android:layout_alignParentRight="true"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:textColor="@color/white"
-          android:textSize="10dp"/>
+          android:textSize="12dp"/>
       </RelativeLayout>
 
     </androidx.cardview.widget.CardView>
