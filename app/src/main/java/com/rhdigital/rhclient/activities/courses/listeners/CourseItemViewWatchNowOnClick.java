@@ -1,10 +1,9 @@
 package com.rhdigital.rhclient.activities.courses.listeners;
 
-import android.app.Activity;
 import android.content.Context;
 import android.view.View;
 
-import com.rhdigital.rhclient.ui.adapters.CoursesRecyclerViewAdapter;
+import com.rhdigital.rhclient.activities.courses.adapters.CoursesRecyclerViewAdapter;
 
 public class CourseItemViewWatchNowOnClick implements View.OnClickListener {
 

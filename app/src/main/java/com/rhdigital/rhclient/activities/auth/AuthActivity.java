@@ -2,7 +2,6 @@ package com.rhdigital.rhclient.activities.auth;
 
 import android.content.Context;
 import android.content.Intent;
-import android.database.Observable;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,13 +15,11 @@ import com.google.firebase.auth.FirebaseUser;
 import com.rhdigital.rhclient.R;
 import com.rhdigital.rhclient.activities.auth.util.Authenticator;
 import com.rhdigital.rhclient.activities.courses.CoursesActivity;
-import com.rhdigital.rhclient.database.model.Course;
-import com.rhdigital.rhclient.ui.adapters.SectionsStatePagerAdapter;
+import com.rhdigital.rhclient.common.adapters.SectionsStatePagerAdapter;
 import com.rhdigital.rhclient.activities.auth.fragments.SignInFragment;
 import com.rhdigital.rhclient.activities.auth.fragments.SignUpFragment;
-import com.rhdigital.rhclient.ui.view.CustomViewPager;
+import com.rhdigital.rhclient.common.loader.CustomViewPager;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 

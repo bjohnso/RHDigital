@@ -1,4 +1,4 @@
-package com.rhdigital.rhclient.ui.adapters;
+package com.rhdigital.rhclient.activities.courses.adapters;
 
 import android.view.LayoutInflater;
 import android.view.View;

@@ -1,14 +1,10 @@
 package com.rhdigital.rhclient.activities.auth.fragments;
 
 import android.os.Bundle;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AutoCompleteTextView;
-import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,13 +13,10 @@ import androidx.fragment.app.Fragment;
 import com.google.android.material.tabs.TabLayout;
 import com.rhdigital.rhclient.R;
 import com.rhdigital.rhclient.activities.auth.listeners.SignInRedirectOnClickListener;
-import com.rhdigital.rhclient.activities.auth.listeners.SignUpOnClickListener;
 import com.rhdigital.rhclient.activities.auth.listeners.SignUpTabLayoutOnClickListener;
-import com.rhdigital.rhclient.activities.courses.fragments.DiscoverCoursesFragment;
-import com.rhdigital.rhclient.activities.courses.fragments.MyCoursesFragment;
-import com.rhdigital.rhclient.activities.courses.fragments.RHFragment;
-import com.rhdigital.rhclient.ui.adapters.SectionsStatePagerAdapter;
-import com.rhdigital.rhclient.ui.view.CustomViewPager;
+import com.rhdigital.rhclient.common.view.RHFragment;
+import com.rhdigital.rhclient.common.adapters.SectionsStatePagerAdapter;
+import com.rhdigital.rhclient.common.loader.CustomViewPager;
 
 public class SignUpFragment extends Fragment implements RHFragment {
 

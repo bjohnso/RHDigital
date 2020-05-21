@@ -1,4 +1,4 @@
-package com.rhdigital.rhclient.ui.view;
+package com.rhdigital.rhclient.common.loader;
 
 import android.content.Context;
 import android.util.AttributeSet;

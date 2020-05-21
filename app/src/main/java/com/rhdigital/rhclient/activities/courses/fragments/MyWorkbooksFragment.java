@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.rhdigital.rhclient.R;
 import com.rhdigital.rhclient.database.model.CourseWithWorkbooks;
 import com.rhdigital.rhclient.database.viewmodel.WorkbookViewModel;
-import com.rhdigital.rhclient.ui.adapters.WorkbooksRecyclerViewAdapter;
+import com.rhdigital.rhclient.activities.courses.adapters.WorkbooksRecyclerViewAdapter;
 
 import java.util.List;
 

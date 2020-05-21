@@ -9,10 +9,10 @@ import androidx.appcompat.widget.Toolbar;
 import com.rhdigital.rhclient.R;
 import com.rhdigital.rhclient.activities.courses.fragments.CoursesTabFragment;
 import com.rhdigital.rhclient.activities.courses.listeners.BottomNavOnClick;
-import com.rhdigital.rhclient.ui.adapters.SectionsStatePagerAdapter;
+import com.rhdigital.rhclient.common.adapters.SectionsStatePagerAdapter;
 import com.rhdigital.rhclient.activities.courses.fragments.MyResearchFragment;
 import com.rhdigital.rhclient.activities.courses.fragments.MyWorkbooksFragment;
-import com.rhdigital.rhclient.ui.view.CustomViewPager;
+import com.rhdigital.rhclient.common.loader.CustomViewPager;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import static com.rhdigital.rhclient.R.menu.courses_menu_top;

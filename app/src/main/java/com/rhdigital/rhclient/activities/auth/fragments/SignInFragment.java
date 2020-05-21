@@ -1,17 +1,12 @@
 package com.rhdigital.rhclient.activities.auth.fragments;
 
 import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
-import android.graphics.drawable.Animatable2;
 import android.graphics.drawable.AnimatedVectorDrawable;
-import android.graphics.drawable.AnimationDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,14 +22,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
-import androidx.vectordrawable.graphics.drawable.Animatable2Compat;
-import androidx.vectordrawable.graphics.drawable.Animatable2Compat.AnimationCallback;
-import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat;
 
 import com.rhdigital.rhclient.R;
 import com.rhdigital.rhclient.activities.auth.listeners.SignInOnClickListener;
 import com.rhdigital.rhclient.activities.auth.listeners.SignUpRedirectOnClickListener;
-import com.rhdigital.rhclient.ui.view.CustomLoaderFactory;
+import com.rhdigital.rhclient.common.loader.CustomLoaderFactory;
 import com.rhdigital.rhclient.util.GenericTimer;
 
 import java.util.concurrent.Executors;

@@ -1,4 +1,4 @@
-package com.rhdigital.rhclient.activities.courses.fragments;
+package com.rhdigital.rhclient.common.view;
 
 public interface RHFragment {
 

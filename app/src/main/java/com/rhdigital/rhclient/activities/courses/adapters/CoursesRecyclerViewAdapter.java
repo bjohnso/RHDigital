@@ -1,4 +1,4 @@
-package com.rhdigital.rhclient.ui.adapters;
+package com.rhdigital.rhclient.activities.courses.adapters;
 
 import android.animation.AnimatorSet;
 import android.content.Context;
@@ -7,7 +7,6 @@ import android.net.Uri;
 
 import android.os.Build.VERSION_CODES;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,7 +34,7 @@ import com.rhdigital.rhclient.R;
 import com.rhdigital.rhclient.activities.courses.listeners.CourseItemViewBackOnClick;
 import com.rhdigital.rhclient.activities.courses.listeners.CourseItemViewWatchNowOnClick;
 import com.rhdigital.rhclient.database.model.Course;
-import com.rhdigital.rhclient.ui.view.CustomLoaderFactory;
+import com.rhdigital.rhclient.common.loader.CustomLoaderFactory;
 
 import java.util.HashMap;
 import java.util.List;

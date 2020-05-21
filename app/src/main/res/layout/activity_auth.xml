@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     tools:context=".activities.splash.SplashActivity">
 
-    <com.rhdigital.rhclient.ui.view.CustomViewPager
+    <com.rhdigital.rhclient.common.loader.CustomViewPager
         android:id="@+id/container_auth"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>

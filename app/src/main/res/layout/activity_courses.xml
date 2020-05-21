@@ -25,14 +25,14 @@
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-    <com.rhdigital.rhclient.ui.view.CustomViewPager
+    <com.rhdigital.rhclient.common.loader.CustomViewPager
         android:id="@+id/container_courses"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="60dp"
         android:layout_marginBottom="60dp">
 
-    </com.rhdigital.rhclient.ui.view.CustomViewPager>
+    </com.rhdigital.rhclient.common.loader.CustomViewPager>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"

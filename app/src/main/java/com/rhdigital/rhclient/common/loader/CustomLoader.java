@@ -1,10 +1,9 @@
-package com.rhdigital.rhclient.ui.view;
+package com.rhdigital.rhclient.common.loader;
 
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 

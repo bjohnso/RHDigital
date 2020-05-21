@@ -1,7 +1,6 @@
-package com.rhdigital.rhclient.ui.view;
+package com.rhdigital.rhclient.common.loader;
 
 import android.animation.AnimatorSet;
-import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;

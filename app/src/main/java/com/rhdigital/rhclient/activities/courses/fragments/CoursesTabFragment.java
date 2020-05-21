@@ -11,9 +11,10 @@ import androidx.fragment.app.Fragment;
 
 import com.rhdigital.rhclient.R;
 import com.rhdigital.rhclient.activities.courses.listeners.TabLayoutOnClick;
-import com.rhdigital.rhclient.ui.adapters.SectionsStatePagerAdapter;
-import com.rhdigital.rhclient.ui.view.CustomViewPager;
+import com.rhdigital.rhclient.common.adapters.SectionsStatePagerAdapter;
+import com.rhdigital.rhclient.common.loader.CustomViewPager;
 import com.google.android.material.tabs.TabLayout;
+import com.rhdigital.rhclient.common.view.RHFragment;
 
 public class CoursesTabFragment extends Fragment implements RHFragment {
 

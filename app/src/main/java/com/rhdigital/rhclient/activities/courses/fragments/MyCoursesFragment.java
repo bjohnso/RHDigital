@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,8 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.rhdigital.rhclient.R;
 import com.rhdigital.rhclient.database.model.Course;
 import com.rhdigital.rhclient.database.viewmodel.CourseViewModel;
-import com.rhdigital.rhclient.ui.adapters.CoursesRecyclerViewAdapter;
-import com.rhdigital.rhclient.util.RemoteResourceConnector;
+import com.rhdigital.rhclient.activities.courses.adapters.CoursesRecyclerViewAdapter;
 
 import java.util.HashMap;
 import java.util.List;
