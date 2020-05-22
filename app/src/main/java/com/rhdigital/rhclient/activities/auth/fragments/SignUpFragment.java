@@ -48,10 +48,6 @@ public class SignUpFragment extends Fragment implements RHFragment {
     signInRedirect.setOnClickListener(new RedirectSignInOnClick(navController));
   }
 
-  public TabLayout getTabLayout() {
-    return tabLayout;
-  }
-
   @Override
   public boolean isParent() {
     return false;

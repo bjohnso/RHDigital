@@ -80,11 +80,11 @@ public class AuthActivity extends AppCompatActivity {
     };
 
     // Check Auth Status
-    firebaseUser = firebaseAuth.getCurrentUser();
 
     firebaseUser = firebaseAuth.getCurrentUser();
+
     if (firebaseUser != null) {
-      firebaseAuth.signOut();
+      startCourseActivity();
     }
 
     userObservable = authenticator.getFirebaseUser();
@@ -95,7 +95,7 @@ public class AuthActivity extends AppCompatActivity {
 
   private void startCourseActivity() {
     Intent intent = new Intent(this, CoursesActivity.class);
-    startActivity(intent);
+    authenticator.postAuthenticate(firebaseUser, intent);
   }
 
   public Authenticator getAuthenticator() {

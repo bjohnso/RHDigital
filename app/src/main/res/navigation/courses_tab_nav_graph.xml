@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/courses_tab_nav_graph"
+  app:startDestination="@id/discoverCoursesFragment">
+
+  <fragment
+    android:id="@+id/discoverCoursesFragment"
+    android:name="com.rhdigital.rhclient.activities.courses.fragments.DiscoverCoursesFragment"
+    android:label="DiscoverCoursesFragment" >
+    <action
+      android:id="@+id/action_discoverCoursesFragment_to_myCoursesFragment"
+      app:destination="@id/myCoursesFragment" />
+  </fragment>
+  <fragment
+    android:id="@+id/myCoursesFragment"
+    android:name="com.rhdigital.rhclient.activities.courses.fragments.MyCoursesFragment"
+    android:label="MyCoursesFragment" >
+    <action
+      android:id="@+id/action_myCoursesFragment_to_discoverCoursesFragment"
+      app:destination="@id/discoverCoursesFragment" />
+  </fragment>
+</navigation>

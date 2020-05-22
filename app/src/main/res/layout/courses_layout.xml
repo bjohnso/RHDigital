@@ -10,7 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_marginEnd="100dp"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:tabTextAppearance="@style/TabLayoutTextAppearance"
         android:background="@drawable/bar"
@@ -39,10 +38,13 @@
         app:layout_constraintTop_toTopOf="parent"
         android:background="@color/bar"/>
 
-    <com.rhdigital.rhclient.common.loader.CustomViewPager
-        android:id="@+id/courses_tab_layout_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="40dp"/>
+  <fragment
+    android:id="@+id/nav_host_courses_tab"
+    android:name="androidx.navigation.fragment.NavHostFragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="40dp"
+    app:defaultNavHost="false"
+    app:navGraph="@navigation/courses_tab_nav_graph"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

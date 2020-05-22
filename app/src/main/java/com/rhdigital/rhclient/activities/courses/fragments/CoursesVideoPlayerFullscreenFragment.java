@@ -1,9 +1,6 @@
 package com.rhdigital.rhclient.activities.courses.fragments;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.pm.ActivityInfo;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,19 +10,15 @@ import android.widget.ImageButton;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.NavOptions;
+import androidx.navigation.Navigation;
 
-import com.google.android.exoplayer2.SimpleExoPlayer;
-import com.google.android.exoplayer2.source.MediaSource;
-import com.google.android.exoplayer2.source.ProgressiveMediaSource;
 import com.google.android.exoplayer2.ui.PlayerView;
-import com.google.android.exoplayer2.upstream.DataSource;
-import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
-import com.google.android.exoplayer2.util.Util;
 import com.rhdigital.rhclient.R;
 import com.rhdigital.rhclient.activities.courses.CoursesActivity;
-import com.rhdigital.rhclient.activities.courses.listeners.VideoPlayerFullScreenToggle;
+import com.rhdigital.rhclient.activities.courses.listeners.FullscreenToggleOnClick;
 import com.rhdigital.rhclient.activities.courses.services.VideoPlayerService;
-import com.rhdigital.rhclient.common.video.VideoView;
 
 public class CoursesVideoPlayerFullscreenFragment extends Fragment {
 
@@ -33,13 +26,6 @@ public class CoursesVideoPlayerFullscreenFragment extends Fragment {
   private ImageButton backButton;
   private ImageButton maximiseButton;
   private ImageButton minimiseButton;
-
-  @Override
-  public void onAttach(@NonNull Context context) {
-    super.onAttach(context);
-    ((CoursesActivity)getActivity()).revealVideoPlayerFullscreen(true);
-    ((CoursesActivity)getActivity()).configureScreenOrientation(true);
-  }
 
   @Nullable
   @Override
@@ -54,17 +40,19 @@ public class CoursesVideoPlayerFullscreenFragment extends Fragment {
     maximiseButton.setVisibility(View.GONE);
     backButton.setVisibility(View.GONE);
 
-    // Set Listeners
-    minimiseButton.setOnClickListener(new VideoPlayerFullScreenToggle(getContext()));
-
     VideoPlayerService.getInstance().initPlayer(getContext(), null, null, playerView);
     return view;
   }
 
   @Override
-  public void onDetach() {
-    ((CoursesActivity)getActivity()).configureScreenOrientation(false);
-    ((CoursesActivity)getActivity()).revealVideoPlayerFullscreen(false);
-    super.onDetach();
+  public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    super.onViewCreated(view, savedInstanceState);
+      NavController navController = Navigation.findNavController(view);
+      NavOptions navOptions = new NavOptions.Builder()
+      .setLaunchSingleTop(false)
+      .setPopUpTo(navController.getGraph().getStartDestination(), false)
+      .build();
+    // Set Listeners
+    minimiseButton.setOnClickListener(new FullscreenToggleOnClick(getContext(), navController, navOptions));
   }
 }

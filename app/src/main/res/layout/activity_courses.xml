@@ -27,13 +27,15 @@
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-    <com.rhdigital.rhclient.common.loader.CustomViewPager
-        android:id="@+id/container_courses"
-        android:layout_below="@id/app_bar"
-        android:layout_above="@id/bottomNavigationView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    </com.rhdigital.rhclient.common.loader.CustomViewPager>
+  <fragment
+    android:id="@+id/nav_host_courses"
+    android:name="androidx.navigation.fragment.NavHostFragment"
+    android:layout_below="@id/app_bar"
+    android:layout_above="@id/bottomNavigationView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:defaultNavHost="false"
+    app:navGraph="@navigation/courses_nav_graph"/>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"

@@ -2,7 +2,6 @@ package com.rhdigital.rhclient.activities.courses.view;
 
 import android.animation.AnimatorSet;
 import android.content.Context;
-import android.media.Image;
 import android.net.Uri;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -14,23 +13,22 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.navigation.NavController;
+import androidx.navigation.NavOptions;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.source.MediaSource;
-import com.google.android.exoplayer2.source.ProgressiveMediaSource;
 import com.google.android.exoplayer2.ui.PlayerView;
-import com.google.android.exoplayer2.upstream.DataSource;
-import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
-import com.google.android.exoplayer2.util.Util;
 import com.rhdigital.rhclient.R;
 import com.rhdigital.rhclient.RHApplication;
+import com.rhdigital.rhclient.activities.courses.CoursesActivity;
 import com.rhdigital.rhclient.activities.courses.listeners.CourseItemViewBackOnClick;
 import com.rhdigital.rhclient.activities.courses.listeners.CourseItemViewWatchNowOnClick;
-import com.rhdigital.rhclient.activities.courses.listeners.VideoPlayerFullScreenToggle;
+import com.rhdigital.rhclient.activities.courses.listeners.FullscreenToggleOnClick;
 import com.rhdigital.rhclient.activities.courses.services.VideoPlayerService;
 import com.rhdigital.rhclient.common.loader.CustomLoaderFactory;
-import com.rhdigital.rhclient.common.video.VideoView;
 import com.rhdigital.rhclient.database.model.Course;
 
 public class CoursesViewHolder extends RecyclerView.ViewHolder {
@@ -84,7 +82,6 @@ public class CoursesViewHolder extends RecyclerView.ViewHolder {
 
     // OnClickListeners
     backButton.setOnClickListener(new CourseItemViewBackOnClick(context, this));
-    fullscreen.setOnClickListener(new VideoPlayerFullScreenToggle(context));
 
     // View Tree Management
     imageView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -104,6 +101,22 @@ public class CoursesViewHolder extends RecyclerView.ViewHolder {
         if (initLoaderFactory()) {
           addLoader();
           frameLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this::onGlobalLayout);
+        }
+      }
+    });
+
+    itemView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+      @Override
+      public void onGlobalLayout() {
+        if (itemView != null) {
+          //Navigation
+          NavController navController = Navigation.findNavController((CoursesActivity)context, R.id.nav_host_courses);
+          NavOptions navOptions = new NavOptions.Builder()
+            .setLaunchSingleTop(true)
+            .setPopUpTo(navController.getGraph().getStartDestination(), false)
+            .build();
+          fullscreen.setOnClickListener(new FullscreenToggleOnClick(context, navController, navOptions));
+          itemView.getViewTreeObserver().removeOnGlobalLayoutListener(this::onGlobalLayout);
         }
       }
     });

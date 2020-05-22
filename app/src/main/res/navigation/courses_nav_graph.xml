@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/courses_nav_graph"
+  app:startDestination="@id/coursesTabFragment">
+
+  <fragment
+    android:id="@+id/coursesTabFragment"
+    android:name="com.rhdigital.rhclient.activities.courses.fragments.CoursesTabFragment"
+    android:label="CoursesTabFragment" >
+    <action
+      android:id="@+id/action_coursesTabFragment_to_myWorkbooksFragment"
+      app:destination="@id/myWorkbooksFragment" />
+    <action
+      android:id="@+id/action_coursesTabFragment_to_myResearchFragment"
+      app:destination="@id/myResearchFragment" />
+    <action
+      android:id="@+id/action_coursesTabFragment_to_coursesVideoPlayerFullscreenFragment"
+      app:destination="@id/coursesVideoPlayerFullscreenFragment" />
+  </fragment>
+  <fragment
+    android:id="@+id/myWorkbooksFragment"
+    android:name="com.rhdigital.rhclient.activities.courses.fragments.MyWorkbooksFragment"
+    android:label="MyWorkbooksFragment" >
+    <action
+      android:id="@+id/action_myWorkbooksFragment_to_myResearchFragment"
+      app:destination="@id/myResearchFragment" />
+    <action
+      android:id="@+id/action_myWorkbooksFragment_to_coursesTabFragment"
+      app:destination="@id/coursesTabFragment" />
+  </fragment>
+  <fragment
+    android:id="@+id/myResearchFragment"
+    android:name="com.rhdigital.rhclient.activities.courses.fragments.MyResearchFragment"
+    android:label="MyResearchFragment" >
+    <action
+      android:id="@+id/action_myResearchFragment_to_myWorkbooksFragment"
+      app:destination="@id/myWorkbooksFragment" />
+    <action
+      android:id="@+id/action_myResearchFragment_to_coursesTabFragment"
+      app:destination="@id/coursesTabFragment" />
+    <action
+      android:id="@+id/action_myResearchFragment_to_coursesVideoPlayerFullscreenFragment"
+      app:destination="@id/coursesVideoPlayerFullscreenFragment" />
+  </fragment>
+  <fragment
+    android:id="@+id/coursesVideoPlayerFullscreenFragment"
+    android:name="com.rhdigital.rhclient.activities.courses.fragments.CoursesVideoPlayerFullscreenFragment"
+    android:label="CoursesVideoPlayerFullscreenFragment" >
+    <action
+      android:id="@+id/action_coursesVideoPlayerFullscreenFragment_to_coursesTabFragment"
+      app:destination="@id/coursesTabFragment" />
+  </fragment>
+</navigation>
