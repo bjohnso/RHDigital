@@ -56,14 +56,17 @@
 
   </com.google.android.material.tabs.TabLayout>
 
-  <com.rhdigital.rhclient.common.loader.CustomViewPager
-    android:id="@+id/sign_up_view_pager"
+  <fragment
+    android:id="@+id/nav_host_sign_up"
+    android:name="androidx.navigation.fragment.NavHostFragment"
     android:layout_width="match_parent"
     android:layout_height="200dp"
     app:layout_constraintBottom_toTopOf="@+id/button"
     app:layout_constraintTop_toBottomOf="@+id/sign_up_tab_layout"
     app:layout_constraintVertical_bias="0.0"
-    tools:layout_editor_absoluteX="0dp" />
+    tools:layout_editor_absoluteX="0dp"
+    app:defaultNavHost="false"
+    app:navGraph="@navigation/sign_up_nav_graph"/>
 
   <TextView
     android:id="@+id/button"

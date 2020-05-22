@@ -18,10 +18,10 @@ public class VideoPlayerFullScreenToggle implements View.OnClickListener {
   public void onClick(View view) {
     if (!VideoPlayerService.getInstance().isFullScreen()) {
       CoursesActivity coursesActivity = (CoursesActivity) context;
-      coursesActivity.setViewPager(3);
+
     } else {
       CoursesActivity coursesActivity = (CoursesActivity) context;
-      coursesActivity.setViewPager(0);
+
     }
   }
 }

@@ -3,12 +3,13 @@ package com.rhdigital.rhclient.activities.auth;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
+import androidx.navigation.NavController;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -16,23 +17,21 @@ import com.google.firebase.auth.FirebaseUser;
 import com.rhdigital.rhclient.R;
 import com.rhdigital.rhclient.activities.auth.util.Authenticator;
 import com.rhdigital.rhclient.activities.courses.CoursesActivity;
-import com.rhdigital.rhclient.common.adapters.SectionsStatePagerAdapter;
-import com.rhdigital.rhclient.activities.auth.fragments.SignInFragment;
-import com.rhdigital.rhclient.activities.auth.fragments.SignUpFragment;
-import com.rhdigital.rhclient.common.loader.CustomViewPager;
+import com.rhdigital.rhclient.database.RHDatabase;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 
 public class AuthActivity extends AppCompatActivity {
 
   private String TAG = "AuthActivity";
   private Context context;
-  private SectionsStatePagerAdapter sectionsStatePagerAdapter;
 
     //Components
-  private CustomViewPager mCustomViewPager;
+  private View navControllerView;
+
+  // Database
+  RHDatabase database;
 
     //Auth
   private FirebaseAuth firebaseAuth;
@@ -50,6 +49,10 @@ public class AuthActivity extends AppCompatActivity {
     firebaseAuth = FirebaseAuth.getInstance();
     authenticator = new Authenticator(this);
 
+    navControllerView = findViewById(R.id.nav_host_auth);
+
+    database = RHDatabase.getDatabase(this);
+
     //Observers
     //LISTENS FOR ROOM POPULATION COMPLETION
     final Observer<ArrayList<Long>> populateRoomObserver = new Observer<ArrayList<Long>>() {
@@ -63,20 +66,15 @@ public class AuthActivity extends AppCompatActivity {
       }
     };
 
-    // LISTENS FOR AUTHENTICATION EVENT
+    // LISTENS FOR AUTHENTICATION EVENT AND TRIGGERS DATA PULL FROM UPSTREAM
     final Observer<FirebaseUser> authObserver = new Observer<FirebaseUser>() {
       @Override
       public void onChanged(FirebaseUser user) {
-        SignInFragment signInFragment = (SignInFragment) sectionsStatePagerAdapter.getItem(0);
         if (user != null) {
-          signInFragment.setFieldsValidated();
-          signInFragment.addLoader();
           userObservable.removeObserver(this);
           firebaseUser = user;
           populateRoomObservable = authenticator.populateRoomFromUpstream();
           populateRoomObservable.observe((LifecycleOwner) context, populateRoomObserver);
-        } else {
-          signInFragment.setSubmitDisableTimeout();
         }
       }
     };
@@ -84,38 +82,15 @@ public class AuthActivity extends AppCompatActivity {
     // Check Auth Status
     firebaseUser = firebaseAuth.getCurrentUser();
 
+    firebaseUser = firebaseAuth.getCurrentUser();
     if (firebaseUser != null) {
-      startCourseActivity();
+      firebaseAuth.signOut();
     }
-
-//    if (firebaseUser != null) {
-//      firebaseAuth.signOut();
-//    }
 
     userObservable = authenticator.getFirebaseUser();
     userObservable.observe(this, authObserver);
 
     setContentView(R.layout.activity_auth);
-    mCustomViewPager = findViewById(R.id.container_auth);
-    setUpViewPager(mCustomViewPager);
-  }
-
-  private void setUpViewPager(CustomViewPager customViewPager){
-    sectionsStatePagerAdapter = new SectionsStatePagerAdapter(getSupportFragmentManager());
-    Log.d("AUTH", SignUpFragment.class.getName());
-    sectionsStatePagerAdapter.setFragmentPagingMap(new HashMap<Integer, String>(){
-      {put(0, SignInFragment.class.getName());
-      put(1, SignUpFragment.class.getName());}});
-    customViewPager.setAdapter(sectionsStatePagerAdapter);
-    customViewPager.setSwipeable(false);
-  }
-
-  public int getViewPager(){
-        return mCustomViewPager.getCurrentItem();
-  }
-
-  public void setViewPager(int position){
-        mCustomViewPager.setCurrentItem(position);
   }
 
   private void startCourseActivity() {

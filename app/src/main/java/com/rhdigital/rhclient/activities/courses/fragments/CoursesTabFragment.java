@@ -11,18 +11,13 @@ import androidx.fragment.app.Fragment;
 
 import com.rhdigital.rhclient.R;
 import com.rhdigital.rhclient.activities.courses.listeners.TabLayoutOnClick;
-import com.rhdigital.rhclient.common.adapters.SectionsStatePagerAdapter;
-import com.rhdigital.rhclient.common.loader.CustomViewPager;
 import com.google.android.material.tabs.TabLayout;
 import com.rhdigital.rhclient.common.view.RHFragment;
-
-import java.util.HashMap;
 
 public class CoursesTabFragment extends Fragment implements RHFragment {
 
     //Components
     private boolean isParent = true;
-    CustomViewPager mCustomViewPager;
     TabLayout mTabLayout;
 
     @Nullable
@@ -30,10 +25,7 @@ public class CoursesTabFragment extends Fragment implements RHFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.courses_layout, container, false);
 
-        mCustomViewPager = (CustomViewPager) view.findViewById(R.id.courses_tab_layout_container);
         mTabLayout = (TabLayout) view.findViewById(R.id.tab_layout);
-
-        setUpViewPager(mCustomViewPager);
 
         //Listeners
 
@@ -46,26 +38,6 @@ public class CoursesTabFragment extends Fragment implements RHFragment {
         return mTabLayout;
     }
 
-    private void setUpViewPager(CustomViewPager customViewPager){
-        SectionsStatePagerAdapter sectionsStatePagerAdapter = new SectionsStatePagerAdapter(getChildFragmentManager(), getLifecycle());
-        // Fragments
-
-      sectionsStatePagerAdapter.setFragmentPagingMap(new HashMap<Integer, String>(){
-        {put(0, "DiscoverCoursesFragment");
-          put(1, "MyCoursesFragment");}});
-
-
-        customViewPager.setAdapter(sectionsStatePagerAdapter);
-        customViewPager.setSwipeable(false);
-    }
-
-    public int getViewPager(){
-        return mCustomViewPager.getCurrentItem();
-    }
-
-    public void setViewPager(int position){
-        mCustomViewPager.setCurrentItem(position);
-    }
 
     @Override
     public boolean isParent() {

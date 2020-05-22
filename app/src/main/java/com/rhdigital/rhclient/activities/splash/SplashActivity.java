@@ -17,21 +17,9 @@ import java.util.ArrayList;
 
 public class SplashActivity extends AppCompatActivity {
 
-    ArrayList<CustomLoader> viewList = new ArrayList<>();
-    ArrayList<Path> animationPathList = new ArrayList<>();
-    FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-    FirebaseUser firebaseUser;
-    RHDatabase database;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-      firebaseUser = firebaseAuth.getCurrentUser();
-      if (firebaseUser != null) {
-        firebaseAuth.signOut();
-      }
-      database = RHDatabase.getDatabase(this);
       super.onCreate(savedInstanceState);
-      setContentView(R.layout.activity_auth);
       Intent intent = new Intent(this, AuthActivity.class);
       this.startActivity(intent);
     }

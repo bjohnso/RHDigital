@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/sign_up_nav_graph"
+  app:startDestination="@id/signUpPhoneFragment">
+
+  <fragment
+    android:id="@+id/signUpPhoneFragment"
+    android:name="com.rhdigital.rhclient.activities.auth.fragments.SignUpPhoneFragment"
+    android:label="SignUpPhoneFragment" >
+    <action
+      android:id="@+id/action_signUpPhoneFragment_to_signUpEmailFragment"
+      app:destination="@id/signUpEmailFragment" />
+  </fragment>
+  <fragment
+    android:id="@+id/signUpEmailFragment"
+    android:name="com.rhdigital.rhclient.activities.auth.fragments.SignUpEmailFragment"
+    android:label="SignUpEmailFragment" >
+    <action
+      android:id="@+id/action_signUpEmailFragment_to_signUpPhoneFragment"
+      app:destination="@id/signUpPhoneFragment" />
+  </fragment>
+</navigation>

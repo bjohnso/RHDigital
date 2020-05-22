@@ -11,11 +11,16 @@ import android.widget.EditText;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
+import com.google.android.material.tabs.TabLayout;
 import com.rhdigital.rhclient.R;
 
 public class SignUpPhoneFragment extends Fragment {
 
+  private SignUpFragment parent;
+  private NavController navController;
   private AutoCompleteTextView phoneInput;
   private Button submitButton;
 
@@ -27,5 +32,10 @@ public class SignUpPhoneFragment extends Fragment {
     phoneInput = (AutoCompleteTextView) view.findViewById(R.id.sign_up_phone_input);
     submitButton = (Button) view.findViewById(R.id.sign_up_phone_submit_btn);
     return view;
+  }
+
+  @Override
+  public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    super.onViewCreated(view, savedInstanceState);
   }
 }

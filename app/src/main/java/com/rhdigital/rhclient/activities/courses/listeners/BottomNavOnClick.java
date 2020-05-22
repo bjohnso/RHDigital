@@ -24,13 +24,13 @@ public class BottomNavOnClick implements BottomNavigationView.OnNavigationItemSe
 
         switch (menuItem.getItemId()){
             case R.id.courses_bottom_nav_courses:
-                coursesActivity.setViewPager(0);
+
                 return true;
             case R.id.courses_bottom_nav_workbooks:
-                coursesActivity.setViewPager(1);
+
                 return true;
             case R.id.courses_bottom_nav_research:
-                coursesActivity.setViewPager(2);
+
                 return true;
         }
         return false;

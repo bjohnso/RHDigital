@@ -1,6 +1,7 @@
 package com.rhdigital.rhclient.activities.auth.fragments;
 
 import android.animation.AnimatorSet;
+import android.content.Context;
 import android.graphics.drawable.AnimatedVectorDrawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -22,10 +23,15 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
+import com.google.firebase.auth.FirebaseUser;
 import com.rhdigital.rhclient.R;
-import com.rhdigital.rhclient.activities.auth.listeners.SignInOnClickListener;
-import com.rhdigital.rhclient.activities.auth.listeners.SignUpRedirectOnClickListener;
+import com.rhdigital.rhclient.activities.auth.AuthActivity;
 import com.rhdigital.rhclient.common.loader.CustomLoaderFactory;
 import com.rhdigital.rhclient.util.GenericTimer;
 
@@ -60,15 +66,25 @@ public class SignInFragment extends Fragment {
     private LinearLayout signUpRedirect;
     private FrameLayout frameLayout;
 
+    //Auth
+    private MutableLiveData<FirebaseUser> userObservable;
+    private Context context;
+
     private TextView line;
     private TextView welcome;
 
     private int loaderHeight = 0;
     private int loaderWidth = 0;
 
+    // Navigation
+    private NavController navController;
+
     @RequiresApi(api = Build.VERSION_CODES.M)
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.sign_in_layout, container, false);
+
+        context = getContext();
+        userObservable = ((AuthActivity)getActivity()).getAuthenticator().getFirebaseUser();
 
         // Initialise Components
         emailInput = (AutoCompleteTextView) view.findViewById(R.id.sign_in_email_input);
@@ -95,13 +111,20 @@ public class SignInFragment extends Fragment {
           }
         });
 
-        //Set Listeners
-        signUpRedirect.setOnClickListener(new SignUpRedirectOnClickListener(this));
-        submit.setOnClickListener(new SignInOnClickListener(this));
         return view;
     }
 
-    public void setFieldsValidated() {
+  @Override
+  public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    super.onViewCreated(view, savedInstanceState);
+    navController = Navigation.findNavController(view);
+
+    //Set Listeners
+    signUpRedirect.setOnClickListener(new RedirectSignUpOnClick(navController));
+    submit.setOnClickListener(new SubmitOnClick(this, navController));
+  }
+
+  public void setFieldsValidated() {
       this.signUpRedirect.setVisibility(View.INVISIBLE);
       this.resetPasswordRedirect.setVisibility(View.INVISIBLE);
       this.line.setVisibility(View.INVISIBLE);
@@ -171,4 +194,54 @@ public class SignInFragment extends Fragment {
       frameLayout.removeView(v);
     }
   }
+
+  // Listeners
+  public static class SubmitOnClick implements View.OnClickListener {
+
+      private Fragment fragment;
+      private NavController navController;
+
+      public SubmitOnClick(Fragment fragment, NavController navController) {
+        this.fragment = fragment;
+        this.navController = navController;
+      }
+
+    @Override
+    public void onClick(View view) {
+        SignInFragment signInFragment = (SignInFragment) fragment;
+        signInFragment.setSubmitDisable();
+
+      signInFragment.userObservable.observe(signInFragment.getViewLifecycleOwner(), new Observer<FirebaseUser>() {
+        @Override
+        public void onChanged(FirebaseUser firebaseUser) {
+          if (firebaseUser != null) {
+            signInFragment.setFieldsValidated();
+            signInFragment.addLoader();
+            signInFragment.userObservable.removeObserver(this);
+          } else {
+            signInFragment.setSubmitDisableTimeout();
+          }
+        }
+      });
+
+      ((AuthActivity)signInFragment.getActivity())
+        .getAuthenticator()
+        .authenticateEmail(signInFragment.getEmailText(), signInFragment.getPasswordText());
+    }
+  }
+
+  public static class RedirectSignUpOnClick implements View.OnClickListener {
+
+      private NavController navController;
+
+      public RedirectSignUpOnClick(NavController navController) {
+        this.navController = navController;
+      }
+
+    @Override
+    public void onClick(View view) {
+      navController.navigate(R.id.action_signInFragment_to_signUpFragment);
+    }
+  }
+
 }

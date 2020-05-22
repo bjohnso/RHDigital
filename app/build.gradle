@@ -56,4 +56,11 @@ dependencies {
 
   // Exo Player
   implementation 'com.google.android.exoplayer:exoplayer:2.11.4'
+
+  // Navigation
+  implementation "androidx.navigation:navigation-fragment:2.3.0-beta01"
+  implementation "androidx.navigation:navigation-ui:2.3.0-beta01"
+
+  apply plugin: "androidx.navigation.safeargs"
+
 }

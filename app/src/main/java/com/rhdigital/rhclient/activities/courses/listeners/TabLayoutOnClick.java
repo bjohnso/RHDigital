@@ -19,10 +19,10 @@ public class TabLayoutOnClick implements TabLayout.OnTabSelectedListener {
 
         switch (tab.getPosition()){
             case 0:
-                coursesTabFragment.setViewPager(0);
+
                 break;
             case 1:
-                coursesTabFragment.setViewPager(1);
+
                 break;
         }
     }

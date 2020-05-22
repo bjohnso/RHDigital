@@ -9,59 +9,47 @@ import android.widget.LinearLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.NavOptions;
+import androidx.navigation.Navigation;
 
 import com.google.android.material.tabs.TabLayout;
 import com.rhdigital.rhclient.R;
-import com.rhdigital.rhclient.activities.auth.listeners.SignInRedirectOnClickListener;
-import com.rhdigital.rhclient.activities.auth.listeners.SignUpTabLayoutOnClickListener;
 import com.rhdigital.rhclient.common.view.RHFragment;
-import com.rhdigital.rhclient.common.adapters.SectionsStatePagerAdapter;
-import com.rhdigital.rhclient.common.loader.CustomViewPager;
-
-import java.util.HashMap;
 
 public class SignUpFragment extends Fragment implements RHFragment {
 
   // Components
   private boolean isParent = true;
+  private NavController navController;
   private TabLayout tabLayout;
   private LinearLayout signInRedirect;
-  private CustomViewPager customViewPager;
 
   public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
     View view = inflater.inflate(R.layout.sign_up_layout, container, false);
 
     // Initialise Components
-    tabLayout = (TabLayout) view.findViewById(R.id.sign_up_tab_layout);
-    signInRedirect = (LinearLayout) view.findViewById(R.id.sign_up_redirect);
-    customViewPager = (CustomViewPager) view.findViewById(R.id.sign_up_view_pager);
-
-    // Set Listeners
-    tabLayout.addOnTabSelectedListener(new SignUpTabLayoutOnClickListener(this));
-    signInRedirect.setOnClickListener(new SignInRedirectOnClickListener(this));
-
-    setUpViewPager(customViewPager);
-
+    signInRedirect = view.findViewById(R.id.sign_up_redirect);
+    tabLayout = view.findViewById(R.id.sign_up_tab_layout);
     return view;
   }
 
-  private void setUpViewPager(CustomViewPager customViewPager){
-    SectionsStatePagerAdapter sectionsStatePagerAdapter = new SectionsStatePagerAdapter(getChildFragmentManager());
-    // Fragments
-    sectionsStatePagerAdapter.setFragmentPagingMap(new HashMap<Integer, String>(){
-      {put(0, SignUpPhoneFragment.class.getName());
-        put(1, SignUpEmailFragment.class.getName());}});
-
-    customViewPager.setAdapter(sectionsStatePagerAdapter);
-    customViewPager.setSwipeable(false);
+  @Override
+  public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    super.onViewCreated(view, savedInstanceState);
+    // Navigation
+    navController = Navigation.findNavController(view);
+    NavController childController = Navigation.findNavController(getActivity(), R.id.nav_host_sign_up);
+    NavOptions navOptions = new NavOptions.Builder()
+      .setLaunchSingleTop(true)
+      .setPopUpTo(childController.getGraph().getStartDestination(), false)
+      .build();
+    tabLayout.addOnTabSelectedListener(new TabOnClick(childController, navOptions));
+    signInRedirect.setOnClickListener(new RedirectSignInOnClick(navController));
   }
 
-  public int getViewPager(){
-    return customViewPager.getCurrentItem();
-  }
-
-  public void setViewPager(int position){
-    customViewPager.setCurrentItem(position);
+  public TabLayout getTabLayout() {
+    return tabLayout;
   }
 
   @Override
@@ -72,5 +60,51 @@ public class SignUpFragment extends Fragment implements RHFragment {
   @Override
   public void setIsParent(boolean parent) {
 
+  }
+
+  private static class RedirectSignInOnClick implements View.OnClickListener {
+
+    private NavController navController;
+
+    public RedirectSignInOnClick(NavController navController) {
+      this.navController = navController;
+    }
+
+    @Override
+    public void onClick(View view) {
+      navController.navigate(R.id.action_signUpFragment_to_signInFragment);
+    }
+  }
+
+  private static class TabOnClick implements TabLayout.OnTabSelectedListener {
+    private NavController navController;
+    private NavOptions navOptions;
+
+    public TabOnClick(NavController navController, NavOptions navOptions){
+      this.navController = navController;
+      this.navOptions = navOptions;
+    }
+
+    @Override
+    public void onTabSelected(TabLayout.Tab tab) {
+      switch (tab.getPosition()){
+        case 0:
+          navController.navigate(R.id.action_signUpEmailFragment_to_signUpPhoneFragment, null,navOptions);
+          break;
+        case 1:
+          navController.navigate(R.id.action_signUpPhoneFragment_to_signUpEmailFragment, null, navOptions);
+          break;
+      }
+    }
+
+    @Override
+    public void onTabUnselected(TabLayout.Tab tab) {
+
+    }
+
+    @Override
+    public void onTabReselected(TabLayout.Tab tab) {
+
+    }
   }
 }
