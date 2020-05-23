@@ -23,6 +23,9 @@ public abstract class CourseDAO extends BaseDAO<Course> {
     @Query("SELECT * FROM courses WHERE isAuthorised = 1;")
     abstract public LiveData<List<Course>> getAllAuthorisedCourses();
 
+    @Query("SELECT * FROM courses WHERE isAuthorised = 0;")
+    abstract public LiveData<List<Course>> getAllUndiscoveredCourses();
+
     @Query("UPDATE courses SET isAuthorised = 1 WHERE id = :id")
     abstract public int authorise(String id);
 }

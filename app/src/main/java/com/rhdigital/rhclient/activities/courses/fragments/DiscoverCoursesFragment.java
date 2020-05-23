@@ -106,7 +106,7 @@ public class DiscoverCoursesFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
 
         // Call Observer
-        courseObservable = courseViewModel.getAllCourses();
+        courseObservable = courseViewModel.getAllUndiscoveredCourses();
         courseObservable.observe(getActivity(), courseObserver);
         return view;
     }

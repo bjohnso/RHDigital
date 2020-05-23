@@ -4,8 +4,6 @@ import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
 
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.source.ProgressiveMediaSource;
@@ -14,8 +12,7 @@ import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 import com.rhdigital.rhclient.R;
-
-import java.util.HashMap;
+import com.rhdigital.rhclient.activities.courses.view.CoursesViewHolder;
 
 public class VideoPlayerService {
 
@@ -27,6 +24,9 @@ public class VideoPlayerService {
   private String minPlayerID = "";
   private PlayerView minPlayerView;
   private PlayerView maxPlayerView;
+  private CoursesViewHolder currentHolder;
+
+  //TODO : CREATE HOLDER SERVICE
 
   private VideoPlayerService() {}
 
@@ -37,18 +37,27 @@ public class VideoPlayerService {
     return INSTANCE;
   }
 
-  public void initPlayer(Context context, Uri uri, String id, PlayerView view) {
+  public void initPlayer(Context context, Uri uri, String id, CoursesViewHolder holder, PlayerView view) {
     if (isFullScreen && validateViewHolderID(id)) {
       Log.d("VIDEOPLAYERSERVICE", "MINIMISE");
+      currentHolder = holder;
       playerMinimise(context, view);
       return;
     } else if (!isFullScreen) {
-      if (minPlayerView != null && maxPlayerView == null) {
-        Log.d("VIDEOPLAYERSERVICE", "MAXIMISE");
+      // TODO : USE NAVIGATION SERVICE TO PASS ID FROM VIEWHOLDER TO FULLSCREENFRAGMENT FOR THIS COMPARISON
+      if (minPlayerView != null && maxPlayerView == null && id == null) {
+        Log.d("VIDEOPLAYERSERVICE", "MAXIMISE - THERE IS ALREADY AN ACTIVE VIDEO RENDER... CASTING THIS TO FULLSCREEN");
         playerMaximise(context, view);
         return;
       } else {
-        Log.d("VIDEOPLAYERSERVICE", "FIRST ATTACH");
+        if (minPlayerView != null) {
+          Log.d("VIDEOPLAYERSERVICE", "DUPLICATE ATTACH - THERE IS ALREADY AN ACTIVE VIDEO RENDER... DESTROYING CURRENT RENDER");
+          if (currentHolder != null)
+            currentHolder.revealPlayer(false);
+          destroyVideo();
+        }
+        this.currentHolder = holder;
+        Log.d("VIDEOPLAYERSERVICE", "NEW ATTACH - CREATING VIDEO RENDER");
         minPlayerView = view;
         minPlayerID = id;
         if (player == null) {
@@ -108,7 +117,13 @@ public class VideoPlayerService {
   }
 
   public void destroyVideo() {
-    player.release();
+    Log.d("VIDEOPLAYERSERVICE", "DESTROYED");
+    isVideoEnabled = false;
+    minPlayerView = null;
+    currentHolder = null;
+    maxPlayerView = null;
+    if (player != null)
+      player.release();
     player = null;
   }
 

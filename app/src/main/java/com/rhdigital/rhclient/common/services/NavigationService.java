@@ -9,6 +9,9 @@ import androidx.navigation.NavDestination;
 import androidx.navigation.NavGraph;
 import androidx.navigation.NavOptions;
 
+import com.rhdigital.rhclient.R;
+import com.rhdigital.rhclient.activities.courses.services.VideoPlayerService;
+
 import java.util.HashMap;
 
 public class NavigationService {
@@ -56,6 +59,11 @@ public class NavigationService {
     navController.getGraph().setStartDestination(destinationId);
     navController.navigate(destinationId, null, navOptions);
     controllerMap.put(className, navController);
+    if (!VideoPlayerService.getInstance().isFullScreen()
+      && VideoPlayerService.getInstance().isVideoEnabled()
+      && destinationId != R.id.coursesVideoPlayerFullscreenFragment) {
+      VideoPlayerService.getInstance().destroyVideo();
+    }
   }
 
   public Bundle getPostNavigationRestorationData() {

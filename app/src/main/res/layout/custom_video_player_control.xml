@@ -19,8 +19,12 @@
         <TextView
           android:id="@+id/exo_title"
           android:layout_width="match_parent"
-          android:layout_height="60dp"
-          android:gravity="center" />
+          android:layout_height="50dp"
+          android:textSize="12dp"
+          android:textAlignment="textEnd"
+          android:paddingEnd="10dp"
+          android:gravity="center"
+          tools:ignore="RtlCompat" />
     </LinearLayout>
 
 <LinearLayout

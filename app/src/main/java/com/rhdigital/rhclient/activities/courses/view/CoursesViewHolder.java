@@ -3,7 +3,6 @@ package com.rhdigital.rhclient.activities.courses.view;
 import android.animation.AnimatorSet;
 import android.content.Context;
 import android.net.Uri;
-import android.os.Bundle;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
@@ -24,8 +23,6 @@ import com.google.android.exoplayer2.ui.PlayerView;
 import com.rhdigital.rhclient.R;
 import com.rhdigital.rhclient.RHApplication;
 import com.rhdigital.rhclient.activities.courses.CoursesActivity;
-import com.rhdigital.rhclient.activities.courses.listeners.CourseItemViewBackOnClick;
-import com.rhdigital.rhclient.activities.courses.listeners.CourseItemViewWatchNowOnClick;
 import com.rhdigital.rhclient.activities.courses.listeners.FullscreenToggleOnClick;
 import com.rhdigital.rhclient.activities.courses.services.VideoPlayerService;
 import com.rhdigital.rhclient.common.loader.CustomLoaderFactory;
@@ -56,14 +53,12 @@ public class CoursesViewHolder extends RecyclerView.ViewHolder {
 
   private Context context;
   private Uri videoUri;
-  private MediaSource mediaSource;
 
   private VideoPlayerService videoPlayerService;
 
   public CoursesViewHolder(@NonNull View itemView, Context context) {
     super(itemView);
     this.context = context;
-    this.course = course;
 
     //Dependency Injection
     this.videoPlayerService = ((RHApplication) context.getApplicationContext()).getVideoPlayerService();
@@ -114,9 +109,6 @@ public class CoursesViewHolder extends RecyclerView.ViewHolder {
           NavController navController = Navigation.findNavController((CoursesActivity)context, R.id.nav_host_courses);
           NavigationService.getINSTANCE().addNav(getClass().getName(), navController);
 
-          CoursesActivity coursesTabFragment = (((CoursesActivity) context));
-//          Bundle bundle = new Bundle();
-//          bundle.putInt("TAB_SELECTED", );
           fullscreen.setOnClickListener(new FullscreenToggleOnClick(context, getClass().getName(),null));
           itemView.getViewTreeObserver().removeOnGlobalLayoutListener(this::onGlobalLayout);
         }
@@ -135,7 +127,7 @@ public class CoursesViewHolder extends RecyclerView.ViewHolder {
       actionButton.setOnClickListener(null);
     }
     if (isAuthorisedMode) {
-      actionButton.setOnClickListener(new CourseItemViewWatchNowOnClick(itemView.getContext(), this));
+      actionButton.setOnClickListener(new CourseItemViewWatchNowOnClick(this));
       actionButton.setText("Watch Now");
       videoTitle.setText(course.getName());
       requestVideoMinimiseReattach();
@@ -162,7 +154,7 @@ public class CoursesViewHolder extends RecyclerView.ViewHolder {
     this.videoUri = uri;
   }
 
-  private void revealPlayer(boolean playerReveal) {
+  public void revealPlayer(boolean playerReveal) {
     if (playerReveal) {
       itemContent.setVisibility(View.GONE);
       videoPlayer.setVisibility(View.VISIBLE);
@@ -182,7 +174,7 @@ public class CoursesViewHolder extends RecyclerView.ViewHolder {
 
   public void initVideoPlayer() {
     revealPlayer(true);
-    this.videoPlayerService.initPlayer(context, videoUri, course.getId(), videoPlayer);
+    this.videoPlayerService.initPlayer(context, videoUri, course.getId(), this, videoPlayer);
   }
 
   // Loader
@@ -225,4 +217,36 @@ public class CoursesViewHolder extends RecyclerView.ViewHolder {
       frameLayout.removeView(v);
     }
   }
+
+  public static class CourseItemViewWatchNowOnClick implements View.OnClickListener {
+
+    private CoursesViewHolder holder;
+
+    public CourseItemViewWatchNowOnClick(CoursesViewHolder holder) {
+      this.holder = holder;
+    }
+
+    @Override
+    public void onClick(View view) {
+      holder.initVideoPlayer();
+    }
+  }
+
+  public static class CourseItemViewBackOnClick implements View.OnClickListener {
+
+    Context context;
+    CoursesViewHolder holder;
+
+    public CourseItemViewBackOnClick(Context context, CoursesViewHolder holder) {
+      this. context = context;
+      this.holder = holder;
+    }
+
+    @Override
+    public void onClick(View view) {
+      VideoPlayerService.getInstance().destroyVideo();
+      holder.revealPlayer(false);
+    }
+  }
+
 }

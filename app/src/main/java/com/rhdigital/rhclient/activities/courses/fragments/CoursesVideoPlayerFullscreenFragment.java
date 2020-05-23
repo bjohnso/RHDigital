@@ -39,7 +39,7 @@ public class CoursesVideoPlayerFullscreenFragment extends Fragment {
     maximiseButton.setVisibility(View.GONE);
     backButton.setVisibility(View.GONE);
 
-    VideoPlayerService.getInstance().initPlayer(getContext(), null, null, playerView);
+    VideoPlayerService.getInstance().initPlayer(getContext(), null, null, null, playerView);
     return view;
   }
 

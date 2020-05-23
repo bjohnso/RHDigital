@@ -30,6 +30,8 @@ public class CourseViewModel extends AndroidViewModel {
 
     public LiveData<List<Course>> getAllAuthorisedCourses() {return rhRepository.getAllAuthorisedCourses(); }
 
+    public LiveData<List<Course>> getAllUndiscoveredCourses() {return rhRepository.getAllUndiscoveredCourses(); }
+
     public LiveData<HashMap<String, Uri>> getAllVideoUri(List<Course> courses, int width, int height) { return new RemoteResourceConnector().getAllVideoURI(courses, width, height); }
 
     public LiveData<HashMap<String, Bitmap>> getAllBitmap(Context context, List<Course> courses, int width, int height) { return new RemoteResourceConnector().getAllBitmap(context, courses, width, height); }
