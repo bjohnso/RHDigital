@@ -3,6 +3,7 @@ package com.rhdigital.rhclient.activities.courses.view;
 import android.animation.AnimatorSet;
 import android.content.Context;
 import android.net.Uri;
+import android.os.Bundle;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
@@ -14,7 +15,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.navigation.NavController;
-import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -29,6 +29,7 @@ import com.rhdigital.rhclient.activities.courses.listeners.CourseItemViewWatchNo
 import com.rhdigital.rhclient.activities.courses.listeners.FullscreenToggleOnClick;
 import com.rhdigital.rhclient.activities.courses.services.VideoPlayerService;
 import com.rhdigital.rhclient.common.loader.CustomLoaderFactory;
+import com.rhdigital.rhclient.common.services.NavigationService;
 import com.rhdigital.rhclient.database.model.Course;
 
 public class CoursesViewHolder extends RecyclerView.ViewHolder {
@@ -111,11 +112,12 @@ public class CoursesViewHolder extends RecyclerView.ViewHolder {
         if (itemView != null) {
           //Navigation
           NavController navController = Navigation.findNavController((CoursesActivity)context, R.id.nav_host_courses);
-          NavOptions navOptions = new NavOptions.Builder()
-            .setLaunchSingleTop(true)
-            .setPopUpTo(navController.getGraph().getStartDestination(), false)
-            .build();
-          fullscreen.setOnClickListener(new FullscreenToggleOnClick(context, navController, navOptions));
+          NavigationService.getINSTANCE().addNav(getClass().getName(), navController);
+
+          CoursesActivity coursesTabFragment = (((CoursesActivity) context));
+//          Bundle bundle = new Bundle();
+//          bundle.putInt("TAB_SELECTED", );
+          fullscreen.setOnClickListener(new FullscreenToggleOnClick(context, getClass().getName(),null));
           itemView.getViewTreeObserver().removeOnGlobalLayoutListener(this::onGlobalLayout);
         }
       }

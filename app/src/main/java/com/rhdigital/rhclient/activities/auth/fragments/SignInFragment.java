@@ -240,7 +240,7 @@ public class SignInFragment extends Fragment {
 
     @Override
     public void onClick(View view) {
-      navController.navigate(R.id.action_signInFragment_to_signUpFragment);
+      navController.navigate(R.id.signUpFragment);
     }
   }
 

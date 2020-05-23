@@ -1,7 +1,5 @@
 package com.rhdigital.rhclient.activities.courses.fragments;
 
-import android.content.Context;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,16 +10,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
-import androidx.navigation.NavOptions;
-import androidx.navigation.Navigation;
+import androidx.navigation.NavDestination;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.rhdigital.rhclient.R;
 import com.google.android.material.tabs.TabLayout;
-import com.rhdigital.rhclient.activities.courses.CoursesActivity;
-import com.rhdigital.rhclient.activities.courses.services.VideoPlayerService;
+import com.rhdigital.rhclient.common.services.NavigationService;
 
 public class CoursesTabFragment extends Fragment {
-
     //Components
     private boolean isParent = true;
     TabLayout tabLayout;
@@ -35,46 +31,48 @@ public class CoursesTabFragment extends Fragment {
     }
 
   @Override
-  public void onSaveInstanceState(@NonNull Bundle outState) {
-    super.onSaveInstanceState(outState);
-    Log.d("NAV", "STATE SAVED " + tabLayout.getSelectedTabPosition());
-    outState.putInt("TAB_POSITION", tabLayout.getSelectedTabPosition());
-  }
-
-  @Override
   public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
     // Navigation
-    Log.d("NAV", "TAB FRAG CREATED");
-    if (savedInstanceState != null && savedInstanceState.get("TAB_POSITION") != null) {
-      Log.d("NAV", "TAB RESTORED " + savedInstanceState.getInt("TAB_POSITION"));
-      tabLayout.selectTab(tabLayout.getTabAt(savedInstanceState.getInt("TAB_POSITION")));
-    }
+    NavHostFragment navHostFragment = (NavHostFragment) getChildFragmentManager()
+      .findFragmentById(R.id.nav_host_courses_tab);
+    NavController navController = navHostFragment.getNavController();
 
-    NavController childController = Navigation.findNavController(getActivity(), R.id.nav_host_courses_tab);
-    NavOptions navOptions = new NavOptions.Builder()
-      .setLaunchSingleTop(true)
-      .build();
-    tabLayout.addOnTabSelectedListener(new TabOnClick(childController, navOptions));
+    navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
+      if (destination.getId() == R.id.discoverCoursesFragment && tabLayout.getSelectedTabPosition() == 1) {
+        tabLayout.selectTab(tabLayout.getTabAt(0));
+      } else if (destination.getId() == R.id.myCoursesFragment && tabLayout.getSelectedTabPosition() == 0) {
+        tabLayout.selectTab(tabLayout.getTabAt(1));
+      }
+    });
+
+    NavigationService.getINSTANCE().initNav(
+      getClass().getName(),
+      navController,
+      R.navigation.courses_tab_nav_graph,
+      R.id.discoverCoursesFragment);
+    tabLayout.addOnTabSelectedListener(new TabOnClick(navController, getClass().getName()));
   }
 
   private static class TabOnClick implements TabLayout.OnTabSelectedListener {
     private NavController navController;
-    private NavOptions navOptions;
+    private String className;
 
-    public TabOnClick(NavController navController, NavOptions navOptions){
+    public TabOnClick(NavController navController, String className){
       this.navController = navController;
-      this.navOptions = navOptions;
+      this.className = className;
     }
 
     @Override
     public void onTabSelected(TabLayout.Tab tab) {
       switch (tab.getPosition()){
         case 0:
-          navController.navigate(R.id.discoverCoursesFragment, null, navOptions);
+          if (navController.getCurrentDestination().getId() != R.id.discoverCoursesFragment)
+            NavigationService.getINSTANCE().navigate(className, R.id.discoverCoursesFragment, null);
           break;
         case 1:
-          navController.navigate(R.id.myCoursesFragment, null, navOptions);
+          if (navController.getCurrentDestination().getId() != R.id.myCoursesFragment)
+            NavigationService.getINSTANCE().navigate(className, R.id.myCoursesFragment, null);
           break;
       }
     }

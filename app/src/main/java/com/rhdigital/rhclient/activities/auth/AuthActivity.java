@@ -10,6 +10,9 @@ import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.navigation.NavController;
+import androidx.navigation.NavGraph;
+import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -17,6 +20,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.rhdigital.rhclient.R;
 import com.rhdigital.rhclient.activities.auth.util.Authenticator;
 import com.rhdigital.rhclient.activities.courses.CoursesActivity;
+import com.rhdigital.rhclient.common.services.NavigationService;
 import com.rhdigital.rhclient.database.RHDatabase;
 
 import java.util.ArrayList;
@@ -84,13 +88,24 @@ public class AuthActivity extends AppCompatActivity {
     firebaseUser = firebaseAuth.getCurrentUser();
 
     if (firebaseUser != null) {
-      startCourseActivity();
+      populateRoomObservable = authenticator.populateRoomFromUpstream();
+      populateRoomObservable.observe((LifecycleOwner) context, populateRoomObserver);
     }
 
     userObservable = authenticator.getFirebaseUser();
     userObservable.observe(this, authObserver);
 
     setContentView(R.layout.activity_auth);
+
+    //Initialise Navigator
+    NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_auth);
+    NavController navController = navHostFragment.getNavController();
+    // Call Navigation Service
+    NavigationService.getINSTANCE().initNav(
+      getLocalClassName(),
+      navController,
+      R.navigation.auth_nav_graph,
+      R.id.signInFragment);
   }
 
   private void startCourseActivity() {

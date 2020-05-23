@@ -68,7 +68,7 @@ public class SignUpFragment extends Fragment implements RHFragment {
 
     @Override
     public void onClick(View view) {
-      navController.navigate(R.id.action_signUpFragment_to_signInFragment);
+      navController.navigate(R.id.signInFragment);
     }
   }
 
@@ -85,10 +85,10 @@ public class SignUpFragment extends Fragment implements RHFragment {
     public void onTabSelected(TabLayout.Tab tab) {
       switch (tab.getPosition()){
         case 0:
-          navController.navigate(R.id.action_signUpEmailFragment_to_signUpPhoneFragment, null,navOptions);
+          navController.navigate(R.id.signUpPhoneFragment, null,navOptions);
           break;
         case 1:
-          navController.navigate(R.id.action_signUpPhoneFragment_to_signUpEmailFragment, null, navOptions);
+          navController.navigate(R.id.signUpEmailFragment, null, navOptions);
           break;
       }
     }

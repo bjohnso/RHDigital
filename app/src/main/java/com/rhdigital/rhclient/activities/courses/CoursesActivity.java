@@ -16,9 +16,11 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.navigation.NavController;
 import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.rhdigital.rhclient.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.rhdigital.rhclient.common.services.NavigationService;
 
 import static com.rhdigital.rhclient.R.menu.courses_menu_top;
 
@@ -46,14 +48,19 @@ public class CoursesActivity extends AppCompatActivity {
         //Setup Toolbar
         setSupportActionBar(mToolbar);
 
-      NavController childController = Navigation.findNavController(this, R.id.nav_host_courses);
-      NavOptions navOptions = new NavOptions.Builder()
-        .setLaunchSingleTop(true)
-        .setPopUpTo(childController.getGraph().getStartDestination(), false)
-        .build();
+      //Initialise Navigator
+      NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
+        .findFragmentById(R.id.nav_host_courses);
+      NavController navController = navHostFragment.getNavController();
+      // Call Navigation Service
+      NavigationService.getINSTANCE().initNav(
+        getLocalClassName(),
+        navController,
+        R.navigation.courses_nav_graph,
+        R.id.coursesTabFragment);
 
         //Set Listeners
-        mBottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavOnClick(childController, navOptions));
+        mBottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavOnClick(getLocalClassName()));
     }
 
     @Override
@@ -61,12 +68,6 @@ public class CoursesActivity extends AppCompatActivity {
         getMenuInflater().inflate(courses_menu_top, menu);
         return true;
     }
-
-  @Override
-  protected void onSaveInstanceState(@NonNull Bundle outState) {
-    super.onSaveInstanceState(outState);
-    Log.d("NAV", "SAVED STATE ACTIVITY");
-  }
 
   @SuppressLint("SourceLockedOrientationActivity")
     public void configureScreenOrientation(boolean isLandscape) {
@@ -90,25 +91,23 @@ public class CoursesActivity extends AppCompatActivity {
 
   public static class BottomNavOnClick implements BottomNavigationView.OnNavigationItemSelectedListener {
 
-    private NavController navController;
-    private NavOptions navOptions;
+      private String className;
 
-    public BottomNavOnClick(NavController navController, NavOptions navOptions) {
-      this.navController =  navController;
-      this.navOptions = navOptions;
+    public BottomNavOnClick(String className) {
+      this.className = className;
     }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
       switch (menuItem.getItemId()){
         case R.id.courses_bottom_nav_courses:
-          navController.navigate(R.id.coursesTabFragment, null, navOptions);
+          NavigationService.getINSTANCE().navigate(className, R.id.coursesTabFragment, null);
           return true;
         case R.id.courses_bottom_nav_workbooks:
-          navController.navigate(R.id.myWorkbooksFragment, null, navOptions);
+          NavigationService.getINSTANCE().navigate(className, R.id.myWorkbooksFragment, null);
           return true;
         case R.id.courses_bottom_nav_research:
-          navController.navigate(R.id.myResearchFragment, null, navOptions);
+          NavigationService.getINSTANCE().navigate(className, R.id.myResearchFragment, null);
           return true;
       }
       return false;

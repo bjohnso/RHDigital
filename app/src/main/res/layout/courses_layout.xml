@@ -44,7 +44,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginTop="40dp"
-    app:defaultNavHost="false"
-    app:navGraph="@navigation/courses_tab_nav_graph"/>
+    app:defaultNavHost="false" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

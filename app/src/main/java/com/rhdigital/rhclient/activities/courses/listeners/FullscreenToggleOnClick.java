@@ -1,6 +1,7 @@
 package com.rhdigital.rhclient.activities.courses.listeners;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.view.View;
 
 import androidx.navigation.NavController;
@@ -9,17 +10,18 @@ import androidx.navigation.NavOptions;
 import com.rhdigital.rhclient.R;
 import com.rhdigital.rhclient.activities.courses.CoursesActivity;
 import com.rhdigital.rhclient.activities.courses.services.VideoPlayerService;
+import com.rhdigital.rhclient.common.services.NavigationService;
 
 public class FullscreenToggleOnClick implements View.OnClickListener {
 
   private Context context;
-  private NavController navController;
-  private NavOptions navOptions;
+  private String className;
+  private Bundle postNavigationRestoreData;
 
-  public FullscreenToggleOnClick(Context context, NavController navController, NavOptions navOptions) {
+  public FullscreenToggleOnClick(Context context, String className, Bundle postNavigationRestoreData) {
     this.context = context;
-    this.navController = navController;
-    this.navOptions = navOptions;
+    this.className = className;
+    this.postNavigationRestoreData = postNavigationRestoreData;
   }
 
   @Override
@@ -27,14 +29,12 @@ public class FullscreenToggleOnClick implements View.OnClickListener {
     if (!VideoPlayerService.getInstance().isFullScreen()) {
       ((CoursesActivity) context).revealVideoPlayerFullscreen(true);
       ((CoursesActivity) context).configureScreenOrientation(true);
-      navController.navigate(R.id.coursesVideoPlayerFullscreenFragment, null, navOptions);
+      NavigationService.getINSTANCE().navigate(className, R.id.coursesVideoPlayerFullscreenFragment, postNavigationRestoreData);
     }
     else {
       ((CoursesActivity) context).configureScreenOrientation(false);
       ((CoursesActivity) context).revealVideoPlayerFullscreen(false);
-      if (!navController.popBackStack(R.id.coursesTabFragment, false)) {
-        navController.navigate(R.id.coursesTabFragment);
-      }
+      NavigationService.getINSTANCE().navigate(className, R.id.coursesTabFragment, postNavigationRestoreData);
     }
   }
 }
