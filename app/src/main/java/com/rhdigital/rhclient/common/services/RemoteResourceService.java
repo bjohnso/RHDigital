@@ -1,12 +1,8 @@
-package com.rhdigital.rhclient.util;
+package com.rhdigital.rhclient.common.services;
 
 import android.content.Context;
-import android.content.MutableContextWrapper;
 import android.graphics.Bitmap;
-import android.graphics.Paint;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.provider.ContactsContract;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
@@ -14,29 +10,16 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.FutureTarget;
-import com.bumptech.glide.request.Request;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.target.SizeReadyCallback;
-import com.bumptech.glide.request.target.Target;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.rhdigital.rhclient.database.model.Course;
 
-import java.io.File;
-import java.net.URI;
-import java.util.BitSet;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.FutureTask;
 
-public class RemoteResourceConnector {
+public class RemoteResourceService {
 
   private HashMap<String, StorageReference> urlMap = new HashMap<>();
   private FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
@@ -45,7 +28,7 @@ public class RemoteResourceConnector {
   private HashMap<String, Bitmap> liveImageMapSurrogate = new HashMap<>();
   private HashMap<String, Uri> liveVideoUriMapSurrogate = new HashMap<>();
 
-  public RemoteResourceConnector() {
+  public RemoteResourceService() {
     StorageReference root = firebaseStorage.getReference();
     urlMap.put("l", root.child("courses/posters/drawable-ldpi"));
     urlMap.put("m", root.child("courses/posters/drawable-mdpi"));
@@ -74,7 +57,7 @@ public class RemoteResourceConnector {
       } else {
         ref = urlMap.get("h");
       }
-      return ref = ref.child(endpoint + ".png");
+      return ref.child(endpoint);
   }
 
   public StorageReference getVideoResourceURL(String endpoint) {

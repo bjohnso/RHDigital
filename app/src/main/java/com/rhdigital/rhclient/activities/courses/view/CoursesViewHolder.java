@@ -31,6 +31,7 @@ import com.rhdigital.rhclient.database.model.Course;
 
 public class CoursesViewHolder extends RecyclerView.ViewHolder {
   private TextView headerView;
+  private TextView authorView;
   private ImageView imageView;
   private Button actionButton;
   private FrameLayout frameLayout;
@@ -66,6 +67,7 @@ public class CoursesViewHolder extends RecyclerView.ViewHolder {
     itemContent = itemView.findViewById(R.id.item_content);
     imageView = itemView.findViewById(R.id.courses_card_item_image_view);
     headerView = itemView.findViewById(R.id.courses_text_header_item);
+    authorView = itemView.findViewById(R.id.courses_text_author_item);
     frameLayout = (FrameLayout) itemView.findViewById(R.id.loader);
     videoPlayer = (PlayerView) itemView.findViewById(R.id.video_player);
     actionButton = itemView.findViewById(R.id.courses_item_action_button);
@@ -119,6 +121,7 @@ public class CoursesViewHolder extends RecyclerView.ViewHolder {
   public void setCourse(Course course) {
     this.course = course;
     this.headerView.setText(course.getName());
+    this.authorView.setText(course.getAuthor());
   }
 
   public void setIsAuthorisedMode(boolean authorisedMode) {

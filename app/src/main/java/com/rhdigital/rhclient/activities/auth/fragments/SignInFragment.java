@@ -23,7 +23,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.navigation.NavController;
@@ -33,7 +32,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.rhdigital.rhclient.R;
 import com.rhdigital.rhclient.activities.auth.AuthActivity;
 import com.rhdigital.rhclient.common.loader.CustomLoaderFactory;
-import com.rhdigital.rhclient.util.GenericTimer;
+import com.rhdigital.rhclient.common.util.GenericTimer;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;

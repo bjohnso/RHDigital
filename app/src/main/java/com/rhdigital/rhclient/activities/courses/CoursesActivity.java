@@ -1,10 +1,11 @@
 package com.rhdigital.rhclient.activities.courses;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.util.Log;
+
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,12 +15,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.navigation.NavController;
-import androidx.navigation.NavOptions;
-import androidx.navigation.Navigation;
+
 import androidx.navigation.fragment.NavHostFragment;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.rhdigital.rhclient.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.rhdigital.rhclient.activities.auth.AuthActivity;
+import com.rhdigital.rhclient.activities.user.UserActivity;
 import com.rhdigital.rhclient.common.services.NavigationService;
 
 import static com.rhdigital.rhclient.R.menu.courses_menu_top;
@@ -38,6 +41,10 @@ public class CoursesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_courses);
+
+        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
+          startAuthActivity();
+        }
 
         mToolbar = findViewById(R.id.topNavigationView);
         mBottomNavigationView = findViewById(R.id.bottomNavigationView);
@@ -61,6 +68,7 @@ public class CoursesActivity extends AppCompatActivity {
 
         //Set Listeners
         mBottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavOnClick(getLocalClassName()));
+        mToolbar.setOnMenuItemClickListener(new MenuItemOnClick(this));
     }
 
     @Override
@@ -89,6 +97,11 @@ public class CoursesActivity extends AppCompatActivity {
       }
     }
 
+    private void startAuthActivity() {
+      Intent intent = new Intent(this, AuthActivity.class);
+      startActivity(intent);
+    }
+
   public static class BottomNavOnClick implements BottomNavigationView.OnNavigationItemSelectedListener {
 
       private String className;
@@ -109,6 +122,24 @@ public class CoursesActivity extends AppCompatActivity {
         case R.id.courses_bottom_nav_research:
           NavigationService.getINSTANCE().navigate(className, R.id.myResearchFragment, null);
           return true;
+      }
+      return false;
+    }
+  }
+
+  public static class MenuItemOnClick implements Toolbar.OnMenuItemClickListener {
+
+      Context context;
+
+      public MenuItemOnClick(Context context) {
+        this.context = context;
+      }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem menuItem) {
+      if (menuItem.getItemId() == R.id.courses_top_nav_profile) {
+        Intent intent = new Intent(context, UserActivity.class);
+        context.startActivity(intent);
       }
       return false;
     }

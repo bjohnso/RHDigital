@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:background="@drawable/background_alt">
+
+  <RelativeLayout
+    android:id="@+id/button_header"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintRight_toRightOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    android:orientation="horizontal"
+    android:background="@color/bar">
+
+    <ImageButton
+      android:id="@+id/user_profile_edit_back_button"
+      android:layout_width="50dp"
+      android:layout_height="match_parent"
+      android:layout_marginLeft="10dp"
+      android:scaleType="fitXY"
+      android:src="@drawable/ic_arrow_back_black"
+      style="@style/Widget.AppCompat.Button.Borderless"/>
+
+    <Button
+      android:id="@+id/user_profile_edit_save_button"
+      android:layout_width="wrap_content"
+      android:layout_height="match_parent"
+      android:text="Save"
+      android:textColor="@color/save"
+      android:textAllCaps="false"
+      android:textSize="18sp"
+      android:layout_alignParentRight="true"
+      android:layout_marginRight="10dp"
+      android:src="@drawable/ic_arrow_back_black"
+      style="@style/Widget.AppCompat.Button.Borderless"/>
+
+  </RelativeLayout>
+
+  <ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:scrollbars="none"
+    android:layout_marginTop="50dp"
+    android:fillViewport="true"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintRight_toRightOf="parent">
+
+  <LinearLayout
+    android:paddingTop="20dp"
+    android:paddingBottom="40dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text="Your Basic Information"
+      android:textColor="@color/link_text_highlight"
+      android:layout_marginLeft="10dp"
+      android:textSize="14sp"/>
+
+    <Button
+      android:id="@+id/user_profile_edit_first_name_button"
+      android:layout_width="match_parent"
+      android:layout_height="60dp"
+      android:text="First Name"
+      android:textAllCaps="false"
+      android:textAlignment="textStart"
+      style="@style/Widget.AppCompat.Button.Borderless"
+      android:drawableRight="@drawable/ic_arrow_right"
+      android:textSize="18sp"/>
+
+    <TextView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text="Your first name here"
+      android:layout_marginLeft="10dp"
+      android:textColor="@color/link_text_faded"/>
+
+    <Button
+      android:id="@+id/user_profile_edit_last_name_button"
+      android:layout_width="match_parent"
+      android:layout_height="60dp"
+      android:text="Last Name"
+      android:textAllCaps="false"
+      android:textAlignment="textStart"
+      style="@style/Widget.AppCompat.Button.Borderless"
+      android:drawableRight="@drawable/ic_arrow_right"
+      android:textSize="18sp"/>
+
+    <TextView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text="Your last name here"
+      android:layout_marginLeft="10dp"
+      android:textColor="@color/link_text_faded"/>
+
+    <Button
+      android:id="@+id/user_profile_edit_title_button"
+      android:layout_width="match_parent"
+      android:layout_height="60dp"
+      android:text="Title"
+      android:textAllCaps="false"
+      android:textAlignment="textStart"
+      style="@style/Widget.AppCompat.Button.Borderless"
+      android:drawableRight="@drawable/ic_arrow_right"
+      android:textSize="18sp"/>
+
+    <TextView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text="Your title here"
+      android:layout_marginLeft="10dp"
+      android:textColor="@color/link_text_faded"/>
+
+    <Button
+      android:id="@+id/user_profile_edit_city_button"
+      android:layout_width="match_parent"
+      android:layout_height="60dp"
+      android:text="City"
+      android:textAllCaps="false"
+      android:textAlignment="textStart"
+      style="@style/Widget.AppCompat.Button.Borderless"
+      android:drawableRight="@drawable/ic_arrow_right"
+      android:textSize="18sp"/>
+
+    <TextView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text="Your city here"
+      android:layout_marginLeft="10dp"
+      android:textColor="@color/link_text_faded"/>
+
+    <Button
+      android:id="@+id/user_profile_edit_country_button"
+      android:layout_width="match_parent"
+      android:layout_height="60dp"
+      android:text="Country"
+      android:textAllCaps="false"
+      android:textAlignment="textStart"
+      style="@style/Widget.AppCompat.Button.Borderless"
+      android:drawableRight="@drawable/ic_arrow_right"
+      android:textSize="18sp"/>
+
+    <TextView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text="Your country here"
+      android:layout_marginLeft="10dp"
+      android:textColor="@color/link_text_faded"/>
+
+    <Button
+      android:id="@+id/user_profile_edit_about_button"
+      android:layout_width="match_parent"
+      android:layout_height="60dp"
+      android:text="About"
+      android:textAllCaps="false"
+      android:textAlignment="textStart"
+      style="@style/Widget.AppCompat.Button.Borderless"
+      android:drawableRight="@drawable/ic_arrow_right"
+      android:textSize="18sp"/>
+
+    <TextView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text="Your about here"
+      android:layout_marginLeft="10dp"
+      android:textColor="@color/link_text_faded"/>
+
+    <Button
+      android:id="@+id/user_profile_edit_industry_button"
+      android:layout_width="match_parent"
+      android:layout_height="60dp"
+      android:text="Industry"
+      android:textAllCaps="false"
+      android:textAlignment="textStart"
+      style="@style/Widget.AppCompat.Button.Borderless"
+      android:drawableRight="@drawable/ic_arrow_right"
+      android:textSize="18sp"/>
+
+    <TextView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text="Your industry here"
+      android:layout_marginLeft="10dp"
+      android:textColor="@color/link_text_faded"/>
+
+    <TextView
+      android:layout_marginTop="50dp"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text="NEVER SHARED ANYWHERE"
+      android:textColor="@color/link_text_highlight"
+      android:layout_marginLeft="10dp"
+      android:textSize="14sp"/>
+
+    <Button
+      android:id="@+id/user_profile_edit_birthday_button"
+      android:layout_width="match_parent"
+      android:layout_height="60dp"
+      android:text="Date of Birth"
+      android:textAllCaps="false"
+      android:textAlignment="textStart"
+      style="@style/Widget.AppCompat.Button.Borderless"
+      android:drawableRight="@drawable/ic_arrow_right"
+      android:textSize="18sp"/>
+
+    <TextView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text="Your data of birth here"
+      android:layout_marginLeft="10dp"
+      android:textColor="@color/link_text_faded"/>
+
+  </LinearLayout>
+
+  </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+

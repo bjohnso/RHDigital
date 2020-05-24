@@ -18,6 +18,10 @@ public class Course {
     private String name;
 
     @NonNull
+    @ColumnInfo(name = "author")
+    private String author;
+
+    @NonNull
     @ColumnInfo(name = "description")
     private String description;
 
@@ -35,9 +39,10 @@ public class Course {
     @Ignore
     public Course() { }
 
-    public Course(@NonNull String id, @NonNull String name, @NonNull String description, @NonNull String thumbnailURL, @NonNull String videoURL) {
+    public Course(@NonNull String id, @NonNull String name, @NonNull String author, @NonNull String description, @NonNull String thumbnailURL, @NonNull String videoURL) {
       this.id = id;
       this.name = name;
+      this.author = author;
       this.description = description;
       this.thumbnailURL = thumbnailURL;
       this.videoURL = videoURL;
@@ -57,7 +62,12 @@ public class Course {
         return name;
     }
 
-    @NonNull
+  @NonNull
+  public String getAuthor() {
+    return author;
+  }
+
+  @NonNull
     public String getThumbnailURL() {
         return thumbnailURL;
     }
@@ -87,7 +97,11 @@ public class Course {
         this.name = name;
     }
 
-    public void setThumbnailURL(@NonNull String thumbnailURL) {
+  public void setAuthor(@NonNull String author) {
+    this.author = author;
+  }
+
+  public void setThumbnailURL(@NonNull String thumbnailURL) {
         this.thumbnailURL = thumbnailURL;
     }
 

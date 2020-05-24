@@ -14,7 +14,7 @@ import com.rhdigital.rhclient.R;
 import com.rhdigital.rhclient.database.model.Course;
 import com.rhdigital.rhclient.database.model.CourseWithWorkbooks;
 import com.rhdigital.rhclient.database.model.Workbook;
-import com.rhdigital.rhclient.util.RemoteResourceConnector;
+import com.rhdigital.rhclient.common.services.RemoteResourceService;
 
 import java.util.List;
 
@@ -41,7 +41,7 @@ public class WorkbooksRecyclerViewAdapter extends RecyclerView.Adapter<Workbooks
           Course course = courseWithWorkbooks.getCourse();
 
           // Build URL for this image
-          new RemoteResourceConnector()
+          new RemoteResourceService()
             .getResourceURL(parent.getContext(), course.getThumbnailURL())
             .getDownloadUrl().addOnSuccessListener(uri -> {
             // Fetch image from firebase cloud

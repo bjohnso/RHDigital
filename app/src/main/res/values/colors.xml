@@ -6,7 +6,9 @@
   <color name="colorBlack">#000000</color>
 
   <color name="background">#050309</color>
+  <color name="background_alt">#0F0F0F</color>
   <color name="active">#DFBD13</color>
+  <color name="save">#1379DF</color>
   <color name="active_alt">#705F0A</color>
   <color name="inactive">#707070</color>
   <color name="submit_text">#050309</color>

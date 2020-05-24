@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:id="@+id/user_nav_graph"
+  app:startDestination="@id/userProfileFragment">
+
+  <fragment
+    android:id="@+id/userProfileFragment"
+    android:name="com.rhdigital.rhclient.activities.user.fragments.UserProfileFragment"
+    android:label="UserProfileFragment" />
+  <fragment
+    android:id="@+id/userProfileEditFragment"
+    android:name="com.rhdigital.rhclient.activities.user.fragments.UserProfileEditFragment"
+    android:label="UserProfileEditFragment" />
+</navigation>

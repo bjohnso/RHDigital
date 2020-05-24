@@ -1,4 +1,4 @@
-package com.rhdigital.rhclient.util;
+package com.rhdigital.rhclient.common.util;
 
 import android.os.Message;
 import androidx.fragment.app.Fragment;

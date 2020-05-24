@@ -15,9 +15,8 @@ import androidx.navigation.Navigation;
 
 import com.google.android.material.tabs.TabLayout;
 import com.rhdigital.rhclient.R;
-import com.rhdigital.rhclient.common.view.RHFragment;
 
-public class SignUpFragment extends Fragment implements RHFragment {
+public class SignUpFragment extends Fragment {
 
   // Components
   private boolean isParent = true;
@@ -46,16 +45,6 @@ public class SignUpFragment extends Fragment implements RHFragment {
       .build();
     tabLayout.addOnTabSelectedListener(new TabOnClick(childController, navOptions));
     signInRedirect.setOnClickListener(new RedirectSignInOnClick(navController));
-  }
-
-  @Override
-  public boolean isParent() {
-    return false;
-  }
-
-  @Override
-  public void setIsParent(boolean parent) {
-
   }
 
   private static class RedirectSignInOnClick implements View.OnClickListener {

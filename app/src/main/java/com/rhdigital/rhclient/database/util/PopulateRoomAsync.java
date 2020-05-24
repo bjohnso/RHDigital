@@ -87,6 +87,7 @@ public class PopulateRoomAsync extends AsyncTask<Void, Void, Void> {
         new Course(
           doc.getId(),
           doc.get("name").toString(),
+          doc.get("author").toString(),
           doc.get("description").toString(),
           doc.get("thumbnailURL").toString(),
           doc.get("videoURL").toString()
