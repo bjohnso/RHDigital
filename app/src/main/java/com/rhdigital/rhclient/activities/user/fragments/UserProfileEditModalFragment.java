@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -17,6 +18,7 @@ public class UserProfileEditModalFragment extends DialogFragment {
 
   private String propertyNameText;
   private TextView propertyName;
+  private EditText editText;
 
   @NonNull
   @Override
@@ -29,6 +31,8 @@ public class UserProfileEditModalFragment extends DialogFragment {
   public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
     View view = inflater.inflate(R.layout.user_profile_edit_modal_layout, container, false);
     propertyName = view.findViewById(R.id.user_profile_edit_modal_property_name);
+    editText = view.findViewById(R.id.user_profile_edit_modal_input);
+    editText.requestFocus();
     if (getArguments() != null) {
       this.propertyNameText = getArguments().getString("PROPERTY_NAME");
       propertyName.setText(propertyNameText);

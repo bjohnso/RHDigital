@@ -24,7 +24,7 @@
       />
 
     <EditText
-      android:id="@+id/user_profile_edit__modal_input"
+      android:id="@+id/user_profile_edit_modal_input"
       android:layout_centerInParent="true"
       android:layout_width="match_parent"
       android:layout_height="60dp"
