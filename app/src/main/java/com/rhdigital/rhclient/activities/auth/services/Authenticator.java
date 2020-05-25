@@ -1,24 +1,21 @@
-package com.rhdigital.rhclient.activities.auth.util;
+package com.rhdigital.rhclient.activities.auth.services;
 
 import android.app.Activity;
-import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -64,19 +61,46 @@ public class Authenticator {
   // Updates the authorisation status of the local store of courses for the newly created user
   public void postAuthenticate(FirebaseUser firebaseUser, Intent intent) {
     db.collection("users")
-      .document(firebaseUser.getUid()).get().addOnCompleteListener(userTask -> {
+      .document(firebaseUser.getUid())
+      .get()
+      .addOnCompleteListener(userTask -> {
         if (userTask.isSuccessful()) {
           Log.d("AUTH", userTask.getResult().getId());
-          User user = new User(firebaseUser.getUid(),
-            "test",
-            firebaseUser.getEmail(),
-            "test",
-            "test",
-            "test");
           if (!userTask.getResult().exists()) {
+            //Create Brand New User
+            User user = new User(firebaseUser.getUid(),
+              null,
+              firebaseUser.getEmail(),
+              firebaseUser.getPhoneNumber(),
+              null,
+              null,
+              null,
+              null,
+              null,
+              null);
             insertUserUpstream(user);
+            insertLocal(user);
+          } else {
+            // Fetch Existing User From Upstream
+            db.collection("users")
+              .document(firebaseUser.getUid())
+              .get()
+              .addOnSuccessListener(doc -> {
+                User user = new User(
+                  doc.get("id").toString(),
+                  doc.get("username").toString(),
+                  doc.get("email").toString(),
+                  doc.get("cell").toString(),
+                  doc.get("name").toString(),
+                  doc.get("surname").toString(),
+                  doc.get("title").toString(),
+                  doc.get("city").toString(),
+                  doc.get("country").toString(),
+                  doc.get("about").toString()
+                );
+                insertLocal(user);
+              });
           }
-          insertLocal(user);
           userTask.getResult().getReference()
             .collection("myCourses")
             .get()

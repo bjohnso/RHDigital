@@ -52,7 +52,7 @@
       />
 
     <Button
-      android:id="@+id/user_profile_edit_cancel_button"
+      android:id="@+id/user_profile_edit_modal_cancel_button"
       android:layout_alignParentBottom="true"
       android:layout_toLeftOf="@id/user_profile_modal_ok_button"
       android:layout_width="wrap_content"

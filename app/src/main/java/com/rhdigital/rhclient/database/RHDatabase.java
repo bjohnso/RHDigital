@@ -31,7 +31,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-@Database(entities = {Course.class, Workbook.class, User.class}, version = 1, exportSchema = false)
+@Database(entities = {Course.class, Workbook.class, User.class}, version = 2, exportSchema = false)
 public abstract class RHDatabase extends RoomDatabase {
 
     private static volatile RHDatabase INSTANCE;

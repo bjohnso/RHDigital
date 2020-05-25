@@ -63,158 +63,223 @@
       android:layout_marginLeft="10dp"
       android:textSize="14sp"/>
 
-    <Button
-      android:id="@+id/user_profile_edit_first_name_button"
+    <LinearLayout
+      android:layout_marginTop="10dp"
+      android:clickable="true"
       android:layout_width="match_parent"
-      android:layout_height="60dp"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      android:id="@+id/user_profile_edit_first_name_button"
+      style="@style/Widget.AppCompat.Button.Borderless">
+    <TextView
+      android:clickable="false"
+      android:layout_width="match_parent"
+      android:layout_height="40dp"
       android:text="First Name"
       android:textAllCaps="false"
       android:textAlignment="textStart"
-      style="@style/Widget.AppCompat.Button.Borderless"
       android:drawableRight="@drawable/ic_arrow_right"
       android:textSize="18sp"/>
-
     <TextView
+      android:visibility="gone"
+      android:clickable="false"
+      android:id="@+id/user_edit_first_name_value"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:text="Your first name here"
-      android:layout_marginLeft="10dp"
       android:textColor="@color/link_text_faded"/>
+  </LinearLayout>
 
-    <Button
+    <LinearLayout
+      android:layout_marginTop="10dp"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      android:clickable="true"
       android:id="@+id/user_profile_edit_last_name_button"
-      android:layout_width="match_parent"
-      android:layout_height="60dp"
-      android:text="Last Name"
-      android:textAllCaps="false"
-      android:textAlignment="textStart"
-      style="@style/Widget.AppCompat.Button.Borderless"
-      android:drawableRight="@drawable/ic_arrow_right"
-      android:textSize="18sp"/>
+      style="@style/Widget.AppCompat.Button.Borderless">
+      <TextView
+        android:clickable="false"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:text="Last Name"
+        android:textAllCaps="false"
+        android:textAlignment="textStart"
+        android:drawableRight="@drawable/ic_arrow_right"
+        android:textSize="18sp"/>
+      <TextView
+        android:visibility="gone"
+        android:clickable="false"
+        android:id="@+id/user_edit_last_name_value"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/link_text_faded"/>
+    </LinearLayout>
 
-    <TextView
+    <LinearLayout
+      android:layout_marginTop="10dp"
+      android:clickable="true"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:text="Your last name here"
-      android:layout_marginLeft="10dp"
-      android:textColor="@color/link_text_faded"/>
-
-    <Button
+      android:orientation="vertical"
       android:id="@+id/user_profile_edit_title_button"
+      style="@style/Widget.AppCompat.Button.Borderless">
+    <TextView
+      android:clickable="false"
       android:layout_width="match_parent"
-      android:layout_height="60dp"
+      android:layout_height="40dp"
       android:text="Title"
       android:textAllCaps="false"
       android:textAlignment="textStart"
-      style="@style/Widget.AppCompat.Button.Borderless"
       android:drawableRight="@drawable/ic_arrow_right"
       android:textSize="18sp"/>
-
     <TextView
+      android:visibility="gone"
+      android:clickable="false"
+      android:id="@+id/user_edit_title_value"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:text="Your title here"
-      android:layout_marginLeft="10dp"
       android:textColor="@color/link_text_faded"/>
+    </LinearLayout>
 
-    <Button
-      android:id="@+id/user_profile_edit_city_button"
+    <LinearLayout
+      android:layout_marginTop="10dp"
+      android:clickable="true"
       android:layout_width="match_parent"
-      android:layout_height="60dp"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      android:id="@+id/user_profile_edit_city_button"
+      style="@style/Widget.AppCompat.Button.Borderless">
+    <TextView
+      android:clickable="false"
+      android:layout_width="match_parent"
+      android:layout_height="40dp"
       android:text="City"
       android:textAllCaps="false"
       android:textAlignment="textStart"
-      style="@style/Widget.AppCompat.Button.Borderless"
       android:drawableRight="@drawable/ic_arrow_right"
       android:textSize="18sp"/>
-
     <TextView
+      android:visibility="gone"
+      android:clickable="false"
+      android:id="@+id/user_edit_city_value"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:text="Your city here"
-      android:layout_marginLeft="10dp"
       android:textColor="@color/link_text_faded"/>
+    </LinearLayout>
 
-    <Button
-      android:id="@+id/user_profile_edit_country_button"
+    <LinearLayout
+      android:layout_marginTop="10dp"
+      android:clickable="true"
       android:layout_width="match_parent"
-      android:layout_height="60dp"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      android:id="@+id/user_profile_edit_country_button"
+      style="@style/Widget.AppCompat.Button.Borderless">
+    <TextView
+      android:clickable="false"
+      android:layout_width="match_parent"
+      android:layout_height="40dp"
       android:text="Country"
       android:textAllCaps="false"
       android:textAlignment="textStart"
-      style="@style/Widget.AppCompat.Button.Borderless"
       android:drawableRight="@drawable/ic_arrow_right"
       android:textSize="18sp"/>
-
     <TextView
+      android:visibility="gone"
+      android:clickable="false"
+      android:id="@+id/user_edit_country_value"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:text="Your country here"
-      android:layout_marginLeft="10dp"
       android:textColor="@color/link_text_faded"/>
+    </LinearLayout>
 
-    <Button
-      android:id="@+id/user_profile_edit_about_button"
+    <LinearLayout
+      android:layout_marginTop="10dp"
+      android:clickable="true"
       android:layout_width="match_parent"
-      android:layout_height="60dp"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      android:id="@+id/user_profile_edit_about_button"
+      style="@style/Widget.AppCompat.Button.Borderless">
+    <TextView
+      android:clickable="false"
+      android:layout_width="match_parent"
+      android:layout_height="40dp"
       android:text="About"
       android:textAllCaps="false"
       android:textAlignment="textStart"
-      style="@style/Widget.AppCompat.Button.Borderless"
       android:drawableRight="@drawable/ic_arrow_right"
       android:textSize="18sp"/>
-
     <TextView
+      android:visibility="gone"
+      android:clickable="false"
+      android:id="@+id/user_edit_about_value"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:text="Your about here"
-      android:layout_marginLeft="10dp"
       android:textColor="@color/link_text_faded"/>
+    </LinearLayout>
 
-    <Button
+    <LinearLayout
+      android:layout_marginTop="10dp"
+      android:clickable="true"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
       android:id="@+id/user_profile_edit_industry_button"
-      android:layout_width="match_parent"
-      android:layout_height="60dp"
-      android:text="Industry"
-      android:textAllCaps="false"
-      android:textAlignment="textStart"
-      style="@style/Widget.AppCompat.Button.Borderless"
-      android:drawableRight="@drawable/ic_arrow_right"
-      android:textSize="18sp"/>
-
+      style="@style/Widget.AppCompat.Button.Borderless">
+      <TextView
+        android:clickable="false"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:text="Industry"
+        android:textAllCaps="false"
+        android:textAlignment="textStart"
+        android:drawableRight="@drawable/ic_arrow_right"
+        android:textSize="18sp"/>
     <TextView
+      android:clickable="false"
+      android:id="@+id/user_edit_industry_value"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:text="Your industry here"
-      android:layout_marginLeft="10dp"
+      android:visibility="gone"
       android:textColor="@color/link_text_faded"/>
+    </LinearLayout>
 
     <TextView
-      android:layout_marginTop="50dp"
+      android:layout_marginTop="30dp"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:text="NEVER SHARED ANYWHERE"
+      android:layout_marginLeft="12dp"
       android:textColor="@color/link_text_highlight"
-      android:layout_marginLeft="10dp"
       android:textSize="14sp"/>
 
-    <Button
-      android:id="@+id/user_profile_edit_birthday_button"
+    <LinearLayout
+      android:clickable="true"
+      android:layout_marginTop="10dp"
       android:layout_width="match_parent"
-      android:layout_height="60dp"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      style="@style/Widget.AppCompat.Button.Borderless"
+      android:id="@+id/user_profile_edit_birthday_button">
+    <TextView
+      android:clickable="false"
+      android:layout_width="match_parent"
+      android:layout_height="40dp"
       android:text="Date of Birth"
       android:textAllCaps="false"
       android:textAlignment="textStart"
-      style="@style/Widget.AppCompat.Button.Borderless"
       android:drawableRight="@drawable/ic_arrow_right"
       android:textSize="18sp"/>
 
     <TextView
+      android:clickable="false"
+      android:id="@+id/user_edit_birthday_value"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:text="Your data of birth here"
-      android:layout_marginLeft="10dp"
+      android:visibility="gone"
       android:textColor="@color/link_text_faded"/>
+    </LinearLayout>
 
   </LinearLayout>
 

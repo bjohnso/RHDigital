@@ -10,15 +10,13 @@ import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.navigation.NavController;
-import androidx.navigation.NavGraph;
-import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import com.rhdigital.rhclient.R;
-import com.rhdigital.rhclient.activities.auth.util.Authenticator;
+import com.rhdigital.rhclient.activities.auth.services.Authenticator;
 import com.rhdigital.rhclient.activities.courses.CoursesActivity;
 import com.rhdigital.rhclient.common.services.NavigationService;
 import com.rhdigital.rhclient.database.RHDatabase;
