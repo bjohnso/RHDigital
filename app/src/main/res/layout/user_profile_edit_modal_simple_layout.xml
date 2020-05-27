@@ -29,15 +29,14 @@
       android:layout_width="match_parent"
       android:layout_height="60dp"
       android:focusedByDefault="true"
-      android:hint="Property Name"
-      android:textColorHighlight="@color/save"
       android:layout_centerVertical="true"
       android:layout_marginLeft="20dp"
       android:layout_marginRight="20dp"
-      app:hintEnabled="true"
+      android:textColorLink="@color/bar"
+      android:textColorHighlight="@color/active"
       android:textColor="@color/colorBlack"
-      app:counterTextColor="@color/colorBlack"
-      app:hintTextColor="@color/colorBlack" />
+      android:background="@drawable/background_edit_text_selector"
+      />
 
     <Button
       android:id="@+id/user_profile_modal_ok_button"

@@ -1,7 +1,9 @@
 package com.rhdigital.rhclient.database.repository;
 
+import android.animation.ObjectAnimator;
 import android.app.Application;
 import android.content.Intent;
+import android.provider.ContactsContract;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -44,6 +46,8 @@ public class RHRepository {
 
     public LiveData<List<User>> getAllUsers() { return userDAO.getAllUsers(); };
 
+    public LiveData<User> getAuthenticatedUser(String id) {return userDAO.getAuthenticatedUser(id);}
+
     public LiveData<List<Course>> getAllCourses() {
         return courseDAO.getAllCourses();
     }
@@ -61,6 +65,16 @@ public class RHRepository {
     public void authoriseCourse(String id) {
       try {
         executorService.submit(new AuthCourseService(courseDAO, id)).get();
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
+
+    public void update(Object o) {
+      try {
+        if (o.getClass().getSimpleName().equalsIgnoreCase(User.class.getSimpleName())) {
+          executorService.submit(new UpdateService(userDAO, o));
+        }
       } catch (Exception e) {
         e.printStackTrace();
       }
@@ -91,6 +105,22 @@ public class RHRepository {
         public Long call() throws Exception {
           return this.dao.insert(obj);
         }
+    }
+
+    private class UpdateService implements Callable<Void> {
+      private BaseDAO dao;
+      private Object obj;
+
+      public UpdateService(BaseDAO dao, Object obj) {
+        this.dao = dao;
+        this.obj = obj;
+      }
+
+      @Override
+      public Void call() throws Exception {
+        this.dao.update(obj);
+        return null;
+      }
     }
 
   private class AuthCourseService implements Callable<Integer> {

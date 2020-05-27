@@ -1,7 +1,7 @@
 package com.rhdigital.rhclient.activities.user.fragments;
 
 import android.app.Activity;
-import android.app.Dialog;
+import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,23 +10,26 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.LiveData;
 
-import com.google.common.io.LineReader;
 import com.rhdigital.rhclient.R;
+import com.rhdigital.rhclient.activities.auth.services.Authenticator;
+import com.rhdigital.rhclient.activities.user.UserActivity;
 import com.rhdigital.rhclient.common.services.NavigationService;
+import com.rhdigital.rhclient.database.model.User;
+import com.rhdigital.rhclient.database.viewmodel.UserViewModel;
 
 import java.util.HashMap;
-import java.util.Map;
 
 public class UserProfileEditFragment extends Fragment {
 
@@ -40,10 +43,17 @@ public class UserProfileEditFragment extends Fragment {
   private LinearLayout aboutButton;
   private LinearLayout industryButton;
   private LinearLayout birthdayButton;
+  private Button saveButton;
   private ImageView backButton;
 
   private HashMap<Integer, String> buttonIdMap = new HashMap<>();
   private HashMap<String, TextView> textViewMap = new HashMap<>();
+  private User user;
+
+  private LiveData<User> userObservable;
+
+  public UserProfileEditFragment() {
+  }
 
   @Nullable
   @Override
@@ -51,6 +61,7 @@ public class UserProfileEditFragment extends Fragment {
     View view = inflater.inflate(R.layout.user_profile_edit_layout, container, false);
 
     //Initialise View Components
+    saveButton = view.findViewById(R.id.user_profile_edit_save_button);
     backButton = view.findViewById(R.id.user_profile_edit_back_button);
     firstNameButton = view.findViewById(R.id.user_profile_edit_first_name_button);
     lastNameButton = view.findViewById(R.id.user_profile_edit_last_name_button);
@@ -83,8 +94,12 @@ public class UserProfileEditFragment extends Fragment {
 
     //Set Listeners
     backButton.setOnClickListener(new BackButtonOnClick(getActivity().getLocalClassName()));
+    saveButton.setOnClickListener(new SaveButtonOnClick(this));
 
-    EditOnClick editOnClick = new EditOnClick(this, getParentFragmentManager(), buttonIdMap);
+    EditOnClick editOnClick = new EditOnClick(this,
+      getParentFragmentManager(),
+      buttonIdMap,
+      textViewMap);
     firstNameButton.setOnClickListener(editOnClick);
     lastNameButton.setOnClickListener(editOnClick);
     titleButton.setOnClickListener(editOnClick);
@@ -94,7 +109,73 @@ public class UserProfileEditFragment extends Fragment {
     industryButton.setOnClickListener(editOnClick);
     birthdayButton.setOnClickListener(editOnClick);
 
+    userObservable = ((UserActivity)getActivity()).getUser();
+
+    user = userObservable.getValue();
+    if (user != null) {
+      initialiseTextViewValues(user);
+    }
+
+    userObservable.observe(getViewLifecycleOwner(), u -> {
+      //Set text to edit fields
+      initialiseTextViewValues(u);
+      user = u;
+    });
+
     return view;
+  }
+
+  public User getUser() {
+    return user;
+  }
+
+  public HashMap<Integer, String> getButtonIdMap() {
+    return buttonIdMap;
+  }
+
+  public HashMap<String, TextView> getTextViewMap() {
+    return textViewMap;
+  }
+
+  private void initialiseTextViewValues(User user) {
+    if (user != null) {
+      String firstName = user.getName();
+      String lastName = user.getSurname();
+      String title = user.getTitle();
+      String city = user.getCity();
+      String country = user.getCountry();
+      String about = user.getAbout();
+      String industry = user.getIndustry();
+
+      if (firstName != null && !firstName.isEmpty()) {
+        textViewMap.get("First Name").setVisibility(View.VISIBLE);
+        textViewMap.get("First Name").setText(firstName);
+      }
+      if (lastName != null && !lastName.isEmpty()) {
+        textViewMap.get("Last Name").setVisibility(View.VISIBLE);
+        textViewMap.get("Last Name").setText(lastName);
+      }
+      if (title != null && !title.isEmpty()) {
+        textViewMap.get("Title").setVisibility(View.VISIBLE);
+        textViewMap.get("Title").setText(title);
+      }
+      if (city != null && !city.isEmpty()) {
+        textViewMap.get("City").setVisibility(View.VISIBLE);
+        textViewMap.get("City").setText(city);
+      }
+      if (country != null && !country.isEmpty()) {
+        textViewMap.get("Country").setVisibility(View.VISIBLE);
+        textViewMap.get("Country").setText(country);
+      }
+      if (about != null && !about.isEmpty()) {
+        textViewMap.get("About").setVisibility(View.VISIBLE);
+        textViewMap.get("About").setText(about);
+      }
+      if (industry != null && !industry.isEmpty()) {
+        textViewMap.get("Industry").setVisibility(View.VISIBLE);
+        textViewMap.get("Industry").setText(industry);
+      }
+    }
   }
 
   @Override
@@ -135,15 +216,16 @@ public class UserProfileEditFragment extends Fragment {
   }
 
   public static class EditOnClick implements View.OnClickListener {
-
     private Fragment fragment;
     private FragmentManager fragmentManager;
     private HashMap<Integer, String> buttonIdMap;
+    private HashMap<String, TextView> editTextMap;
 
-    public EditOnClick(Fragment fragment, FragmentManager fragmentManager, HashMap<Integer, String> buttonIdMap) {
+    public EditOnClick(Fragment fragment, FragmentManager fragmentManager, HashMap<Integer, String> buttonIdMap, HashMap<String, TextView> editTextMap) {
       this.fragment = fragment;
       this.fragmentManager = fragmentManager;
       this.buttonIdMap = buttonIdMap;
+      this.editTextMap = editTextMap;
     }
 
     @Override
@@ -151,18 +233,50 @@ public class UserProfileEditFragment extends Fragment {
       DialogFragment dialogFragment;
       Bundle args;
 
-      if (view.getId() == R.id.user_profile_edit_country_button
-        || view.getId() == R.id.user_profile_edit_birthday_button) {
+      if (view.getId() == R.id.user_profile_edit_birthday_button) {
 
       } else {
         args = new Bundle();
-        args.putString("PROPERTY_NAME", buttonIdMap.get(view.getId()));
+        String propertyName = buttonIdMap.get(view.getId());
+        String propertyValue = editTextMap.get(propertyName).getText().toString();
+        args.putString("PROPERTY_NAME", propertyName);
+        args.putString("PROPERTY_VALUE", propertyValue);
         UserProfileEditFragment userProfileEditFragment = (UserProfileEditFragment) fragment;
         dialogFragment = new UserProfileEditModalFragment();
         dialogFragment.setArguments(args);
         dialogFragment.setTargetFragment(userProfileEditFragment, userProfileEditFragment.getREQUEST_CODE());
         dialogFragment.show(fragmentManager, buttonIdMap.get(view.getId()));
       }
+    }
+  }
+
+  public static class SaveButtonOnClick implements View.OnClickListener {
+    UserProfileEditFragment userProfileEditFragment;
+    UserActivity userActivity;
+    UserViewModel userViewModel;
+    User user;
+    HashMap<String, TextView> textViewMap;
+
+    public SaveButtonOnClick(UserProfileEditFragment userProfileEditFragment) {
+      this.userProfileEditFragment = userProfileEditFragment;
+      this.userActivity = (UserActivity) userProfileEditFragment.getActivity();
+      this.userViewModel = userActivity.getUserViewModel();
+      this.textViewMap = userProfileEditFragment.getTextViewMap();
+    }
+
+    @Override
+    public void onClick(View view) {
+      // Update user object
+      this.user = userProfileEditFragment.getUser();
+      user.setName(textViewMap.get("First Name").getText().toString());
+      user.setSurname(textViewMap.get("Last Name").getText().toString());
+      user.setTitle(textViewMap.get("Title").getText().toString());
+      user.setCity(textViewMap.get("City").getText().toString());
+      user.setCountry(textViewMap.get("Country").getText().toString());
+      user.setAbout(textViewMap.get("About").getText().toString());
+      user.setIndustry(textViewMap.get("Industry").getText().toString());
+
+      userActivity.updateUser(user, userProfileEditFragment.getContext());
     }
   }
 }

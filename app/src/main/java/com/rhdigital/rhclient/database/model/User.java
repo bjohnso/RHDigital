@@ -41,6 +41,9 @@ public class User {
   @ColumnInfo(name = "about")
   private String about;
 
+  @ColumnInfo(name = "industry")
+  private String industry;
+
   @Ignore
   public User() { }
 
@@ -53,6 +56,7 @@ public class User {
               String title,
               String city,
               String country,
+              String industry,
               String about) {
     this.id = id;
     this.username = username;
@@ -66,7 +70,7 @@ public class User {
     this.about = about;
   }
 
-  public void setId(@NonNull String id) {
+  private void setId(@NonNull String id) {
     this.id = id;
   }
 
@@ -100,6 +104,10 @@ public class User {
 
   public void setCountry(String country) {
     this.country = country;
+  }
+
+  public void setIndustry(String industry) {
+    this.industry = industry;
   }
 
   public void setAbout(String about) {
@@ -141,6 +149,10 @@ public class User {
 
   public String getCountry() {
     return country;
+  }
+
+  public String getIndustry() {
+    return industry;
   }
 
   public String getAbout() {

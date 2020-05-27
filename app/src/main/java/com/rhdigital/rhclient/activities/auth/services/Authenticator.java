@@ -77,6 +77,7 @@ public class Authenticator {
               null,
               null,
               null,
+              null,
               null);
             insertUserUpstream(user);
             insertLocal(user);
@@ -96,6 +97,7 @@ public class Authenticator {
                   doc.get("title").toString(),
                   doc.get("city").toString(),
                   doc.get("country").toString(),
+                  doc.get("industry").toString(),
                   doc.get("about").toString()
                 );
                 insertLocal(user);
@@ -232,7 +234,7 @@ public class Authenticator {
       );
     } else {
       Toast.makeText(this.context,
-        "PLease enter a valid cell phone number.",
+        "Please enter a valid cell phone number.",
         Toast.LENGTH_LONG).show();
     }
   }
