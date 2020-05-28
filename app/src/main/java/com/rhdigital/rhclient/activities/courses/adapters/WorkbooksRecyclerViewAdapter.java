@@ -42,7 +42,7 @@ public class WorkbooksRecyclerViewAdapter extends RecyclerView.Adapter<Workbooks
 
           // Build URL for this image
           new RemoteResourceService()
-            .getResourceURL(parent.getContext(), course.getThumbnailURL())
+            .getImageResourceURL(parent.getContext(), course.getThumbnailURL())
             .getDownloadUrl().addOnSuccessListener(uri -> {
             // Fetch image from firebase cloud
             Glide

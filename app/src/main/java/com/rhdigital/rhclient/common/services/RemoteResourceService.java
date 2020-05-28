@@ -25,8 +25,10 @@ public class RemoteResourceService {
   private FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
   private MutableLiveData<HashMap<String, Bitmap>> liveImageMap;
   private MutableLiveData<HashMap<String, Uri>> liveVideoUriMap;
+  private MutableLiveData<HashMap<String, Uri>> liveDocumentMap;
   private HashMap<String, Bitmap> liveImageMapSurrogate = new HashMap<>();
   private HashMap<String, Uri> liveVideoUriMapSurrogate = new HashMap<>();
+  private HashMap<String, Uri> liveDocumentMapSurrogate = new HashMap<>();
 
   public RemoteResourceService() {
     StorageReference root = firebaseStorage.getReference();
@@ -36,10 +38,11 @@ public class RemoteResourceService {
     urlMap.put("x", root.child("courses/posters/drawable-xhdpi"));
     urlMap.put("xx", root.child("courses/posters/drawable-xxhdpi"));
     urlMap.put("xxx", root.child("courses/posters/drawable-xxxhdpi"));
-    urlMap.put("v", root.child("courses/videos"));
+    urlMap.put("video", root.child("courses/videos"));
+    urlMap.put("doc", root.child("documents"));
   }
 
-  public StorageReference getResourceURL(Context context, String endpoint) {
+  public StorageReference getImageResourceURL(Context context, String endpoint) {
     float density = context.getResources().getDisplayMetrics().density;
     StorageReference ref = null;
       if (density <= 0.75) {
@@ -62,7 +65,11 @@ public class RemoteResourceService {
 
   public StorageReference getVideoResourceURL(String endpoint) {
     //TODO add screen density to check to determine best resolution to download
-    return urlMap.get("v").child(endpoint);
+    return urlMap.get("video").child(endpoint);
+  }
+
+  public StorageReference getDocumentResourceURL(String endpoint) {
+    return urlMap.get("doc").child(endpoint);
   }
 
   public LiveData<HashMap<String, Bitmap>> getAllBitmap(Context context, List<Course> courses, int width, int height) {
@@ -81,6 +88,27 @@ public class RemoteResourceService {
     return liveVideoUriMap;
   }
 
+  public LiveData<HashMap<String, Uri>> getAllDocumentURI(String... docIds) {
+   if (liveDocumentMap == null) {
+     liveDocumentMap = new MutableLiveData<>();
+     loadDocumentUri(docIds);
+   }
+   return liveDocumentMap;
+  }
+
+  public void loadDocumentUri(String... documentIds) {
+    for (String id: documentIds) {
+      getDocumentResourceURL(id).getDownloadUrl()
+        .addOnSuccessListener(uri -> {
+          //TODO: IMPLEMENT A CLEANER TRUNCATING STRATEGY
+          Log.d("REMOTE", "new doc Id : " + id);
+          String identifier = id.split("\\.")[0];
+          liveDocumentMapSurrogate.put(identifier, uri);
+          liveDocumentMap.setValue(liveDocumentMapSurrogate);
+        });
+    }
+  }
+
   public void loadVideoUri(List<Course> courses, int width, int height) {
     for (Course c : courses) {
       getVideoResourceURL(c.getVideoURL()).getDownloadUrl().addOnSuccessListener(uri -> {
@@ -89,12 +117,11 @@ public class RemoteResourceService {
         Log.d("REMOTE", "URI : " + uri);
       });
     }
-
   }
 
   private void loadImageUri(Context context, List<Course> courses, int width, int height) {
     for (Course c : courses) {
-      getResourceURL(
+      getImageResourceURL(
           context,
           c.getThumbnailURL())
         .getDownloadUrl()

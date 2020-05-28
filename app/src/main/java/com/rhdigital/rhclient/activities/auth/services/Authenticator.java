@@ -128,6 +128,10 @@ public class Authenticator {
     rhRepository.insert(user);
   }
 
+  public void logout() {
+    firebaseAuth.signOut();
+  }
+
   // STRATEGIES
   // EMAIL & PASSWORD
 
