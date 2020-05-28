@@ -2,11 +2,13 @@ package com.rhdigital.rhclient.activities.user.fragments;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -14,8 +16,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.room.PrimaryKey;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.rhdigital.rhclient.R;
 import com.rhdigital.rhclient.activities.courses.CoursesActivity;
 import com.rhdigital.rhclient.activities.user.UserActivity;
@@ -23,14 +27,16 @@ import com.rhdigital.rhclient.common.services.NavigationService;
 
 public class UserProfileFragment extends Fragment {
 
-  ImageButton backButton;
-  ImageButton profileImageButton;
-  TextView nameView;
-  TextView usernameView;
-  Button editProfileButton;
-  Button privacyPolicyButton;
-  Button aboutPolicyButton;
-  Button logoutButton;
+  private LiveData<Bitmap> userProfilePhotoObservable;
+
+  private ImageButton backButton;
+  private ImageButton profileImageButton;
+  private TextView nameView;
+  private TextView usernameView;
+  private Button editProfileButton;
+  private Button privacyPolicyButton;
+  private Button aboutPolicyButton;
+  private Button logoutButton;
 
   @Nullable
   @Override
@@ -54,6 +60,30 @@ public class UserProfileFragment extends Fragment {
     aboutPolicyButton.setOnClickListener(new DocumentButtonOnClick(getContext(), "about"));
     privacyPolicyButton.setOnClickListener(new DocumentButtonOnClick(getContext(), "privacy_policy"));
     logoutButton.setOnClickListener(new UserProfileLogoutOnClick(getContext()));
+
+    //Observers
+    final Observer<Bitmap> userProfileImageObserver = new Observer<Bitmap>() {
+      @Override
+      public void onChanged(Bitmap bitmap) {
+        profileImageButton.setImageBitmap(bitmap);
+      }
+    };
+
+    profileImageButton.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+      @Override
+      public void onGlobalLayout() {
+        if (profileImageButton.getHeight() > 0 && profileImageButton.getWidth() > 0) {
+          profileImageButton.getViewTreeObserver().removeOnGlobalLayoutListener(this::onGlobalLayout);
+          userProfilePhotoObservable = ((UserActivity)getActivity())
+            .getUserViewModel()
+            .getProfilePhoto(getContext(),
+              FirebaseAuth.getInstance().getUid(),
+              profileImageButton.getWidth(),
+              profileImageButton.getHeight());
+          userProfilePhotoObservable.observe(getViewLifecycleOwner(), userProfileImageObserver);
+        }
+      }
+    });
 
     return view;
   }

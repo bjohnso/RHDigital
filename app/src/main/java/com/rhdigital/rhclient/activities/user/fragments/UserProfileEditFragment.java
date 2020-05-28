@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,7 +25,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.LiveData;
 
 import com.rhdigital.rhclient.R;
-import com.rhdigital.rhclient.activities.auth.services.Authenticator;
 import com.rhdigital.rhclient.activities.user.UserActivity;
 import com.rhdigital.rhclient.common.services.NavigationService;
 import com.rhdigital.rhclient.database.model.User;

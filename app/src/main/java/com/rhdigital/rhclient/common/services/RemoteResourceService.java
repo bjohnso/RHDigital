@@ -26,6 +26,7 @@ public class RemoteResourceService {
   private MutableLiveData<HashMap<String, Bitmap>> liveImageMap;
   private MutableLiveData<HashMap<String, Uri>> liveVideoUriMap;
   private MutableLiveData<HashMap<String, Uri>> liveDocumentMap;
+  private MutableLiveData<Bitmap> liveProfilePhotoUri;
   private HashMap<String, Bitmap> liveImageMapSurrogate = new HashMap<>();
   private HashMap<String, Uri> liveVideoUriMapSurrogate = new HashMap<>();
   private HashMap<String, Uri> liveDocumentMapSurrogate = new HashMap<>();
@@ -40,6 +41,7 @@ public class RemoteResourceService {
     urlMap.put("xxx", root.child("courses/posters/drawable-xxxhdpi"));
     urlMap.put("video", root.child("courses/videos"));
     urlMap.put("doc", root.child("documents"));
+    urlMap.put("profile_photo", root.child("profile_photos"));
   }
 
   public StorageReference getImageResourceURL(Context context, String endpoint) {
@@ -63,6 +65,10 @@ public class RemoteResourceService {
       return ref.child(endpoint);
   }
 
+  public StorageReference getProfileImageResourceURL(String id) {
+    return urlMap.get("profile_photo").child(id);
+  }
+
   public StorageReference getVideoResourceURL(String endpoint) {
     //TODO add screen density to check to determine best resolution to download
     return urlMap.get("video").child(endpoint);
@@ -75,25 +81,52 @@ public class RemoteResourceService {
   public LiveData<HashMap<String, Bitmap>> getAllBitmap(Context context, List<Course> courses, int width, int height) {
     if (liveImageMap == null) {
       liveImageMap = new MutableLiveData<>();
-      loadImageUri(context, courses, width, height);
     }
+    loadImageUri(context, courses, width, height);
     return liveImageMap;
+  }
+
+  public LiveData<Bitmap> getProfilePhoto(Context context, String id, int width, int height) {
+    if (liveProfilePhotoUri == null) {
+      liveProfilePhotoUri = new MutableLiveData<>();
+    }
+    loadProfileImageUri(context, id, width, height);
+    return liveProfilePhotoUri;
   }
 
   public LiveData<HashMap<String, Uri>> getAllVideoURI(List<Course> courses, int width, int height) {
     if (liveVideoUriMap == null) {
       liveVideoUriMap = new MutableLiveData<>();
-      loadVideoUri(courses, width, height);
     }
+    loadVideoUri(courses, width, height);
     return liveVideoUriMap;
   }
 
   public LiveData<HashMap<String, Uri>> getAllDocumentURI(String... docIds) {
    if (liveDocumentMap == null) {
      liveDocumentMap = new MutableLiveData<>();
-     loadDocumentUri(docIds);
    }
+    loadDocumentUri(docIds);
    return liveDocumentMap;
+  }
+
+  public void loadProfileImageUri(Context context, String id, int width, int height) {
+    getProfileImageResourceURL(id).getDownloadUrl()
+      .addOnSuccessListener(uri -> {
+        //Preload Image into Disk Cache
+        Glide.with(context)
+          .load(uri)
+          .asBitmap()
+          .diskCacheStrategy(DiskCacheStrategy.ALL)
+          .skipMemoryCache(false)
+          .into(new SimpleTarget<Bitmap>(width, height) {
+            @Override
+            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+              //Populate LiveData
+              liveProfilePhotoUri.setValue(resource);
+            }
+      });
+    });
   }
 
   public void loadDocumentUri(String... documentIds) {

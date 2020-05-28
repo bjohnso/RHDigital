@@ -1,6 +1,8 @@
 package com.rhdigital.rhclient.database.viewmodel;
 
 import android.app.Application;
+import android.content.Context;
+import android.graphics.Bitmap;
 import android.net.Uri;
 
 import androidx.annotation.NonNull;
@@ -12,6 +14,7 @@ import com.rhdigital.rhclient.common.services.RemoteResourceService;
 import com.rhdigital.rhclient.database.model.User;
 import com.rhdigital.rhclient.database.repository.RHRepository;
 
+import java.util.BitSet;
 import java.util.HashMap;
 
 public class UserViewModel extends AndroidViewModel {
@@ -32,5 +35,9 @@ public class UserViewModel extends AndroidViewModel {
 
   public LiveData<HashMap<String, Uri>> getAllDocumentUri(String... docIds) {
     return new RemoteResourceService().getAllDocumentURI(docIds);
+  }
+
+  public LiveData<Bitmap> getProfilePhoto(Context context, String id, int width, int height) {
+    return new RemoteResourceService().getProfilePhoto(context, id, width, height);
   }
 }

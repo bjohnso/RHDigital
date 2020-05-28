@@ -3,6 +3,7 @@ package com.rhdigital.rhclient.activities.user;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,15 +17,18 @@ import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.rhdigital.rhclient.R;
 import com.rhdigital.rhclient.activities.auth.AuthActivity;
 import com.rhdigital.rhclient.activities.auth.services.Authenticator;
+import com.rhdigital.rhclient.common.services.FirebaseUploadService;
 import com.rhdigital.rhclient.common.services.NavigationService;
 import com.rhdigital.rhclient.database.model.User;
 import com.rhdigital.rhclient.database.viewmodel.UserViewModel;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 
@@ -99,7 +103,7 @@ public class UserActivity extends AppCompatActivity {
     super.onActivityResult(requestCode, resultCode, data);
     if (resultCode == Activity.RESULT_OK) {
       if (requestCode == IMAGE_PICKER_CODE) {
-        
+        FirebaseUploadService.getInstance().uploadProfileImage(data.getData(), FirebaseAuth.getInstance().getUid());
       }
     }
   }
