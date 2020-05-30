@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+  android:id="@+id/menu_profile_image_button_container"
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="52dp"
+  android:layout_height="40dp"
+  android:clickable="true">
+
+  <de.hdodenhof.circleimageview.CircleImageView
+    android:id="@+id/menu_profile_image_button"
+    android:layout_width="40dp"
+    android:layout_height="match_parent"
+    android:src="@drawable/ic_user"
+    />
+
+</FrameLayout>

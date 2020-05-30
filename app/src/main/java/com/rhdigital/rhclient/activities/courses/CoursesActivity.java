@@ -1,19 +1,30 @@
 package com.rhdigital.rhclient.activities.courses;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import androidx.navigation.NavController;
 
 import androidx.navigation.fragment.NavHostFragment;
@@ -24,27 +35,40 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.rhdigital.rhclient.activities.auth.AuthActivity;
 import com.rhdigital.rhclient.activities.user.UserActivity;
 import com.rhdigital.rhclient.common.services.NavigationService;
+import com.rhdigital.rhclient.database.viewmodel.UserViewModel;
 
 import static com.rhdigital.rhclient.R.menu.courses_menu_top;
 
 public class CoursesActivity extends AppCompatActivity {
 
+    private Context context;
+
+    //Observables
+    private UserViewModel userViewModel;
+    private LiveData<Bitmap> userProfileImageObservable;
+
     //Components
-    Toolbar mToolbar;
-    BottomNavigationView mBottomNavigationView;
+    private Toolbar mToolbar;
+    private BottomNavigationView mBottomNavigationView;
+    private ImageView userProfileButton;
+    private FrameLayout userProfileButtonContainer;
 
     //Static Components
-    CoordinatorLayout appBarContainer;
-    BottomNavigationView bottomNavigationView;
+    private CoordinatorLayout appBarContainer;
+    private BottomNavigationView bottomNavigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_courses);
 
+        this.context = this;
+
         if (FirebaseAuth.getInstance().getCurrentUser() == null) {
           startAuthActivity();
         }
+
+        userViewModel = new UserViewModel(getApplication());
 
         mToolbar = findViewById(R.id.topNavigationView);
         mBottomNavigationView = findViewById(R.id.bottomNavigationView);
@@ -66,16 +90,54 @@ public class CoursesActivity extends AppCompatActivity {
         R.navigation.courses_nav_graph,
         R.id.coursesTabFragment);
 
-        //Set Listeners
-        mBottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavOnClick(getLocalClassName()));
-        mToolbar.setOnMenuItemClickListener(new MenuItemOnClick(this));
+      //Set Listeners
+      mBottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavOnClick(getLocalClassName()));
+      mToolbar.setOnMenuItemClickListener(new MenuItemOnClick(this));
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(courses_menu_top, menu);
-        return true;
+        MenuItem menuItem = menu.findItem(R.id.courses_top_nav_profile);
+        menuItem.setActionView(R.layout.menu_profile_button_layout);
+    return true;
     }
+
+  @Override
+  public boolean onPrepareOptionsMenu(Menu menu) {
+      MenuItem menuItem = menu.findItem(R.id.courses_top_nav_profile);
+
+      userProfileButton = (ImageView) menuItem
+        .getActionView()
+        .findViewById(R.id.menu_profile_image_button);
+
+    userProfileButtonContainer = menuItem.getActionView()
+      .findViewById(R.id.menu_profile_image_button_container);
+
+    // Observers
+    final Observer<Bitmap> userProfileImageObserver = bitmap -> {
+      userProfileImageObservable.removeObservers(this);
+      userProfileButton.setImageBitmap(bitmap);
+    };
+
+    userProfileButton.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+      @Override
+      public void onGlobalLayout() {
+        if (userProfileButton.getHeight() > 0 && userProfileButton.getWidth() > 0) {
+          userProfileButton.getViewTreeObserver().removeOnGlobalLayoutListener(this::onGlobalLayout);
+          userProfileImageObservable = userViewModel.getProfilePhoto(context,
+            FirebaseAuth.getInstance().getUid(),
+            userProfileButton.getWidth(),
+            userProfileButton.getHeight());
+          userProfileImageObservable.observe((LifecycleOwner) context, userProfileImageObserver);
+        }
+      }
+    });
+
+    userProfileButtonContainer.setOnClickListener(new UserProfileButtonOnClick(this));
+
+    return true;
+  }
 
   @SuppressLint("SourceLockedOrientationActivity")
     public void configureScreenOrientation(boolean isLandscape) {
@@ -100,6 +162,10 @@ public class CoursesActivity extends AppCompatActivity {
     private void startAuthActivity() {
       Intent intent = new Intent(this, AuthActivity.class);
       startActivity(intent);
+    }
+
+    public void setToolbarTitle(String title) {
+      mToolbar.setTitle(title);
     }
 
   public static class BottomNavOnClick implements BottomNavigationView.OnNavigationItemSelectedListener {
@@ -127,6 +193,21 @@ public class CoursesActivity extends AppCompatActivity {
     }
   }
 
+  public static class UserProfileButtonOnClick implements View.OnClickListener {
+
+      Context context;
+
+      public UserProfileButtonOnClick(Context context) {
+        this.context = context;
+      }
+
+    @Override
+    public void onClick(View view) {
+      Intent intent = new Intent(context, UserActivity.class);
+      context.startActivity(intent);
+    }
+  }
+
   public static class MenuItemOnClick implements Toolbar.OnMenuItemClickListener {
 
       Context context;
@@ -137,6 +218,7 @@ public class CoursesActivity extends AppCompatActivity {
 
     @Override
     public boolean onMenuItemClick(MenuItem menuItem) {
+      Log.d("MENU", "MENU WAS CLICKED");
       if (menuItem.getItemId() == R.id.courses_top_nav_profile) {
         Intent intent = new Intent(context, UserActivity.class);
         context.startActivity(intent);

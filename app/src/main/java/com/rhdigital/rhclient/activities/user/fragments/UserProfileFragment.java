@@ -1,16 +1,19 @@
 package com.rhdigital.rhclient.activities.user.fragments;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -18,19 +21,25 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModel;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.rhdigital.rhclient.R;
 import com.rhdigital.rhclient.activities.courses.CoursesActivity;
 import com.rhdigital.rhclient.activities.user.UserActivity;
 import com.rhdigital.rhclient.common.services.NavigationService;
+import com.rhdigital.rhclient.database.model.User;
+import com.rhdigital.rhclient.database.viewmodel.UserViewModel;
 
 public class UserProfileFragment extends Fragment {
 
+  private LiveData<User> userObservable;
   private LiveData<Bitmap> userProfilePhotoObservable;
+  private LiveData<Boolean> imageUploadObservable;
+  private UserViewModel userViewModel;
 
   private ImageButton backButton;
-  private ImageButton profileImageButton;
+  private ImageView profileImageButton;
   private TextView nameView;
   private TextView usernameView;
   private Button editProfileButton;
@@ -45,6 +54,11 @@ public class UserProfileFragment extends Fragment {
 
     //Initialise View Components
     backButton = view.findViewById(R.id.user_profile_back_button);
+
+    nameView = view.findViewById(R.id.user_profile_edit_name);
+    nameView.setVisibility(View.GONE);
+    usernameView = view.findViewById(R.id.user_profile_edit_username);
+    usernameView.setVisibility(View.GONE);
 
     profileImageButton = view.findViewById(R.id.user_profile_edit_image_button);
 
@@ -61,11 +75,47 @@ public class UserProfileFragment extends Fragment {
     privacyPolicyButton.setOnClickListener(new DocumentButtonOnClick(getContext(), "privacy_policy"));
     logoutButton.setOnClickListener(new UserProfileLogoutOnClick(getContext()));
 
+    userViewModel = ((UserActivity)getActivity()).getUserViewModel();
+
     //Observers
     final Observer<Bitmap> userProfileImageObserver = new Observer<Bitmap>() {
       @Override
       public void onChanged(Bitmap bitmap) {
+        Log.d("UPLOAD", "SETTING NEW IMAGE");
         profileImageButton.setImageBitmap(bitmap);
+      }
+    };
+
+    final Observer<User> userObserver = new Observer<User>() {
+      @Override
+      public void onChanged(User user) {
+        if (user != null) {
+        userObservable.removeObserver(this::onChanged);
+        if (user.getName() != null && !user.getName().isEmpty()) {
+          nameView.setText(user.getName());
+          nameView.setVisibility(View.VISIBLE);
+        }
+        if (user.getEmail() != null && !user.getEmail().isEmpty()) {
+          usernameView.setText(user.getEmail());
+          usernameView.setVisibility(View.VISIBLE);
+        }
+        }
+      }
+    };
+
+    //This Observer Reacts to an update on the upload status of an image, and triggers a new fetch of that image from the remote
+    //Finally this triggers the userProfileImageObserver to set this new Bitmap to the View
+    final Observer<Boolean> imageUploadObserver = status -> {
+      if (status && profileImageButton.getWidth() > 0 && profileImageButton.getHeight() > 0) {
+        if (userProfilePhotoObservable != null) {
+          userProfilePhotoObservable.removeObservers(getActivity());
+        }
+        userProfilePhotoObservable = userViewModel
+          .getProfilePhoto(getContext(),
+            FirebaseAuth.getInstance().getUid(),
+            profileImageButton.getWidth(),
+            profileImageButton.getHeight());
+        userProfilePhotoObservable.observe(getActivity(), userProfileImageObserver);
       }
     };
 
@@ -74,16 +124,21 @@ public class UserProfileFragment extends Fragment {
       public void onGlobalLayout() {
         if (profileImageButton.getHeight() > 0 && profileImageButton.getWidth() > 0) {
           profileImageButton.getViewTreeObserver().removeOnGlobalLayoutListener(this::onGlobalLayout);
-          userProfilePhotoObservable = ((UserActivity)getActivity())
-            .getUserViewModel()
+          userProfilePhotoObservable = userViewModel
             .getProfilePhoto(getContext(),
               FirebaseAuth.getInstance().getUid(),
               profileImageButton.getWidth(),
               profileImageButton.getHeight());
-          userProfilePhotoObservable.observe(getViewLifecycleOwner(), userProfileImageObserver);
+          userProfilePhotoObservable.observe(getActivity(), userProfileImageObserver);
         }
       }
     });
+
+    userObservable = userViewModel.getAuthenticatedUser(FirebaseAuth.getInstance().getUid());
+    userObservable.observe(getActivity(), userObserver);
+
+    imageUploadObservable = ((UserActivity)getActivity()).getImageUploadObservable();
+    imageUploadObservable.observe(getActivity(), imageUploadObserver);
 
     return view;
   }

@@ -245,41 +245,41 @@
       android:textColor="@color/link_text_faded"/>
     </LinearLayout>
 
-    <TextView
-      android:layout_marginTop="30dp"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:text="NEVER SHARED ANYWHERE"
-      android:layout_marginLeft="12dp"
-      android:textColor="@color/link_text_highlight"
-      android:textSize="14sp"/>
+<!--    <TextView-->
+<!--      android:layout_marginTop="30dp"-->
+<!--      android:layout_width="match_parent"-->
+<!--      android:layout_height="wrap_content"-->
+<!--      android:text="NEVER SHARED ANYWHERE"-->
+<!--      android:layout_marginLeft="12dp"-->
+<!--      android:textColor="@color/link_text_highlight"-->
+<!--      android:textSize="14sp"/>-->
 
-    <LinearLayout
-      android:clickable="true"
-      android:layout_marginTop="10dp"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:orientation="vertical"
-      style="@style/Widget.AppCompat.Button.Borderless"
-      android:id="@+id/user_profile_edit_birthday_button">
-    <TextView
-      android:clickable="false"
-      android:layout_width="match_parent"
-      android:layout_height="40dp"
-      android:text="Date of Birth"
-      android:textAllCaps="false"
-      android:textAlignment="textStart"
-      android:drawableRight="@drawable/ic_arrow_right"
-      android:textSize="18sp"/>
+<!--    <LinearLayout-->
+<!--      android:clickable="true"-->
+<!--      android:layout_marginTop="10dp"-->
+<!--      android:layout_width="match_parent"-->
+<!--      android:layout_height="wrap_content"-->
+<!--      android:orientation="vertical"-->
+<!--      style="@style/Widget.AppCompat.Button.Borderless"-->
+<!--      android:id="@+id/user_profile_edit_birthday_button">-->
+<!--    <TextView-->
+<!--      android:clickable="false"-->
+<!--      android:layout_width="match_parent"-->
+<!--      android:layout_height="40dp"-->
+<!--      android:text="Date of Birth"-->
+<!--      android:textAllCaps="false"-->
+<!--      android:textAlignment="textStart"-->
+<!--      android:drawableRight="@drawable/ic_arrow_right"-->
+<!--      android:textSize="18sp"/>-->
 
-    <TextView
-      android:clickable="false"
-      android:id="@+id/user_edit_birthday_value"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:visibility="gone"
-      android:textColor="@color/link_text_faded"/>
-    </LinearLayout>
+<!--    <TextView-->
+<!--      android:clickable="false"-->
+<!--      android:id="@+id/user_edit_birthday_value"-->
+<!--      android:layout_width="match_parent"-->
+<!--      android:layout_height="wrap_content"-->
+<!--      android:visibility="gone"-->
+<!--      android:textColor="@color/link_text_faded"/>-->
+<!--    </LinearLayout>-->
 
   </LinearLayout>
 

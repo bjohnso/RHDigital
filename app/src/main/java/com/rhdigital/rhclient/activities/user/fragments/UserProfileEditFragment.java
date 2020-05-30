@@ -71,7 +71,7 @@ public class UserProfileEditFragment extends Fragment {
     countryButton = view.findViewById(R.id.user_profile_edit_country_button);
     aboutButton = view.findViewById(R.id.user_profile_edit_about_button);
     industryButton = view.findViewById(R.id.user_profile_edit_industry_button);
-    birthdayButton = view.findViewById(R.id.user_profile_edit_birthday_button);
+    //birthdayButton = view.findViewById(R.id.user_profile_edit_birthday_button);
 
     //Initialise EditText Map
     textViewMap.put("First Name", view.findViewById(R.id.user_edit_first_name_value));
@@ -81,7 +81,7 @@ public class UserProfileEditFragment extends Fragment {
     textViewMap.put("Country", view.findViewById(R.id.user_edit_country_value));
     textViewMap.put("About", view.findViewById(R.id.user_edit_about_value));
     textViewMap.put("Industry", view.findViewById(R.id.user_edit_industry_value));
-    textViewMap.put("Date of Birth", view.findViewById(R.id.user_edit_birthday_value));
+    //textViewMap.put("Date of Birth", view.findViewById(R.id.user_edit_birthday_value));
 
     //Initialise Button ID Map
     buttonIdMap.put(R.id.user_profile_edit_first_name_button, "First Name");
@@ -91,7 +91,7 @@ public class UserProfileEditFragment extends Fragment {
     buttonIdMap.put(R.id.user_profile_edit_country_button, "Country");
     buttonIdMap.put(R.id.user_profile_edit_about_button, "About");
     buttonIdMap.put(R.id.user_profile_edit_industry_button, "Industry");
-    buttonIdMap.put(R.id.user_profile_edit_birthday_button, "Date of Birth");
+    //buttonIdMap.put(R.id.user_profile_edit_birthday_button, "Date of Birth");
 
     //Set Listeners
     backButton.setOnClickListener(new BackButtonOnClick(getActivity().getLocalClassName()));
@@ -191,8 +191,11 @@ public class UserProfileEditFragment extends Fragment {
       TextView textView = textViewMap.get(propertyName);
 
       Log.d("USEREDIT", "PROPERTY_NAME : " + propertyName + "\nPROPERTY_VALUE : " + propertyValue);
-      textView.setVisibility(View.VISIBLE);
       textView.setText(propertyValue);
+      if (!propertyName.isEmpty())
+        textView.setVisibility(View.VISIBLE);
+      else
+        textView.setVisibility(View.GONE);
     }
   }
 
@@ -234,9 +237,9 @@ public class UserProfileEditFragment extends Fragment {
       DialogFragment dialogFragment;
       Bundle args;
 
-      if (view.getId() == R.id.user_profile_edit_birthday_button) {
-
-      } else {
+//      if (view.getId() == R.id.user_profile_edit_birthday_button) {
+//
+//      } else {
         args = new Bundle();
         String propertyName = buttonIdMap.get(view.getId());
         String propertyValue = editTextMap.get(propertyName).getText().toString();
@@ -247,7 +250,7 @@ public class UserProfileEditFragment extends Fragment {
         dialogFragment.setArguments(args);
         dialogFragment.setTargetFragment(userProfileEditFragment, userProfileEditFragment.getREQUEST_CODE());
         dialogFragment.show(fragmentManager, buttonIdMap.get(view.getId()));
-      }
+      //}
     }
   }
 

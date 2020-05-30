@@ -48,8 +48,8 @@ dependencies {
   implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
 
   // Firebase & Firestore
-  implementation 'com.google.firebase:firebase-analytics:17.3.0'
-  implementation 'com.google.firebase:firebase-firestore:21.4.2'
+  implementation 'com.google.firebase:firebase-analytics:17.4.2'
+  implementation 'com.google.firebase:firebase-firestore:21.4.3'
   implementation 'com.google.firebase:firebase-storage:19.1.1'
   implementation 'com.google.firebase:firebase-auth:19.3.1'
   implementation 'androidx.legacy:legacy-support-v4:1.0.0'
@@ -60,6 +60,12 @@ dependencies {
   // Navigation
   implementation "androidx.navigation:navigation-fragment:2.3.0-beta01"
   implementation "androidx.navigation:navigation-ui:2.3.0-beta01"
+
+  // hdodenhof
+  implementation 'de.hdodenhof:circleimageview:3.1.0'
+
+  // IOUtils
+  implementation 'commons-io:commons-io:2.6'
 
   apply plugin: "androidx.navigation.safeargs"
 

@@ -1,22 +1,17 @@
 package com.rhdigital.rhclient.common.services;
 
-import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
+import androidx.lifecycle.MutableLiveData;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import java.io.File;
-
 public class FirebaseUploadService {
 
+  private MutableLiveData<Boolean> liveUploaded;
   private FirebaseStorage firebaseStorage;
   private static FirebaseUploadService INSTANCE;
 
@@ -40,6 +35,17 @@ public class FirebaseUploadService {
       e.printStackTrace();
     }).addOnSuccessListener(taskSnapshot -> {
       Log.d("UPLOAD", taskSnapshot.getMetadata().getName());
+      if (liveUploaded == null) {
+        liveUploaded = new MutableLiveData<>();
+      }
+      liveUploaded.setValue(true);
     });
+  }
+
+  public MutableLiveData<Boolean> getLiveUploaded() {
+    if (liveUploaded == null) {
+      liveUploaded = new MutableLiveData<>();
+    }
+    return liveUploaded;
   }
 }

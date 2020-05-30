@@ -1,23 +1,29 @@
 package com.rhdigital.rhclient.activities.user;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.ParcelFileDescriptor;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.rhdigital.rhclient.R;
@@ -25,10 +31,16 @@ import com.rhdigital.rhclient.activities.auth.AuthActivity;
 import com.rhdigital.rhclient.activities.auth.services.Authenticator;
 import com.rhdigital.rhclient.common.services.FirebaseUploadService;
 import com.rhdigital.rhclient.common.services.NavigationService;
+import com.rhdigital.rhclient.common.util.ImageProcessor;
 import com.rhdigital.rhclient.database.model.User;
 import com.rhdigital.rhclient.database.viewmodel.UserViewModel;
 
+import org.apache.commons.io.IOUtils;
+
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -38,10 +50,12 @@ public class UserActivity extends AppCompatActivity {
   private FirebaseFirestore remoteDB = FirebaseFirestore.getInstance();
   private Authenticator authenticator;
   private UserViewModel userViewModel;
+  private LiveData<Boolean> imageUploadObservable;
   private LiveData<User> userObservable;
   private LiveData<HashMap<String, Uri>> documentObservable;
   private String documentNames[];
   private User user;
+  private Intent imageUploadData = null;
 
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -94,6 +108,7 @@ public class UserActivity extends AppCompatActivity {
       });
 
     //Set Observers
+    imageUploadObservable = FirebaseUploadService.getInstance().getLiveUploaded();
     userObservable = userViewModel.getAuthenticatedUser(FirebaseAuth.getInstance().getUid());
     userObservable.observe(this, userObserver);
   }
@@ -103,7 +118,55 @@ public class UserActivity extends AppCompatActivity {
     super.onActivityResult(requestCode, resultCode, data);
     if (resultCode == Activity.RESULT_OK) {
       if (requestCode == IMAGE_PICKER_CODE) {
-        FirebaseUploadService.getInstance().uploadProfileImage(data.getData(), FirebaseAuth.getInstance().getUid());
+        //Request Permissions
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+          ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
+          imageUploadData = data;
+        } else {
+          handleImageUpload(data);
+        }
+      }
+    }
+  }
+
+  @Override
+  public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    if (requestCode == 0) {
+      if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+        if (imageUploadData != null) {
+          handleImageUpload(imageUploadData);
+          imageUploadData = null;
+        } else {
+          Toast.makeText(this, "Could not upload Image", Toast.LENGTH_SHORT).show();
+        }
+      }
+    }
+  }
+
+  public void handleImageUpload(Intent data) {
+    List<String> segments = data.getData().getPathSegments();
+    if (data.getType() != null) {
+      try {
+        Log.d("UPLOAD", data.getType());
+        //Get FileDescriptor for File in external storage from URI
+        ParcelFileDescriptor fileDescriptor = getContentResolver().openFileDescriptor(data.getData(), "r");
+
+        //Fetch name of file from ContentResolver and create a new File in internal App storage
+        File file = new File(getCacheDir(), ImageProcessor.getInstance().getFileName(getContentResolver(), data.getData()));
+        FileInputStream in = new FileInputStream(fileDescriptor.getFileDescriptor());
+        FileOutputStream out = new FileOutputStream(file);
+        IOUtils.copy(in, out);
+
+        Bitmap bitmap = ImageProcessor.getInstance().processImageForUpload(file, data.getType());
+        if (bitmap != null) {
+          Uri uri = Uri.parse(MediaStore.Images.Media.insertImage(getContentResolver(),
+            bitmap,
+            FirebaseAuth.getInstance().getUid(),
+            null));
+          FirebaseUploadService.getInstance().uploadProfileImage(uri, FirebaseAuth.getInstance().getUid());
+        }
+      } catch (IOException e) {
+        e.printStackTrace();
       }
     }
   }
@@ -120,6 +183,10 @@ public class UserActivity extends AppCompatActivity {
     String mimeTypes[] = {"image/png", "image/jpeg"};
     intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
     startActivityForResult(intent, IMAGE_PICKER_CODE);
+  }
+
+  public LiveData<Boolean> getImageUploadObservable() {
+    return imageUploadObservable;
   }
 
   public Uri getDocumentUri(String type) {
