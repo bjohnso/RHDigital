@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <RelativeLayout
+    app:layout_constraintRight_toRightOf="parent"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    android:layout_width="match_parent"
+    android:layout_height="200dp"
+    android:background="@drawable/background_white">
+
+    <TextView
+      android:id="@+id/user_profile_edit_modal_confirm_header"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="You Have Unsaved Changes"
+      android:textColor="@color/colorBlack"
+      android:textSize="24sp"
+      android:layout_marginTop="20dp"
+      android:layout_marginLeft="20dp"
+      android:layout_centerHorizontal="true"
+      />
+
+    <LinearLayout
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_centerHorizontal="true"
+      android:layout_alignParentBottom="true"
+      android:layout_marginBottom="40dp">
+
+    <Button
+      android:id="@+id/user_profile_edit_modal_confirm_discard_button"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      style="@style/Widget.AppCompat.Button.Borderless"
+      android:text="DISCARD CHANGES"
+      android:textColor="@color/colorBlack" />
+
+      <Button
+        android:id="@+id/user_profile_edit_modal_confirm_save_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:text="SAVE CHANGES"
+        android:textColor="@color/colorBlack" />
+
+    </LinearLayout>
+
+  </RelativeLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+

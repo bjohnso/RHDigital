@@ -45,7 +45,19 @@ public class UserProfileEditModalFragment extends DialogFragment {
   public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
     if (getArguments() != null) {
       View view;
-      if (!(propertyNameText = getArguments()
+      if ((propertyNameText = getArguments()
+        .getString("PROPERTY_NAME"))
+        .equalsIgnoreCase("CONFIRM")) {
+        view = inflater.inflate(R.layout.user_profile_edit_modal_confirm_dialog_layout, container, false);
+        cancelButton = view.findViewById(R.id.user_profile_edit_modal_confirm_save_button);
+        okButton = view.findViewById(R.id.user_profile_edit_modal_confirm_discard_button);
+
+        ButtonOnClick buttonOnClick = new ButtonOnClick(this);
+
+        cancelButton.setOnClickListener(buttonOnClick);
+        okButton.setOnClickListener(buttonOnClick);
+      }
+      else if (!(propertyNameText = getArguments()
         .getString("PROPERTY_NAME"))
         .equalsIgnoreCase("Country")) {
 
@@ -125,10 +137,18 @@ public class UserProfileEditModalFragment extends DialogFragment {
 
     @Override
     public void onClick(View view) {
-      if (view.getId() == R.id.user_profile_modal_ok_button) {
-        ((UserProfileEditModalFragment)dialogFragment).sendDataToParent(null);
-      } else if (view.getId() == R.id.user_profile_edit_modal_cancel_button) {
-        dialogFragment.dismiss();
+      if (dialogFragment.getArguments().getString("PROPERTY_NAME").equalsIgnoreCase("CONFIRM")) {
+        if (view.getId() == R.id.user_profile_modal_ok_button) {
+          ((UserProfileEditModalFragment) dialogFragment).sendDataToParent("SAVE");
+        } else if (view.getId() == R.id.user_profile_edit_modal_cancel_button) {
+          ((UserProfileEditModalFragment) dialogFragment).sendDataToParent("DISCARD");
+        }
+      } else {
+        if (view.getId() == R.id.user_profile_modal_ok_button) {
+          ((UserProfileEditModalFragment) dialogFragment).sendDataToParent(null);
+        } else if (view.getId() == R.id.user_profile_edit_modal_cancel_button) {
+          dialogFragment.dismiss();
+        }
       }
     }
   }

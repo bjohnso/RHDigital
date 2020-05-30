@@ -46,6 +46,7 @@ import java.util.List;
 
 public class UserActivity extends AppCompatActivity {
 
+  private Context context;
   private static int IMAGE_PICKER_CODE = 100;
   private FirebaseFirestore remoteDB = FirebaseFirestore.getInstance();
   private Authenticator authenticator;
@@ -54,7 +55,6 @@ public class UserActivity extends AppCompatActivity {
   private LiveData<User> userObservable;
   private LiveData<HashMap<String, Uri>> documentObservable;
   private String documentNames[];
-  private User user;
   private Intent imageUploadData = null;
 
   @Override
@@ -62,15 +62,12 @@ public class UserActivity extends AppCompatActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_user);
 
+    context = this;
+
     authenticator = new Authenticator(this);
 
     //Initialise View model
     userViewModel = new UserViewModel(getApplication());
-
-    //Initialise Observers
-    final Observer<User> userObserver = u -> {
-      Log.d("USER", "USER NAME : " + u.getName() + "\nUSER SURNAME : " + u.getSurname());
-    };
 
     //Initialise Navigator
     NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_user);
@@ -79,14 +76,18 @@ public class UserActivity extends AppCompatActivity {
     final Observer<HashMap<String, Uri>> documentObserver = new Observer<HashMap<String, Uri>>() {
       @Override
       public void onChanged(HashMap<String, Uri> stringUriHashMap) {
-        // Call Navigation Service Once Document Uri's have been fetched
-        if (stringUriHashMap.size() >= documentNames.length) {
-          documentObservable.removeObserver(this::onChanged);
-          NavigationService.getINSTANCE().initNav(
-            getLocalClassName(),
-            navController,
-            R.navigation.user_nav_graph,
-            R.id.userProfileFragment);
+        if (stringUriHashMap != null) {
+          // Call Navigation Service Once Document Uri's have been fetched
+          if (stringUriHashMap.size() >= documentNames.length) {
+            documentObservable.removeObserver(this::onChanged);
+            NavigationService.getINSTANCE().initNav(
+              getLocalClassName(),
+              navController,
+              R.navigation.user_nav_graph,
+              R.id.userProfileFragment);
+          }
+        } else {
+          Toast.makeText(context, R.string.server_error_documents, Toast.LENGTH_LONG);
         }
       }
     };
@@ -110,7 +111,6 @@ public class UserActivity extends AppCompatActivity {
     //Set Observers
     imageUploadObservable = FirebaseUploadService.getInstance().getLiveUploaded();
     userObservable = userViewModel.getAuthenticatedUser(FirebaseAuth.getInstance().getUid());
-    userObservable.observe(this, userObserver);
   }
 
   @Override
@@ -195,10 +195,6 @@ public class UserActivity extends AppCompatActivity {
 
   public LiveData<User> getUser() {
     return userObservable;
-  }
-
-  public void setUser(User user) {
-    this.user = user;
   }
 
   public void updateUser(User user, Context context) {

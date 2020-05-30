@@ -1,12 +1,10 @@
 package com.rhdigital.rhclient.activities.user.fragments;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,13 +13,13 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModel;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.rhdigital.rhclient.R;
@@ -43,6 +41,7 @@ public class UserProfileFragment extends Fragment {
   private TextView nameView;
   private TextView usernameView;
   private Button editProfileButton;
+  private Button settingsButton;
   private Button privacyPolicyButton;
   private Button aboutPolicyButton;
   private Button logoutButton;
@@ -63,6 +62,7 @@ public class UserProfileFragment extends Fragment {
     profileImageButton = view.findViewById(R.id.user_profile_edit_image_button);
 
     editProfileButton = view.findViewById(R.id.user_profile_edit_profile_button);
+    settingsButton = view.findViewById(R.id.user_profile_settings_button);
     aboutPolicyButton = view.findViewById(R.id.user_profile_about_button);
     privacyPolicyButton = view.findViewById(R.id.user_profile_privacy_policy_button);
     logoutButton = view.findViewById(R.id.user_profile_logout_button);
@@ -71,6 +71,7 @@ public class UserProfileFragment extends Fragment {
     backButton.setOnClickListener(new BackButtonOnClick(getContext()));
     profileImageButton.setOnClickListener(new ImageButtonOnClick(getContext()));
     editProfileButton.setOnClickListener(new EditProfileOnClick(getActivity().getLocalClassName()));
+    settingsButton.setOnClickListener(new SettingsOnClick(getActivity().getLocalClassName()));
     aboutPolicyButton.setOnClickListener(new DocumentButtonOnClick(getContext(), "about"));
     privacyPolicyButton.setOnClickListener(new DocumentButtonOnClick(getContext(), "privacy_policy"));
     logoutButton.setOnClickListener(new UserProfileLogoutOnClick(getContext()));
@@ -81,8 +82,11 @@ public class UserProfileFragment extends Fragment {
     final Observer<Bitmap> userProfileImageObserver = new Observer<Bitmap>() {
       @Override
       public void onChanged(Bitmap bitmap) {
-        Log.d("UPLOAD", "SETTING NEW IMAGE");
-        profileImageButton.setImageBitmap(bitmap);
+        if (bitmap != null) {
+          profileImageButton.setImageBitmap(bitmap);
+        } else {
+          Toast.makeText(getContext(), R.string.server_error_user, Toast.LENGTH_LONG);
+        }
       }
     };
 
@@ -90,15 +94,17 @@ public class UserProfileFragment extends Fragment {
       @Override
       public void onChanged(User user) {
         if (user != null) {
-        userObservable.removeObserver(this::onChanged);
-        if (user.getName() != null && !user.getName().isEmpty()) {
-          nameView.setText(user.getName());
-          nameView.setVisibility(View.VISIBLE);
-        }
-        if (user.getEmail() != null && !user.getEmail().isEmpty()) {
-          usernameView.setText(user.getEmail());
-          usernameView.setVisibility(View.VISIBLE);
-        }
+          userObservable.removeObserver(this::onChanged);
+          if (user.getName() != null && !user.getName().isEmpty()) {
+            nameView.setText(user.getName());
+            nameView.setVisibility(View.VISIBLE);
+          }
+          if (user.getEmail() != null && !user.getEmail().isEmpty()) {
+            usernameView.setText(user.getEmail());
+            usernameView.setVisibility(View.VISIBLE);
+          }
+        } else {
+          Toast.makeText(getContext(), R.string.server_error_user, Toast.LENGTH_LONG);
         }
       }
     };
@@ -116,6 +122,8 @@ public class UserProfileFragment extends Fragment {
             profileImageButton.getWidth(),
             profileImageButton.getHeight());
         userProfilePhotoObservable.observe(getActivity(), userProfileImageObserver);
+      } else if (!status) {
+        Toast.makeText(getContext(), R.string.server_error_image_upload, Toast.LENGTH_LONG);
       }
     };
 
@@ -197,6 +205,20 @@ public class UserProfileFragment extends Fragment {
     @Override
     public void onClick(View view) {
       NavigationService.getINSTANCE().navigate(className, R.id.userProfileEditFragment, null);
+    }
+  }
+
+  public static class SettingsOnClick implements View.OnClickListener {
+
+    private String className;
+
+    public SettingsOnClick (String className) {
+      this.className = className;
+    }
+
+    @Override
+    public void onClick(View view) {
+      NavigationService.getINSTANCE().navigate(className, R.id.userProfileSettingsFragment, null);
     }
   }
 

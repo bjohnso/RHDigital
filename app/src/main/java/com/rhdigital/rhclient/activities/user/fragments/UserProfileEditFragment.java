@@ -94,7 +94,7 @@ public class UserProfileEditFragment extends Fragment {
     //buttonIdMap.put(R.id.user_profile_edit_birthday_button, "Date of Birth");
 
     //Set Listeners
-    backButton.setOnClickListener(new BackButtonOnClick(getActivity().getLocalClassName()));
+    backButton.setOnClickListener(new BackButtonOnClick(this, getActivity().getLocalClassName()));
     saveButton.setOnClickListener(new SaveButtonOnClick(this));
 
     EditOnClick editOnClick = new EditOnClick(this,
@@ -108,7 +108,7 @@ public class UserProfileEditFragment extends Fragment {
     countryButton.setOnClickListener(editOnClick);
     aboutButton.setOnClickListener(editOnClick);
     industryButton.setOnClickListener(editOnClick);
-    birthdayButton.setOnClickListener(editOnClick);
+    //birthdayButton.setOnClickListener(editOnClick);
 
     userObservable = ((UserActivity)getActivity()).getUser();
 
@@ -188,14 +188,26 @@ public class UserProfileEditFragment extends Fragment {
     if (requestCode == REQUEST_CODE) {
       String propertyName = data.getStringExtra("PROPERTY_NAME");
       String propertyValue = data.getStringExtra("PROPERTY_VALUE");
-      TextView textView = textViewMap.get(propertyName);
 
-      Log.d("USEREDIT", "PROPERTY_NAME : " + propertyName + "\nPROPERTY_VALUE : " + propertyValue);
-      textView.setText(propertyValue);
-      if (!propertyName.isEmpty())
-        textView.setVisibility(View.VISIBLE);
-      else
-        textView.setVisibility(View.GONE);
+      if (propertyName.equalsIgnoreCase("CONFIRM")) {
+        if (propertyValue.equalsIgnoreCase("SAVE")) {
+          saveButton.performClick();
+          backButton.performClick();
+        } else {
+          NavigationService.getINSTANCE().navigate(getActivity().getLocalClassName(),
+            R.id.userProfileFragment,
+            null);
+        }
+      } else {
+        TextView textView = textViewMap.get(propertyName);
+
+        Log.d("USEREDIT", "PROPERTY_NAME : " + propertyName + "\nPROPERTY_VALUE : " + propertyValue);
+        textView.setText(propertyValue);
+        if (!propertyValue.isEmpty())
+          textView.setVisibility(View.VISIBLE);
+        else
+          textView.setVisibility(View.GONE);
+      }
     }
   }
 
@@ -205,17 +217,39 @@ public class UserProfileEditFragment extends Fragment {
 
   public static class BackButtonOnClick implements View.OnClickListener {
 
+    private UserProfileEditFragment userProfileEditFragment;
     private String className;
+    private HashMap<String, TextView> textViewMap;
 
-    public BackButtonOnClick(String className) {
+    public BackButtonOnClick(UserProfileEditFragment userProfileEditFragment, String className) {
+      this.userProfileEditFragment = userProfileEditFragment;
       this.className = className;
+      this.textViewMap = userProfileEditFragment.getTextViewMap();
     }
 
     @Override
     public void onClick(View view) {
-      NavigationService.getINSTANCE().navigate(className,
-        R.id.userProfileFragment,
-        null);
+      User user = userProfileEditFragment.getUser();
+
+      if (!user.getName().equals(textViewMap.get("First Name").getText().toString())
+        || !user.getSurname().equals(textViewMap.get("Last Name").getText().toString())
+        || !user.getTitle().equals(textViewMap.get("Title").getText().toString())
+        || !user.getCity().equals(textViewMap.get("City").getText().toString())
+        || !user.getCountry().equals(textViewMap.get("Country").getText().toString())
+        || !user.getAbout().equals(textViewMap.get("About").getText().toString())
+        || !user.getIndustry().equals(textViewMap.get("Industry").getText().toString())) {
+        DialogFragment dialogFragment;
+        Bundle args = new Bundle();
+        args.putString("PROPERTY_NAME", "CONFIRM");
+        dialogFragment = new UserProfileEditModalFragment();
+        dialogFragment.setArguments(args);
+        dialogFragment.setTargetFragment(userProfileEditFragment, userProfileEditFragment.getREQUEST_CODE());
+        dialogFragment.show(userProfileEditFragment.getParentFragmentManager(), "CONFIRM");
+      } else {
+        NavigationService.getINSTANCE().navigate(className,
+          R.id.userProfileFragment,
+          null);
+      }
     }
   }
 

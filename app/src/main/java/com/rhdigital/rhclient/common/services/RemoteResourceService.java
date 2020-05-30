@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
@@ -12,6 +13,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.rhdigital.rhclient.database.model.Course;
@@ -111,7 +113,11 @@ public class RemoteResourceService {
   }
 
   public void loadProfileImageUri(Context context, String id, int width, int height) {
-    getProfileImageResourceURL(id).getDownloadUrl()
+    getProfileImageResourceURL(id)
+      .getDownloadUrl()
+      .addOnFailureListener(error -> {
+        liveProfilePhotoUri.setValue(null);
+      })
       .addOnSuccessListener(uri -> {
         //Preload Image into Disk Cache
         Glide.with(context)
@@ -131,7 +137,12 @@ public class RemoteResourceService {
 
   public void loadDocumentUri(String... documentIds) {
     for (String id: documentIds) {
-      getDocumentResourceURL(id).getDownloadUrl()
+      getDocumentResourceURL(id)
+        .getDownloadUrl()
+        .addOnFailureListener(error -> {
+          liveDocumentMapSurrogate = null;
+          liveDocumentMap.setValue(null);
+        })
         .addOnSuccessListener(uri -> {
           //TODO: IMPLEMENT A CLEANER TRUNCATING STRATEGY
           Log.d("REMOTE", "new doc Id : " + id);
@@ -144,7 +155,13 @@ public class RemoteResourceService {
 
   public void loadVideoUri(List<Course> courses, int width, int height) {
     for (Course c : courses) {
-      getVideoResourceURL(c.getVideoURL()).getDownloadUrl().addOnSuccessListener(uri -> {
+      getVideoResourceURL(c.getVideoURL())
+        .getDownloadUrl()
+        .addOnFailureListener(error -> {
+          liveVideoUriMapSurrogate = null;
+          liveVideoUriMap.setValue(null);
+        })
+        .addOnSuccessListener(uri -> {
         liveVideoUriMapSurrogate.put(c.getId(), uri);
         liveVideoUriMap.setValue(liveVideoUriMapSurrogate);
         Log.d("REMOTE", "URI : " + uri);
@@ -158,6 +175,10 @@ public class RemoteResourceService {
           context,
           c.getThumbnailURL())
         .getDownloadUrl()
+        .addOnFailureListener(error -> {
+          liveImageMapSurrogate = null;
+          liveImageMap.setValue(null);
+        })
         .addOnSuccessListener(uri -> {
           //Preload Images into Disk Cache
           Glide.with(context)

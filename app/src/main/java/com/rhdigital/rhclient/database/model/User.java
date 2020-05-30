@@ -67,6 +67,7 @@ public class User {
     this.title = title;
     this.city = city;
     this.country = country;
+    this.industry = industry;
     this.about = about;
   }
 

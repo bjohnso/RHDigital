@@ -92,7 +92,7 @@ public class CoursesActivity extends AppCompatActivity {
 
       //Set Listeners
       mBottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavOnClick(getLocalClassName()));
-      mToolbar.setOnMenuItemClickListener(new MenuItemOnClick(this));
+      //mToolbar.setOnMenuItemClickListener(new MenuItemOnClick(this));
     }
 
     @Override
@@ -117,7 +117,9 @@ public class CoursesActivity extends AppCompatActivity {
     // Observers
     final Observer<Bitmap> userProfileImageObserver = bitmap -> {
       userProfileImageObservable.removeObservers(this);
-      userProfileButton.setImageBitmap(bitmap);
+      if (bitmap != null) {
+        userProfileButton.setImageBitmap(bitmap);
+      }
     };
 
     userProfileButton.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {

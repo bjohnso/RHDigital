@@ -85,6 +85,7 @@
       android:textSize="18sp"/>
 
     <Button
+      android:id="@+id/user_profile_settings_button"
       android:layout_width="match_parent"
       android:layout_height="60dp"
       android:text="Settings"

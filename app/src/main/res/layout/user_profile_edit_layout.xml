@@ -24,6 +24,15 @@
       android:src="@drawable/ic_arrow_back_black"
       style="@style/Widget.AppCompat.Button.Borderless"/>
 
+    <TextView
+      android:layout_toRightOf="@id/user_profile_edit_back_button"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginLeft="20dp"
+      android:textSize="20sp"
+      android:text="Edit Profile"
+      android:layout_centerVertical="true"/>
+
     <Button
       android:id="@+id/user_profile_edit_save_button"
       android:layout_width="wrap_content"

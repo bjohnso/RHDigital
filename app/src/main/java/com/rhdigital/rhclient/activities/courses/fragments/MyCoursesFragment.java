@@ -9,6 +9,7 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -67,13 +68,17 @@ public class MyCoursesFragment extends Fragment {
       final Observer<HashMap<String, Uri>> videoUriObserver = new Observer<HashMap<String, Uri>>() {
         @Override
         public void onChanged(HashMap<String, Uri> stringUriHashMap) {
-          if (courses.size() == stringUriHashMap.size()) {
-            videoUrlObservable.removeObserver(this);
-          }
-          coursesRecyclerViewAdapter.setVideoURIMap(stringUriHashMap);
-          if (!hasAttachedRecycler) {
-            hasAttachedRecycler = true;
-            recyclerView.setAdapter(coursesRecyclerViewAdapter);
+          if (stringUriHashMap != null) {
+            if (courses.size() == stringUriHashMap.size()) {
+              videoUrlObservable.removeObserver(this);
+            }
+            coursesRecyclerViewAdapter.setVideoURIMap(stringUriHashMap);
+            if (!hasAttachedRecycler) {
+              hasAttachedRecycler = true;
+              recyclerView.setAdapter(coursesRecyclerViewAdapter);
+            }
+          } else {
+            Toast.makeText(getContext(), R.string.server_error_courses, Toast.LENGTH_LONG);
           }
         }
       };
@@ -81,23 +86,31 @@ public class MyCoursesFragment extends Fragment {
       final Observer<HashMap<String, Bitmap>> bitMapObserver = new Observer<HashMap<String, Bitmap>>() {
         @Override
         public void onChanged(HashMap<String, Bitmap> stringBitmapHashMap) {
-          if (courses.size() == stringBitmapHashMap.size()) {
-            bitMapObservable.removeObserver(this);
-            videoUrlObservable = courseViewModel.getAllVideoUri(courses, width, height);
-            videoUrlObservable.observe(getActivity(), videoUriObserver);
+          if (stringBitmapHashMap != null) {
+            if (courses.size() == stringBitmapHashMap.size()) {
+              bitMapObservable.removeObserver(this);
+              videoUrlObservable = courseViewModel.getAllVideoUri(courses, width, height);
+              videoUrlObservable.observe(getActivity(), videoUriObserver);
+            }
+            coursesRecyclerViewAdapter.setImageUriMap(stringBitmapHashMap);
+          } else {
+            Toast.makeText(getContext(), R.string.server_error_courses, Toast.LENGTH_LONG);
           }
-          coursesRecyclerViewAdapter.setImageUriMap(stringBitmapHashMap);
         }
       };
 
       final Observer<List<Course>> courseObserver = new Observer<List<Course>>() {
         @Override
         public void onChanged(List<Course> c) {
-          courseObservable.removeObserver(this);
-          coursesRecyclerViewAdapter.setCourses(c);
-          courses = c;
-          bitMapObservable = courseViewModel.getAllBitmap(getContext(), c, width, height);
-          bitMapObservable.observe(getActivity(), bitMapObserver);
+          if (c != null) {
+            courseObservable.removeObserver(this);
+            coursesRecyclerViewAdapter.setCourses(c);
+            courses = c;
+            bitMapObservable = courseViewModel.getAllBitmap(getContext(), c, width, height);
+            bitMapObservable.observe(getActivity(), bitMapObserver);
+          } else {
+            Toast.makeText(getContext(), R.string.server_error_courses, Toast.LENGTH_LONG);
+          }
         }
       };
 
