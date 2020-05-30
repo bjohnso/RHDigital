@@ -138,9 +138,9 @@ public class UserProfileEditModalFragment extends DialogFragment {
     @Override
     public void onClick(View view) {
       if (dialogFragment.getArguments().getString("PROPERTY_NAME").equalsIgnoreCase("CONFIRM")) {
-        if (view.getId() == R.id.user_profile_modal_ok_button) {
+        if (view.getId() == R.id.user_profile_edit_modal_confirm_save_button) {
           ((UserProfileEditModalFragment) dialogFragment).sendDataToParent("SAVE");
-        } else if (view.getId() == R.id.user_profile_edit_modal_cancel_button) {
+        } else if (view.getId() == R.id.user_profile_edit_modal_confirm_discard_button) {
           ((UserProfileEditModalFragment) dialogFragment).sendDataToParent("DISCARD");
         }
       } else {
