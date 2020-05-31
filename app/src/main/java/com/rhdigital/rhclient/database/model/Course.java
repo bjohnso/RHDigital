@@ -26,8 +26,12 @@ public class Course {
     private String description;
 
     @NonNull
-    @ColumnInfo(name = "thumb")
-    private String thumbnailURL;
+    @ColumnInfo(name = "videoPosterURL")
+    private String videoPosterURL;
+
+    @NonNull
+    @ColumnInfo(name = "workbookPosterURL")
+    private String workbookPosterURL;
 
     @NonNull
     @ColumnInfo(name = "videoURL")
@@ -39,12 +43,13 @@ public class Course {
     @Ignore
     public Course() { }
 
-    public Course(@NonNull String id, @NonNull String name, @NonNull String author, @NonNull String description, @NonNull String thumbnailURL, @NonNull String videoURL) {
+    public Course(@NonNull String id, @NonNull String name, @NonNull String author, @NonNull String description, @NonNull String videoPosterURL, @NonNull String workbookPosterURL, @NonNull String videoURL) {
       this.id = id;
       this.name = name;
       this.author = author;
       this.description = description;
-      this.thumbnailURL = thumbnailURL;
+      this.videoPosterURL = videoPosterURL;
+      this.workbookPosterURL = workbookPosterURL;
       this.videoURL = videoURL;
     }
 
@@ -68,11 +73,16 @@ public class Course {
   }
 
   @NonNull
-    public String getThumbnailURL() {
-        return thumbnailURL;
-    }
+  public String getVideoPosterURL() {
+    return videoPosterURL;
+  }
 
-    @NonNull
+  @NonNull
+  public String getWorkbookPosterURL() {
+    return workbookPosterURL;
+  }
+
+  @NonNull
     public String getVideoURL() {
         return videoURL;
     }
@@ -101,11 +111,15 @@ public class Course {
     this.author = author;
   }
 
-  public void setThumbnailURL(@NonNull String thumbnailURL) {
-        this.thumbnailURL = thumbnailURL;
-    }
+  public void setVideoPosterURL(@NonNull String videoPosterURL) {
+    this.videoPosterURL = videoPosterURL;
+  }
 
-    public void setVideoURL(@NonNull String videoURL) {
+  public void setWorkbookPosterURL(@NonNull String workbookPosterURL) {
+    this.workbookPosterURL = workbookPosterURL;
+  }
+
+  public void setVideoURL(@NonNull String videoURL) {
         this.videoURL = videoURL;
     }
 
@@ -116,8 +130,10 @@ public class Course {
       + this.id
       + "\nName: "
       + this.name
-      + "\nthumbnailURL: "
-      + this.thumbnailURL
+      + "\nvideoPosterURL: "
+      + this.videoPosterURL
+      + "\nworkbookPosterURL: "
+      + this.workbookPosterURL
       + "\nvideoURL: "
       + this.videoURL
       + "\nauthorised: "

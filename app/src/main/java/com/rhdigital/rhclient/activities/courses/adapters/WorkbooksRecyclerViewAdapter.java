@@ -1,5 +1,6 @@
 package com.rhdigital.rhclient.activities.courses.adapters;
 
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,22 +12,25 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.rhdigital.rhclient.R;
+import com.rhdigital.rhclient.activities.courses.view.WorkbooksViewHolder;
 import com.rhdigital.rhclient.database.model.Course;
 import com.rhdigital.rhclient.database.model.CourseWithWorkbooks;
 import com.rhdigital.rhclient.database.model.Workbook;
 import com.rhdigital.rhclient.common.services.RemoteResourceService;
 
+import java.util.HashMap;
 import java.util.List;
 
-public class WorkbooksRecyclerViewAdapter extends RecyclerView.Adapter<WorkbooksRecyclerViewAdapter.WorkbooksViewHolder> {
+public class WorkbooksRecyclerViewAdapter extends RecyclerView.Adapter<WorkbooksViewHolder> {
     private List<CourseWithWorkbooks> coursesWithWorkbooks;
+    private HashMap<String, Bitmap> bitMap;
     private ViewGroup parent;
 
     public WorkbooksRecyclerViewAdapter() { }
 
     @NonNull
     @Override
-    public WorkbooksRecyclerViewAdapter.WorkbooksViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public WorkbooksViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         this.parent = parent;
         ViewGroup view = (ViewGroup) inflater.inflate(R.layout.workbooks_recycler_item, parent, false);
@@ -34,25 +38,16 @@ public class WorkbooksRecyclerViewAdapter extends RecyclerView.Adapter<Workbooks
     }
 
     @Override
-    public void onBindViewHolder(@NonNull WorkbooksRecyclerViewAdapter.WorkbooksViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull WorkbooksViewHolder holder, int position) {
         if (coursesWithWorkbooks != null) {
           //Extract Embedded Course Object
           CourseWithWorkbooks courseWithWorkbooks = this.coursesWithWorkbooks.get(position);
           Course course = courseWithWorkbooks.getCourse();
 
-          // Build URL for this image
-          new RemoteResourceService()
-            .getImageResourceURL(parent.getContext(), course.getThumbnailURL())
-            .getDownloadUrl().addOnSuccessListener(uri -> {
-            // Fetch image from firebase cloud
-            Glide
-              .with(parent.getContext())
-              .load(uri)
-              .into(holder.imageView);
-          });
-
           //Set courseName
-          holder.headerView.setText(course.getName());
+          holder.getHeaderView().setText(course.getName());
+
+          holder.getImageView().setImageBitmap(bitMap.get(course.getId()));
 
           //Extract Module List Holder from Recycler Item
           LayoutInflater inflater = LayoutInflater.from(parent.getContext());
@@ -76,22 +71,16 @@ public class WorkbooksRecyclerViewAdapter extends RecyclerView.Adapter<Workbooks
         notifyDataSetChanged();
     }
 
+  public void setImageUriMap(HashMap<String, Bitmap> map) {
+    this.bitMap = map;
+    notifyDataSetChanged();
+  }
+
     @Override
     public int getItemCount() {
         if (this.coursesWithWorkbooks != null) {
             return this.coursesWithWorkbooks.size();
         }
         return 0;
-    }
-
-    public static class WorkbooksViewHolder extends RecyclerView.ViewHolder {
-        private ImageView imageView;
-        private TextView headerView;
-
-        public WorkbooksViewHolder(@NonNull ViewGroup itemView) {
-            super(itemView);
-            imageView = itemView.findViewById(R.id.workbooks_image_item);
-            headerView = itemView.findViewById(R.id.workbooks_text_header_item);
-        }
     }
 }

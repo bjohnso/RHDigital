@@ -1,31 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-  <RelativeLayout android:layout_width="match_parent"
+  <RelativeLayout
+    android:id="@+id/workbooks_download_item"
+    android:layout_width="match_parent"
     android:layout_height="50dp"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:background="@color/bar">
+    android:background="@color/bar"
+    android:clickable="true">
 
     <TextView
+      android:id="@+id/workbooks_download_item_text"
       android:tag="workbook_name"
-      android:layout_width="wrap_content"
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_centerVertical="true"
       android:paddingStart="10dp"
       android:text="Module 1"
-      android:textSize="13dp" />
-
-    <Button
-      style="@style/Widget.AppCompat.Button.Borderless"
-      android:layout_width="wrap_content"
-      android:layout_height="match_parent"
-      android:layout_alignParentRight="true"
-      android:drawableRight="@drawable/ic_cloud_download"
-      android:drawablePadding="10dp"
-      android:paddingTop="10dp"
-      android:paddingRight="15dp"
-      android:paddingBottom="10dp"
-      android:text="Download"
-      android:textAllCaps="false"
-      android:textSize="10dp" />
+      android:textSize="13dp"
+      android:drawableEnd="@drawable/ic_cloud_download"
+      android:layout_marginEnd="20dp"
+      android:layout_marginStart="10dp"/>
 
   </RelativeLayout>
-

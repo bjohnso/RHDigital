@@ -1,15 +1,20 @@
 package com.rhdigital.rhclient.database.viewmodel;
 
 import android.app.Application;
+import android.content.Context;
+import android.graphics.Bitmap;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
+import com.rhdigital.rhclient.common.services.RemoteResourceService;
+import com.rhdigital.rhclient.database.model.Course;
 import com.rhdigital.rhclient.database.model.CourseWithWorkbooks;
 import com.rhdigital.rhclient.database.model.Workbook;
 import com.rhdigital.rhclient.database.repository.RHRepository;
 
+import java.util.HashMap;
 import java.util.List;
 
 public class WorkbookViewModel extends AndroidViewModel {
@@ -30,4 +35,5 @@ public class WorkbookViewModel extends AndroidViewModel {
         return rhRepository.getWorkbooksById(courseId);
     }
 
+    public LiveData<HashMap<String, Bitmap>> getAllWorkbookPosters(Context context, List<CourseWithWorkbooks> workbooks, int width, int height) { return new RemoteResourceService().getAllBitmap(context, workbooks, width, height, false); }
 }

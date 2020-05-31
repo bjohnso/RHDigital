@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +21,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.rhdigital.rhclient.R;
+import com.rhdigital.rhclient.activities.courses.CoursesActivity;
 import com.rhdigital.rhclient.database.model.Course;
 import com.rhdigital.rhclient.database.viewmodel.CourseViewModel;
 import com.rhdigital.rhclient.activities.courses.adapters.CoursesRecyclerViewAdapter;
@@ -38,9 +40,14 @@ public class MyCoursesFragment extends Fragment {
   private List<Course> courses;
 
   //Observables
-  private LiveData<HashMap<String, Bitmap>> bitMapObservable;
+  private LiveData<HashMap<String, Bitmap>> videoPosterObservable;
   private LiveData<HashMap<String, Uri>> videoUrlObservable;
   private LiveData<List<Course>> courseObservable;
+
+  //Observers
+  private Observer<HashMap<String, Bitmap>> videoPosterObserver;
+  private Observer<HashMap<String, Uri>> videoUrlObserver;
+  private Observer<List<Course>> courseObserver;
 
   //Components
   private RecyclerView recyclerView;
@@ -57,15 +64,17 @@ public class MyCoursesFragment extends Fragment {
       recyclerView = view.findViewById(R.id.my_courses_recycler);
 
       //Initialise View Model
-      courseViewModel = new CourseViewModel(getActivity().getApplication());
+      courseViewModel = ((CoursesActivity)getActivity()).getCourseViewModel();
 
       // Initialise Adapter
       coursesRecyclerViewAdapter = new CoursesRecyclerViewAdapter(getContext());
 
       calculateImageDimensions();
 
+      ((CoursesActivity)getActivity()).setToolbarTitle("Courses");
+
       // Observers
-      final Observer<HashMap<String, Uri>> videoUriObserver = new Observer<HashMap<String, Uri>>() {
+      videoUrlObserver = new Observer<HashMap<String, Uri>>() {
         @Override
         public void onChanged(HashMap<String, Uri> stringUriHashMap) {
           if (stringUriHashMap != null) {
@@ -83,14 +92,14 @@ public class MyCoursesFragment extends Fragment {
         }
       };
 
-      final Observer<HashMap<String, Bitmap>> bitMapObserver = new Observer<HashMap<String, Bitmap>>() {
+      videoPosterObserver = new Observer<HashMap<String, Bitmap>>() {
         @Override
         public void onChanged(HashMap<String, Bitmap> stringBitmapHashMap) {
           if (stringBitmapHashMap != null) {
             if (courses.size() == stringBitmapHashMap.size()) {
-              bitMapObservable.removeObserver(this);
+              videoPosterObservable.removeObserver(this);
               videoUrlObservable = courseViewModel.getAllVideoUri(courses, width, height);
-              videoUrlObservable.observe(getActivity(), videoUriObserver);
+              videoUrlObservable.observe(getActivity(), videoUrlObserver);
             }
             coursesRecyclerViewAdapter.setImageUriMap(stringBitmapHashMap);
           } else {
@@ -99,15 +108,12 @@ public class MyCoursesFragment extends Fragment {
         }
       };
 
-      final Observer<List<Course>> courseObserver = new Observer<List<Course>>() {
+      courseObserver = new Observer<List<Course>>() {
         @Override
         public void onChanged(List<Course> c) {
           if (c != null) {
             courseObservable.removeObserver(this);
-            coursesRecyclerViewAdapter.setCourses(c);
-            courses = c;
-            bitMapObservable = courseViewModel.getAllBitmap(getContext(), c, width, height);
-            bitMapObservable.observe(getActivity(), bitMapObserver);
+            receiveCourses(c);
           } else {
             Toast.makeText(getContext(), R.string.server_error_courses, Toast.LENGTH_LONG);
           }
@@ -121,10 +127,24 @@ public class MyCoursesFragment extends Fragment {
       recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_AUTO);
       recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
 
-      // Call Observer
-      courseObservable = courseViewModel.getAllAuthorisedCourses();
-      courseObservable.observe(getActivity(), courseObserver);
+      // Call Courses Observer
+      courseObservable = ((CoursesActivity)getActivity()).getAuthorisedCoursesObservable();
+      if ((courses = courseObservable.getValue()) != null) {
+        receiveCourses(courses);
+      } else {
+        courseObservable.observe(getActivity(), courseObserver);
+      }
       return view;
+    }
+
+    private void receiveCourses(List<Course> courses) {
+      coursesRecyclerViewAdapter.setCourses(courses);
+      this.courses = courses;
+      if (videoPosterObservable != null) {
+        videoPosterObservable.removeObservers(this);
+      }
+      videoPosterObservable = courseViewModel.getAllVideoPosters(getContext(), courses, width, height);
+      videoPosterObservable.observe(getActivity(), videoPosterObserver);
     }
 
   private void calculateImageDimensions() {

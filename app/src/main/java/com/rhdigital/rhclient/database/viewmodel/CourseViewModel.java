@@ -34,7 +34,7 @@ public class CourseViewModel extends AndroidViewModel {
 
     public LiveData<HashMap<String, Uri>> getAllVideoUri(List<Course> courses, int width, int height) { return new RemoteResourceService().getAllVideoURI(courses, width, height); }
 
-    public LiveData<HashMap<String, Bitmap>> getAllBitmap(Context context, List<Course> courses, int width, int height) { return new RemoteResourceService().getAllBitmap(context, courses, width, height); }
+    public LiveData<HashMap<String, Bitmap>> getAllVideoPosters(Context context, List<Course> courses, int width, int height) { return new RemoteResourceService().getAllBitmap(context, courses, width, height, true); }
 
     public void insert(Course course) {
         rhRepository.insert(course);

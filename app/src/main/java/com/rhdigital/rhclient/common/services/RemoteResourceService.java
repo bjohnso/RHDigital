@@ -17,6 +17,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.rhdigital.rhclient.database.model.Course;
+import com.rhdigital.rhclient.database.model.CourseWithWorkbooks;
 
 import java.util.HashMap;
 import java.util.List;
@@ -46,7 +47,7 @@ public class RemoteResourceService {
     urlMap.put("profile_photo", root.child("profile_photos"));
   }
 
-  public StorageReference getImageResourceURL(Context context, String endpoint) {
+  private StorageReference getImageResourceURL(Context context, String endpoint) {
     float density = context.getResources().getDisplayMetrics().density;
     StorageReference ref = null;
       if (density <= 0.75) {
@@ -67,24 +68,27 @@ public class RemoteResourceService {
       return ref.child(endpoint);
   }
 
-  public StorageReference getProfileImageResourceURL(String id) {
+  private StorageReference getProfileImageResourceURL(String id) {
     return urlMap.get("profile_photo").child(id);
   }
 
-  public StorageReference getVideoResourceURL(String endpoint) {
+  private StorageReference getVideoResourceURL(String endpoint) {
     //TODO add screen density to check to determine best resolution to download
     return urlMap.get("video").child(endpoint);
   }
 
-  public StorageReference getDocumentResourceURL(String endpoint) {
+  private StorageReference getDocumentResourceURL(String endpoint) {
     return urlMap.get("doc").child(endpoint);
   }
 
-  public LiveData<HashMap<String, Bitmap>> getAllBitmap(Context context, List<Course> courses, int width, int height) {
+  public LiveData<HashMap<String, Bitmap>> getAllBitmap(Context context, Object list, int width, int height, boolean isVideo) {
     if (liveImageMap == null) {
       liveImageMap = new MutableLiveData<>();
     }
-    loadImageUri(context, courses, width, height);
+    if (isVideo)
+      loadVideoImageUri(context, (List<Course>) list, width, height);
+    else
+      loadWorkbookImageUri(context, (List<CourseWithWorkbooks>) list, width, height);
     return liveImageMap;
   }
 
@@ -112,7 +116,7 @@ public class RemoteResourceService {
    return liveDocumentMap;
   }
 
-  public void loadProfileImageUri(Context context, String id, int width, int height) {
+  private void loadProfileImageUri(Context context, String id, int width, int height) {
     getProfileImageResourceURL(id)
       .getDownloadUrl()
       .addOnFailureListener(error -> {
@@ -135,7 +139,7 @@ public class RemoteResourceService {
     });
   }
 
-  public void loadDocumentUri(String... documentIds) {
+  private void loadDocumentUri(String... documentIds) {
     for (String id: documentIds) {
       getDocumentResourceURL(id)
         .getDownloadUrl()
@@ -153,7 +157,7 @@ public class RemoteResourceService {
     }
   }
 
-  public void loadVideoUri(List<Course> courses, int width, int height) {
+  private void loadVideoUri(List<Course> courses, int width, int height) {
     for (Course c : courses) {
       getVideoResourceURL(c.getVideoURL())
         .getDownloadUrl()
@@ -169,11 +173,11 @@ public class RemoteResourceService {
     }
   }
 
-  private void loadImageUri(Context context, List<Course> courses, int width, int height) {
+  private void loadVideoImageUri(Context context, List<Course> courses, int width, int height) {
     for (Course c : courses) {
       getImageResourceURL(
           context,
-          c.getThumbnailURL())
+          c.getVideoPosterURL())
         .getDownloadUrl()
         .addOnFailureListener(error -> {
           liveImageMapSurrogate = null;
@@ -191,6 +195,35 @@ public class RemoteResourceService {
               public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                 //Populate UriMapLiveData
                 liveImageMapSurrogate.put(c.getId(), resource);
+                liveImageMap.setValue(liveImageMapSurrogate);
+              }
+            });
+        });
+    }
+  }
+
+  private void loadWorkbookImageUri(Context context, List<CourseWithWorkbooks> workbooks, int width, int height) {
+    for (CourseWithWorkbooks w : workbooks) {
+      getImageResourceURL(
+        context,
+        w.getCourse().getWorkbookPosterURL())
+        .getDownloadUrl()
+        .addOnFailureListener(error -> {
+          liveImageMapSurrogate = null;
+          liveImageMap.setValue(null);
+        })
+        .addOnSuccessListener(uri -> {
+          //Preload Images into Disk Cache
+          Glide.with(context)
+            .load(uri)
+            .asBitmap()
+            .diskCacheStrategy(DiskCacheStrategy.ALL)
+            .skipMemoryCache(false)
+            .into(new SimpleTarget<Bitmap>(width, height) {
+              @Override
+              public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                //Populate UriMapLiveData
+                liveImageMapSurrogate.put(w.getCourse().getId(), resource);
                 liveImageMap.setValue(liveImageMapSurrogate);
               }
             });

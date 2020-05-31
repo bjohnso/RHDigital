@@ -1,19 +1,17 @@
 package com.rhdigital.rhclient.activities.courses;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -35,7 +33,13 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.rhdigital.rhclient.activities.auth.AuthActivity;
 import com.rhdigital.rhclient.activities.user.UserActivity;
 import com.rhdigital.rhclient.common.services.NavigationService;
+import com.rhdigital.rhclient.database.model.Course;
+import com.rhdigital.rhclient.database.model.CourseWithWorkbooks;
+import com.rhdigital.rhclient.database.viewmodel.CourseViewModel;
 import com.rhdigital.rhclient.database.viewmodel.UserViewModel;
+import com.rhdigital.rhclient.database.viewmodel.WorkbookViewModel;
+
+import java.util.List;
 
 import static com.rhdigital.rhclient.R.menu.courses_menu_top;
 
@@ -44,8 +48,15 @@ public class CoursesActivity extends AppCompatActivity {
     private Context context;
 
     //Observables
-    private UserViewModel userViewModel;
     private LiveData<Bitmap> userProfileImageObservable;
+    private LiveData<List<Course>> undiscoveredCoursesObservable;
+    private LiveData<List<Course>> authorisedCoursesObservable;
+    private LiveData<List<CourseWithWorkbooks>> courseWithWorkbooksObservable;
+
+    //View Model
+    private CourseViewModel courseViewModel;
+    private UserViewModel userViewModel;
+    private WorkbookViewModel workbookViewModel;
 
     //Components
     private Toolbar mToolbar;
@@ -68,7 +79,13 @@ public class CoursesActivity extends AppCompatActivity {
           startAuthActivity();
         }
 
+        courseViewModel = new CourseViewModel(getApplication());
         userViewModel = new UserViewModel(getApplication());
+        workbookViewModel = new WorkbookViewModel(getApplication());
+
+        authorisedCoursesObservable = courseViewModel.getAllAuthorisedCourses();
+        undiscoveredCoursesObservable = courseViewModel.getAllUndiscoveredCourses();
+        courseWithWorkbooksObservable = workbookViewModel.getAllCoursesWithWorkbooks();
 
         mToolbar = findViewById(R.id.topNavigationView);
         mBottomNavigationView = findViewById(R.id.bottomNavigationView);
@@ -166,9 +183,33 @@ public class CoursesActivity extends AppCompatActivity {
       startActivity(intent);
     }
 
-    public void setToolbarTitle(String title) {
+  public LiveData<List<Course>> getUndiscoveredCoursesObservable() {
+    return undiscoveredCoursesObservable;
+  }
+
+  public LiveData<List<Course>> getAuthorisedCoursesObservable() {
+    return authorisedCoursesObservable;
+  }
+
+  public LiveData<List<CourseWithWorkbooks>> getCourseWithWorkbooksObservable() {
+    return courseWithWorkbooksObservable;
+  }
+
+  public void setToolbarTitle(String title) {
       mToolbar.setTitle(title);
     }
+
+  public CourseViewModel getCourseViewModel() {
+    return courseViewModel;
+  }
+
+  public UserViewModel getUserViewModel() {
+    return userViewModel;
+  }
+
+  public WorkbookViewModel getWorkbookViewModel() {
+    return workbookViewModel;
+  }
 
   public static class BottomNavOnClick implements BottomNavigationView.OnNavigationItemSelectedListener {
 
@@ -220,7 +261,6 @@ public class CoursesActivity extends AppCompatActivity {
 
     @Override
     public boolean onMenuItemClick(MenuItem menuItem) {
-      Log.d("MENU", "MENU WAS CLICKED");
       if (menuItem.getItemId() == R.id.courses_top_nav_profile) {
         Intent intent = new Intent(context, UserActivity.class);
         context.startActivity(intent);
