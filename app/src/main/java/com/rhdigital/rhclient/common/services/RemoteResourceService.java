@@ -18,7 +18,9 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.rhdigital.rhclient.database.model.Course;
 import com.rhdigital.rhclient.database.model.CourseWithWorkbooks;
+import com.rhdigital.rhclient.database.model.Workbook;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -29,10 +31,13 @@ public class RemoteResourceService {
   private MutableLiveData<HashMap<String, Bitmap>> liveImageMap;
   private MutableLiveData<HashMap<String, Uri>> liveVideoUriMap;
   private MutableLiveData<HashMap<String, Uri>> liveDocumentMap;
+  private MutableLiveData<HashMap<String, List<Uri>>> liveWorkbookMap;
   private MutableLiveData<Bitmap> liveProfilePhotoUri;
   private HashMap<String, Bitmap> liveImageMapSurrogate = new HashMap<>();
   private HashMap<String, Uri> liveVideoUriMapSurrogate = new HashMap<>();
   private HashMap<String, Uri> liveDocumentMapSurrogate = new HashMap<>();
+  private HashMap<String, List<Uri>> liveWorkbookMapSurrogate = new HashMap<>();
+  private List<Uri> liveWorkbookListSurrogate = new ArrayList<>();
 
   public RemoteResourceService() {
     StorageReference root = firebaseStorage.getReference();
@@ -43,6 +48,7 @@ public class RemoteResourceService {
     urlMap.put("xx", root.child("courses/posters/drawable-xxhdpi"));
     urlMap.put("xxx", root.child("courses/posters/drawable-xxxhdpi"));
     urlMap.put("video", root.child("courses/videos"));
+    urlMap.put("workbook", root.child("courses/workbooks"));
     urlMap.put("doc", root.child("documents"));
     urlMap.put("profile_photo", root.child("profile_photos"));
   }
@@ -81,6 +87,18 @@ public class RemoteResourceService {
     return urlMap.get("doc").child(endpoint);
   }
 
+  private StorageReference getWorkbookResourceURL(String endpoint) {
+    return urlMap.get("workbook").child(endpoint);
+  }
+
+  public LiveData<HashMap<String, List<Uri>>> getAllWorkbookURI(List<CourseWithWorkbooks> workbooks) {
+    if (liveWorkbookMap == null) {
+      liveWorkbookMap = new MutableLiveData<>();
+    }
+    loadWorkbookUri(workbooks);
+    return liveWorkbookMap;
+  }
+
   public LiveData<HashMap<String, Bitmap>> getAllBitmap(Context context, Object list, int width, int height, boolean isVideo) {
     if (liveImageMap == null) {
       liveImageMap = new MutableLiveData<>();
@@ -114,6 +132,25 @@ public class RemoteResourceService {
    }
     loadDocumentUri(docIds);
    return liveDocumentMap;
+  }
+
+  private void loadWorkbookUri(List<CourseWithWorkbooks> workbooks) {
+    for (CourseWithWorkbooks courseWithWorkbooks: workbooks) {
+      List<Workbook> bookList = courseWithWorkbooks.getWorkbooks();
+      for (Workbook workbook: bookList) {
+        getWorkbookResourceURL(workbook.getName())
+        .getDownloadUrl()
+        .addOnFailureListener(error -> {
+          liveWorkbookMapSurrogate = null;
+          liveWorkbookMap.setValue(null);
+        })
+        .addOnSuccessListener(uri -> {
+          liveWorkbookListSurrogate.add(uri);
+          liveWorkbookMapSurrogate.put(courseWithWorkbooks.getCourse().getId(), liveWorkbookListSurrogate);
+          liveWorkbookMap.setValue(liveWorkbookMapSurrogate);
+        });
+      }
+    }
   }
 
   private void loadProfileImageUri(Context context, String id, int width, int height) {

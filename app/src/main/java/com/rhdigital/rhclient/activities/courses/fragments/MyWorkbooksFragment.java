@@ -2,6 +2,7 @@ package com.rhdigital.rhclient.activities.courses.fragments;
 
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
@@ -27,17 +28,22 @@ import com.rhdigital.rhclient.activities.courses.adapters.WorkbooksRecyclerViewA
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Phaser;
 
 public class MyWorkbooksFragment extends Fragment {
 
     //Observables
     private LiveData<HashMap<String, Bitmap>> workbookPostersObservable;
     private LiveData<List<CourseWithWorkbooks>> courseWithWorkbooksObservable;
+    private LiveData<HashMap<String, List<Uri>>> workbookURIObservable;
 
     //Observers
     private Observer<HashMap<String, Bitmap>> workbookPostersObserver;
     private Observer<List<CourseWithWorkbooks>> courseWithWorkbooksObserver;
+    private Observer<HashMap<String, List<Uri>>> workbookURIObserver;
 
     //View Model
     private WorkbookViewModel workbookViewModel;
@@ -82,6 +88,34 @@ public class MyWorkbooksFragment extends Fragment {
           }
         };
 
+      workbookURIObserver = new Observer<HashMap<String, List<Uri>>>() {
+        @Override
+        public void onChanged(HashMap<String, List<Uri>> stringListHashMap) {
+          if (stringListHashMap != null) {
+            boolean complete = true;
+            if (stringListHashMap.size() >= courseWithWorkbooks.size()) {
+              for(CourseWithWorkbooks c : courseWithWorkbooks) {
+                if (stringListHashMap.get(c.getCourse().getId()) == null
+                  || stringListHashMap.get(c.getCourse().getId()).size() < c.getWorkbooks().size()) {
+                  complete = false;
+                  break;
+                }
+              }
+              if (complete) {
+                workbookURIObservable.removeObserver(this::onChanged);
+                workbooksRecyclerViewAdapter.setWorkbookURI(stringListHashMap);
+                if (!hasAttachedRecycler) {
+                  hasAttachedRecycler = true;
+                  recyclerView.setAdapter(workbooksRecyclerViewAdapter);
+                }
+              }
+            }
+          } else {
+            Toast.makeText(getContext(), R.string.server_error_courses, Toast.LENGTH_LONG);
+          }
+        }
+      };
+
         workbookPostersObserver = new Observer<HashMap<String, Bitmap>>() {
           @Override
           public void onChanged(HashMap<String, Bitmap> stringBitmapHashMap) {
@@ -89,10 +123,8 @@ public class MyWorkbooksFragment extends Fragment {
               if (stringBitmapHashMap.size() >= courseWithWorkbooks.size()) {
                 workbookPostersObservable.removeObserver(this::onChanged);
                 workbooksRecyclerViewAdapter.setImageUriMap(stringBitmapHashMap);
-                if (!hasAttachedRecycler) {
-                  hasAttachedRecycler = true;
-                  recyclerView.setAdapter(workbooksRecyclerViewAdapter);
-                }
+                workbookURIObservable = workbookViewModel.getAllWorkbookUri(courseWithWorkbooks);
+                workbookURIObservable.observe(getActivity(), workbookURIObserver);
               }
             } else {
               Toast.makeText(getContext(), R.string.server_error_courses, Toast.LENGTH_LONG);

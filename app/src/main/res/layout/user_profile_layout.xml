@@ -19,6 +19,9 @@
     style="@style/Widget.AppCompat.Button.Borderless"/>
 
   <de.hdodenhof.circleimageview.CircleImageView
+    app:civ_border_width="1dp"
+    app:civ_border_color="@color/white"
+    android:background="?android:attr/selectableItemBackground"
     android:id="@+id/user_profile_edit_image_button"
     android:layout_width="150dp"
     android:layout_height="150dp"

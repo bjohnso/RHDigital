@@ -18,8 +18,8 @@
       android:layout_height="wrap_content"
       android:text="You Have Unsaved Changes"
       android:textColor="@color/colorBlack"
-      android:textSize="20sp"
-      android:layout_marginTop="40dp"
+      android:textSize="16sp"
+      android:layout_marginTop="20dp"
       android:layout_marginLeft="20dp"
       android:layout_centerHorizontal="true"
       />
@@ -29,23 +29,30 @@
       android:layout_height="wrap_content"
       android:layout_centerHorizontal="true"
       android:layout_alignParentBottom="true"
-      android:layout_marginBottom="40dp">
-
-    <Button
-      android:id="@+id/user_profile_edit_modal_confirm_discard_button"
-      android:layout_width="180dp"
-      android:layout_height="wrap_content"
-      style="@style/Widget.AppCompat.Button.Borderless"
-      android:text="DISCARD CHANGES"
-      android:textColor="@color/colorBlack" />
+      android:layout_marginTop="10dp"
+      android:layout_marginBottom="20dp"
+      android:orientation="vertical">
 
       <Button
         android:id="@+id/user_profile_edit_modal_confirm_save_button"
-        android:layout_width="180dp"
+        android:layout_width="120dp"
         android:layout_height="wrap_content"
         style="@style/Widget.AppCompat.Button.Borderless"
+        android:background="@color/bar_dark"
         android:text="SAVE CHANGES"
-        android:textColor="@color/colorBlack" />
+        android:textSize="8sp"
+        android:textColor="@color/white"
+        android:layout_marginBottom="10dp"/>
+
+    <Button
+      android:id="@+id/user_profile_edit_modal_confirm_discard_button"
+      android:layout_width="120dp"
+      android:layout_height="wrap_content"
+      style="@style/Widget.AppCompat.Button.Borderless"
+      android:background="@color/bar_dark"
+      android:text="DISCARD CHANGES"
+      android:textSize="8sp"
+      android:textColor="@color/white" />
 
     </LinearLayout>
 

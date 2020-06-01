@@ -1,6 +1,7 @@
 package com.rhdigital.rhclient.activities.courses.adapters;
 
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +25,7 @@ import java.util.List;
 public class WorkbooksRecyclerViewAdapter extends RecyclerView.Adapter<WorkbooksViewHolder> {
     private List<CourseWithWorkbooks> coursesWithWorkbooks;
     private HashMap<String, Bitmap> bitMap;
+    private HashMap<String, List<Uri>> workbookUriMap;
     private ViewGroup parent;
 
     public WorkbooksRecyclerViewAdapter() { }
@@ -69,6 +71,11 @@ public class WorkbooksRecyclerViewAdapter extends RecyclerView.Adapter<Workbooks
     public void setWorkbooks(List<CourseWithWorkbooks> coursesWithWorkbooks) {
         this.coursesWithWorkbooks = coursesWithWorkbooks;
         notifyDataSetChanged();
+    }
+
+    public void setWorkbookURI(HashMap<String, List<Uri>> workbookUriMap) {
+      this.workbookUriMap = workbookUriMap;
+      notifyDataSetChanged();
     }
 
   public void setImageUriMap(HashMap<String, Bitmap> map) {

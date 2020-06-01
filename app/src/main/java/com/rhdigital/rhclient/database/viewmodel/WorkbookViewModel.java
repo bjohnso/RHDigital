@@ -3,6 +3,7 @@ package com.rhdigital.rhclient.database.viewmodel;
 import android.app.Application;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.net.Uri;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -36,4 +37,6 @@ public class WorkbookViewModel extends AndroidViewModel {
     }
 
     public LiveData<HashMap<String, Bitmap>> getAllWorkbookPosters(Context context, List<CourseWithWorkbooks> workbooks, int width, int height) { return new RemoteResourceService().getAllBitmap(context, workbooks, width, height, false); }
+
+    public LiveData<HashMap<String, List<Uri>>> getAllWorkbookUri(List<CourseWithWorkbooks> workbooks) { return new RemoteResourceService().getAllWorkbookURI(workbooks); };
 }
