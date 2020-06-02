@@ -35,6 +35,8 @@ import java.util.concurrent.Phaser;
 
 public class MyWorkbooksFragment extends Fragment {
 
+    private int REQUEST_CODE = 1;
+
     //Observables
     private LiveData<HashMap<String, Bitmap>> workbookPostersObservable;
     private LiveData<List<CourseWithWorkbooks>> courseWithWorkbooksObservable;
@@ -75,7 +77,7 @@ public class MyWorkbooksFragment extends Fragment {
         workbookViewModel = ((CoursesActivity)getActivity()).getWorkbookViewModel();
 
         //Initialise Adapter
-        workbooksRecyclerViewAdapter = new WorkbooksRecyclerViewAdapter();
+        workbooksRecyclerViewAdapter = new WorkbooksRecyclerViewAdapter(this, workbookViewModel);
 
         //Create an Observer
         courseWithWorkbooksObserver = new Observer<List<CourseWithWorkbooks>>() {
@@ -172,5 +174,9 @@ public class MyWorkbooksFragment extends Fragment {
     getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
     width = displayMetrics.widthPixels;
     height = Math.round(px);
+  }
+
+  public int getREQUEST_CODE() {
+    return REQUEST_CODE;
   }
 }

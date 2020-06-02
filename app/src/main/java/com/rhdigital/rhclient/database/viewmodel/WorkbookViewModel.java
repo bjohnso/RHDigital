@@ -10,13 +10,14 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
 import com.rhdigital.rhclient.common.services.RemoteResourceService;
-import com.rhdigital.rhclient.database.model.Course;
 import com.rhdigital.rhclient.database.model.CourseWithWorkbooks;
 import com.rhdigital.rhclient.database.model.Workbook;
 import com.rhdigital.rhclient.database.repository.RHRepository;
 
 import java.util.HashMap;
 import java.util.List;
+
+import okhttp3.ResponseBody;
 
 public class WorkbookViewModel extends AndroidViewModel {
     private RHRepository rhRepository;
@@ -39,4 +40,7 @@ public class WorkbookViewModel extends AndroidViewModel {
     public LiveData<HashMap<String, Bitmap>> getAllWorkbookPosters(Context context, List<CourseWithWorkbooks> workbooks, int width, int height) { return new RemoteResourceService().getAllBitmap(context, workbooks, width, height, false); }
 
     public LiveData<HashMap<String, HashMap<String, Uri>>> getAllWorkbookUri(List<CourseWithWorkbooks> workbooks) { return new RemoteResourceService().getAllWorkbookURI(workbooks); };
+
+    public LiveData<ResponseBody> downloadWorkbook(String downloadURL) { return new RemoteResourceService().downloadWorkbook(downloadURL); }
+
 }

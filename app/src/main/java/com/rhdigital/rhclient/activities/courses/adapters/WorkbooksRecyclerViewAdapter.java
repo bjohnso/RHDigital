@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -18,17 +19,23 @@ import com.rhdigital.rhclient.database.model.Course;
 import com.rhdigital.rhclient.database.model.CourseWithWorkbooks;
 import com.rhdigital.rhclient.database.model.Workbook;
 import com.rhdigital.rhclient.common.services.RemoteResourceService;
+import com.rhdigital.rhclient.database.viewmodel.WorkbookViewModel;
 
 import java.util.HashMap;
 import java.util.List;
 
 public class WorkbooksRecyclerViewAdapter extends RecyclerView.Adapter<WorkbooksViewHolder> {
-    private List<CourseWithWorkbooks> coursesWithWorkbooks;
-    private HashMap<String, Bitmap> bitMap;
-    private HashMap<String, HashMap<String, Uri>> workbookUriMap;
-    private ViewGroup parent;
+  private WorkbookViewModel workbookViewModel;
+  private List<CourseWithWorkbooks> coursesWithWorkbooks;
+  private HashMap<String, Bitmap> bitMap;
+  private HashMap<String, HashMap<String, Uri>> workbookUriMap;
+  private Fragment fragment;
+  private ViewGroup parent;
 
-    public WorkbooksRecyclerViewAdapter() { }
+    public WorkbooksRecyclerViewAdapter(Fragment fragment, WorkbookViewModel workbookViewModel) {
+      this.fragment = fragment;
+      this.workbookViewModel = workbookViewModel;
+    }
 
     @NonNull
     @Override
@@ -45,6 +52,9 @@ public class WorkbooksRecyclerViewAdapter extends RecyclerView.Adapter<Workbooks
           //Extract Embedded Course Object
           CourseWithWorkbooks courseWithWorkbooks = this.coursesWithWorkbooks.get(position);
           Course course = courseWithWorkbooks.getCourse();
+
+          holder.setWorkbookViewModel(workbookViewModel);
+          holder.setFragment(fragment);
 
           //Set courseName
           holder.getHeaderView().setText(course.getName());

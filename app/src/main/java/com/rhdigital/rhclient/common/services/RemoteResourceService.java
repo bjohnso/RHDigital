@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
@@ -13,16 +12,21 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.rhdigital.rhclient.database.http.ApiClient;
+import com.rhdigital.rhclient.database.http.ApiInterface;
 import com.rhdigital.rhclient.database.model.Course;
 import com.rhdigital.rhclient.database.model.CourseWithWorkbooks;
 import com.rhdigital.rhclient.database.model.Workbook;
-
-import java.util.ArrayList;
+;
 import java.util.HashMap;
 import java.util.List;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class RemoteResourceService {
 
@@ -38,6 +42,10 @@ public class RemoteResourceService {
   private HashMap<String, Uri> liveDocumentMapSurrogate = new HashMap<>();
   private HashMap<String, HashMap<String, Uri>> liveWorkbookMapSurrogate = new HashMap<>();
 
+  private MutableLiveData<ResponseBody> liveBinaryDownload;
+
+  private ApiInterface apiInterface;
+
   public RemoteResourceService() {
     StorageReference root = firebaseStorage.getReference();
     urlMap.put("l", root.child("courses/posters/drawable-ldpi"));
@@ -50,6 +58,27 @@ public class RemoteResourceService {
     urlMap.put("workbook", root.child("courses/workbooks"));
     urlMap.put("doc", root.child("documents"));
     urlMap.put("profile_photo", root.child("profile_photos"));
+  }
+
+  public LiveData<ResponseBody> downloadWorkbook(String downloadURL) {
+    if (apiInterface == null) {
+      apiInterface = ApiClient.getRetrofit().create(ApiInterface.class);
+    }
+    if (liveBinaryDownload == null) {
+      liveBinaryDownload = new MutableLiveData<>();
+    }
+    apiInterface.getBinaryData(downloadURL).enqueue(new Callback<ResponseBody>() {
+      @Override
+      public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+        liveBinaryDownload.setValue(response.body());
+      }
+
+      @Override
+      public void onFailure(Call<ResponseBody> call, Throwable t) {
+        liveBinaryDownload.setValue(null);
+      }
+    });
+    return liveBinaryDownload;
   }
 
   private StorageReference getImageResourceURL(Context context, String endpoint) {

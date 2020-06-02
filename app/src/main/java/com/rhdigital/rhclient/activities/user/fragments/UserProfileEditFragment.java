@@ -271,9 +271,6 @@ public class UserProfileEditFragment extends Fragment {
       DialogFragment dialogFragment;
       Bundle args;
 
-//      if (view.getId() == R.id.user_profile_edit_birthday_button) {
-//
-//      } else {
         args = new Bundle();
         String propertyName = buttonIdMap.get(view.getId());
         String propertyValue = editTextMap.get(propertyName).getText().toString();
@@ -284,7 +281,6 @@ public class UserProfileEditFragment extends Fragment {
         dialogFragment.setArguments(args);
         dialogFragment.setTargetFragment(userProfileEditFragment, userProfileEditFragment.getREQUEST_CODE());
         dialogFragment.show(fragmentManager, buttonIdMap.get(view.getId()));
-      //}
     }
   }
 
