@@ -10,6 +10,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
 import com.rhdigital.rhclient.common.services.RemoteResourceService;
+import com.rhdigital.rhclient.database.model.Course;
 import com.rhdigital.rhclient.database.model.CourseWithWorkbooks;
 import com.rhdigital.rhclient.database.model.Workbook;
 import com.rhdigital.rhclient.database.repository.RHRepository;
@@ -32,6 +33,8 @@ public class WorkbookViewModel extends AndroidViewModel {
     }
 
     public LiveData<List<CourseWithWorkbooks>> getAllCoursesWithWorkbooks() { return rhRepository.getAllCoursesWithWorkbooks(); }
+
+    public LiveData<List<CourseWithWorkbooks>> getAllAuthorisedCoursesWithWorkbooks() { return rhRepository.getAllAuthorisedCoursesWithWorkbooks(); }
 
     public LiveData<List<Workbook>> getWorkbooksById(@NonNull int courseId) {
         return rhRepository.getWorkbooksById(courseId);

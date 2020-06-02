@@ -53,7 +53,6 @@ public class WorkbooksRecyclerViewAdapter extends RecyclerView.Adapter<Workbooks
           CourseWithWorkbooks courseWithWorkbooks = this.coursesWithWorkbooks.get(position);
           Course course = courseWithWorkbooks.getCourse();
 
-          holder.setWorkbookViewModel(workbookViewModel);
           holder.setFragment(fragment);
 
           //Set courseName
@@ -75,7 +74,7 @@ public class WorkbooksRecyclerViewAdapter extends RecyclerView.Adapter<Workbooks
             workbookName.setText(workbook.getName());
             itemContainer.addView(view);
             HashMap<String, Uri> uriMap = workbookUriMap.get(course.getId());
-            holder.addWorkbookButton(view, uriMap.get(workbook.getId()));
+            holder.addWorkbookButton(workbook, view, uriMap.get(workbook.getId()));
           }
         }
     }

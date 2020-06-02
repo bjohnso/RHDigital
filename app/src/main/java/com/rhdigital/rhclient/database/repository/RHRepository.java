@@ -52,13 +52,15 @@ public class RHRepository {
         return courseDAO.getAllCourses();
     }
 
-    public LiveData<List<Course>> getAllAuthorisedCourses() {return courseDAO.getAllAuthorisedCourses(); };
+    public LiveData<List<Course>> getAllAuthorisedCourses() {return courseDAO.getAllAuthorisedCourses(); }
 
     public LiveData<List<Course>> getAllUndiscoveredCourses() { return courseDAO.getAllUndiscoveredCourses(); }
 
     public LiveData<List<Workbook>> getAllWorkbooks() { return workbookDAO.getAllWorkbooks(); }
 
     public LiveData<List<CourseWithWorkbooks>> getAllCoursesWithWorkbooks() { return courseWithWorkbooksDAO.getAllCoursesWithWorkbooks(); }
+
+    public LiveData<List<CourseWithWorkbooks>> getAllAuthorisedCoursesWithWorkbooks() { return courseWithWorkbooksDAO.getAllAuthorisedCoursesWithWorkbooks(); }
 
     public LiveData<List<Workbook>> getWorkbooksById(@NonNull int courseId) { return workbookDAO.getWorkbooksByCourseId(courseId); }
 

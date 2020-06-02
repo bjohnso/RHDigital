@@ -83,7 +83,7 @@ public class CoursesActivity extends AppCompatActivity {
 
         authorisedCoursesObservable = courseViewModel.getAllAuthorisedCourses();
         undiscoveredCoursesObservable = courseViewModel.getAllUndiscoveredCourses();
-        courseWithWorkbooksObservable = workbookViewModel.getAllCoursesWithWorkbooks();
+        courseWithWorkbooksObservable = workbookViewModel.getAllAuthorisedCoursesWithWorkbooks();
 
         mToolbar = findViewById(R.id.topNavigationView);
         mBottomNavigationView = findViewById(R.id.bottomNavigationView);

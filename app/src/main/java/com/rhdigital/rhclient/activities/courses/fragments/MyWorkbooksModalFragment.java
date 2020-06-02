@@ -29,14 +29,16 @@ public class MyWorkbooksModalFragment extends DialogFragment{
   @Nullable
   @Override
   public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-    View view = inflater.inflate(R.layout.workbooks_item_modal_download_dialog_layout, container, false);
-    saveButton = view.findViewById(R.id.workbooks_modal_download_save_button);
-    viewButton = view.findViewById(R.id.workbooks_modal_download_view_button);
+    if (getArguments() != null) {
+      View view = inflater.inflate(R.layout.workbooks_item_modal_download_dialog_layout, container, false);
+      saveButton = view.findViewById(R.id.workbooks_modal_download_save_button);
+      viewButton = view.findViewById(R.id.workbooks_modal_download_view_button);
 
-    saveButton.setOnClickListener(new ButtonOnClick(this));
-    viewButton.setOnClickListener(new ButtonOnClick(this));
-
-    return view;
+      saveButton.setOnClickListener(new ButtonOnClick(this));
+      viewButton.setOnClickListener(new ButtonOnClick(this));
+      return view;
+    }
+    return null;
   }
 
   @Override
@@ -51,7 +53,9 @@ public class MyWorkbooksModalFragment extends DialogFragment{
       return;
     }
     Intent intent = new Intent();
-    intent.putExtra("PROPERTY_VALUE", value);
+    intent.putExtra("NAME", getArguments().getString("NAME"));
+    intent.putExtra("ACTION", value);
+    intent.putExtra("URL", getArguments().getString("URL"));
     getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, intent);
     this.dismiss();
   }

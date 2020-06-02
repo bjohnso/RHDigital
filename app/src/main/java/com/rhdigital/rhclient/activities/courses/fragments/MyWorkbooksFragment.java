@@ -1,9 +1,12 @@
 package com.rhdigital.rhclient.activities.courses.fragments;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -14,6 +17,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -21,21 +25,33 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.rhdigital.rhclient.R;
 import com.rhdigital.rhclient.activities.courses.CoursesActivity;
+import com.rhdigital.rhclient.activities.user.UserActivity;
 import com.rhdigital.rhclient.database.model.Course;
 import com.rhdigital.rhclient.database.model.CourseWithWorkbooks;
 import com.rhdigital.rhclient.database.viewmodel.WorkbookViewModel;
 import com.rhdigital.rhclient.activities.courses.adapters.WorkbooksRecyclerViewAdapter;
 
+import org.apache.commons.io.IOUtils;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.Phaser;
 
+import okhttp3.ResponseBody;
+
 public class MyWorkbooksFragment extends Fragment {
 
-    private int REQUEST_CODE = 1;
+    private int REQUEST_CODE = 2;
 
     //Observables
     private LiveData<HashMap<String, Bitmap>> workbookPostersObservable;
@@ -150,6 +166,52 @@ public class MyWorkbooksFragment extends Fragment {
         }
         return view;
     }
+
+  @Override
+  public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    if (resultCode != Activity.RESULT_OK) {
+      return ;
+    }
+
+    if (requestCode == REQUEST_CODE) {
+      String name = data.getStringExtra("NAME");
+      String url = data.getStringExtra("URL");
+      String action = data.getStringExtra("ACTION");
+      if (action.equalsIgnoreCase("VIEW")) {
+        String format = "https://drive.google.com/viewerng/viewer?embedded=true&url=%s";
+        String fullPath = String.format(Locale.ENGLISH, format, url);
+        Uri uri = Uri.parse(fullPath);
+        getContext().startActivity(new Intent(Intent.ACTION_VIEW, uri));
+      } else if (action.equalsIgnoreCase("SAVE")) {
+        Toast.makeText(getContext(), "Download Started", Toast.LENGTH_SHORT).show();;
+        workbookViewModel.downloadWorkbook(url)
+          .observe(this, res -> {
+            if (res != null) {
+              if (writeFileToDisk(name, res)) {
+                Toast.makeText(getContext(), "Download Complete", Toast.LENGTH_LONG).show();
+                return;
+              }
+            }
+            Toast.makeText(getContext(), "Download Failed", Toast.LENGTH_LONG).show();
+          });
+      }
+    }
+  }
+
+  private boolean writeFileToDisk(String fileName, ResponseBody responseBody) {
+    File file = new File(
+      Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
+      fileName);
+    try {
+      InputStream in = responseBody.byteStream();
+      OutputStream out = new FileOutputStream(file);
+      IOUtils.copy(in, out);
+    } catch (IOException e) {
+      e.printStackTrace();
+      return false;
+    }
+    return true;
+  }
 
   private void receiveWorkbooks(List<CourseWithWorkbooks> workbooks) {
       workbooksRecyclerViewAdapter.setWorkbooks(workbooks);
