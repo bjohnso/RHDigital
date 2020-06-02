@@ -20,7 +20,7 @@ public abstract class WorkbookDAO extends BaseDAO<Workbook> {
     @Query("SELECT * FROM workbooks")
     abstract public LiveData<List<Workbook>> getAllWorkbooks();
 
-    @Query("SELECT * FROM workbooks WHERE course_id = :courseId")
+    @Query("SELECT * FROM workbooks WHERE course_id = :courseId ORDER BY name")
     abstract public LiveData<List<Workbook>> getWorkbooksByCourseId(int courseId);
 
 }

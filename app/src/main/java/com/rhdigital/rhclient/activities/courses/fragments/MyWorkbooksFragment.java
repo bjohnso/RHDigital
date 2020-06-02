@@ -38,12 +38,12 @@ public class MyWorkbooksFragment extends Fragment {
     //Observables
     private LiveData<HashMap<String, Bitmap>> workbookPostersObservable;
     private LiveData<List<CourseWithWorkbooks>> courseWithWorkbooksObservable;
-    private LiveData<HashMap<String, List<Uri>>> workbookURIObservable;
+    private LiveData<HashMap<String, HashMap<String, Uri>>> workbookURIObservable;
 
     //Observers
     private Observer<HashMap<String, Bitmap>> workbookPostersObserver;
     private Observer<List<CourseWithWorkbooks>> courseWithWorkbooksObserver;
-    private Observer<HashMap<String, List<Uri>>> workbookURIObserver;
+    private Observer<HashMap<String, HashMap<String, Uri>>> workbookURIObserver;
 
     //View Model
     private WorkbookViewModel workbookViewModel;
@@ -88,9 +88,9 @@ public class MyWorkbooksFragment extends Fragment {
           }
         };
 
-      workbookURIObserver = new Observer<HashMap<String, List<Uri>>>() {
+      workbookURIObserver = new Observer<HashMap<String, HashMap<String, Uri>>>() {
         @Override
-        public void onChanged(HashMap<String, List<Uri>> stringListHashMap) {
+        public void onChanged(HashMap<String, HashMap<String, Uri>> stringListHashMap) {
           if (stringListHashMap != null) {
             boolean complete = true;
             if (stringListHashMap.size() >= courseWithWorkbooks.size()) {

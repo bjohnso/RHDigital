@@ -25,7 +25,7 @@ import java.util.List;
 public class WorkbooksRecyclerViewAdapter extends RecyclerView.Adapter<WorkbooksViewHolder> {
     private List<CourseWithWorkbooks> coursesWithWorkbooks;
     private HashMap<String, Bitmap> bitMap;
-    private HashMap<String, List<Uri>> workbookUriMap;
+    private HashMap<String, HashMap<String, Uri>> workbookUriMap;
     private ViewGroup parent;
 
     public WorkbooksRecyclerViewAdapter() { }
@@ -64,6 +64,8 @@ public class WorkbooksRecyclerViewAdapter extends RecyclerView.Adapter<Workbooks
             TextView workbookName = (TextView) view.findViewWithTag("workbook_name");
             workbookName.setText(workbook.getName());
             itemContainer.addView(view);
+            HashMap<String, Uri> uriMap = workbookUriMap.get(course.getId());
+            holder.addWorkbookButton(view, uriMap.get(workbook.getId()));
           }
         }
     }
@@ -73,7 +75,7 @@ public class WorkbooksRecyclerViewAdapter extends RecyclerView.Adapter<Workbooks
         notifyDataSetChanged();
     }
 
-    public void setWorkbookURI(HashMap<String, List<Uri>> workbookUriMap) {
+    public void setWorkbookURI(HashMap<String, HashMap<String, Uri>> workbookUriMap) {
       this.workbookUriMap = workbookUriMap;
       notifyDataSetChanged();
     }

@@ -31,13 +31,12 @@ public class RemoteResourceService {
   private MutableLiveData<HashMap<String, Bitmap>> liveImageMap;
   private MutableLiveData<HashMap<String, Uri>> liveVideoUriMap;
   private MutableLiveData<HashMap<String, Uri>> liveDocumentMap;
-  private MutableLiveData<HashMap<String, List<Uri>>> liveWorkbookMap;
+  private MutableLiveData<HashMap<String, HashMap<String, Uri>>> liveWorkbookMap;
   private MutableLiveData<Bitmap> liveProfilePhotoUri;
   private HashMap<String, Bitmap> liveImageMapSurrogate = new HashMap<>();
   private HashMap<String, Uri> liveVideoUriMapSurrogate = new HashMap<>();
   private HashMap<String, Uri> liveDocumentMapSurrogate = new HashMap<>();
-  private HashMap<String, List<Uri>> liveWorkbookMapSurrogate = new HashMap<>();
-  private List<Uri> liveWorkbookListSurrogate = new ArrayList<>();
+  private HashMap<String, HashMap<String, Uri>> liveWorkbookMapSurrogate = new HashMap<>();
 
   public RemoteResourceService() {
     StorageReference root = firebaseStorage.getReference();
@@ -91,7 +90,7 @@ public class RemoteResourceService {
     return urlMap.get("workbook").child(endpoint);
   }
 
-  public LiveData<HashMap<String, List<Uri>>> getAllWorkbookURI(List<CourseWithWorkbooks> workbooks) {
+  public LiveData<HashMap<String, HashMap<String, Uri>>> getAllWorkbookURI(List<CourseWithWorkbooks> workbooks) {
     if (liveWorkbookMap == null) {
       liveWorkbookMap = new MutableLiveData<>();
     }
@@ -138,15 +137,18 @@ public class RemoteResourceService {
     for (CourseWithWorkbooks courseWithWorkbooks: workbooks) {
       List<Workbook> bookList = courseWithWorkbooks.getWorkbooks();
       for (Workbook workbook: bookList) {
-        getWorkbookResourceURL(workbook.getName())
+        getWorkbookResourceURL(workbook.getWorkbookURL())
         .getDownloadUrl()
         .addOnFailureListener(error -> {
+          Log.d("REMOTE", "URI FETCH FAILED");
           liveWorkbookMapSurrogate = null;
           liveWorkbookMap.setValue(null);
         })
         .addOnSuccessListener(uri -> {
-          liveWorkbookListSurrogate.add(uri);
-          liveWorkbookMapSurrogate.put(courseWithWorkbooks.getCourse().getId(), liveWorkbookListSurrogate);
+          if (liveWorkbookMapSurrogate.get(courseWithWorkbooks.getCourse().getId()) == null) {
+            liveWorkbookMapSurrogate.put(courseWithWorkbooks.getCourse().getId(), new HashMap<>());
+          }
+          liveWorkbookMapSurrogate.get(courseWithWorkbooks.getCourse().getId()).put(workbook.getId(), uri);
           liveWorkbookMap.setValue(liveWorkbookMapSurrogate);
         });
       }
