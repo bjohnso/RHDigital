@@ -73,7 +73,7 @@ public class WorkbooksViewHolder extends RecyclerView.ViewHolder {
     public void onClick(View view) {
       DialogFragment dialogFragment;
       Bundle bundle = new Bundle();
-      bundle.putString("NAME", workbook.getWorkbookURL());
+      bundle.putString("ID", workbook.getId());
       bundle.putString("URL", uri.toString());
       MyWorkbooksFragment myWorkbooksFragment = (MyWorkbooksFragment) fragment;
       dialogFragment = new MyWorkbooksModalFragment();

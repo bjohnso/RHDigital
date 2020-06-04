@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,8 +27,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.rhdigital.rhclient.R;
 import com.rhdigital.rhclient.activities.courses.CoursesActivity;
 import com.rhdigital.rhclient.activities.user.UserActivity;
+import com.rhdigital.rhclient.common.providers.CustomFileProvider;
 import com.rhdigital.rhclient.database.model.Course;
 import com.rhdigital.rhclient.database.model.CourseWithWorkbooks;
+import com.rhdigital.rhclient.database.model.Workbook;
 import com.rhdigital.rhclient.database.viewmodel.WorkbookViewModel;
 import com.rhdigital.rhclient.activities.courses.adapters.WorkbooksRecyclerViewAdapter;
 
@@ -174,21 +177,52 @@ public class MyWorkbooksFragment extends Fragment {
     }
 
     if (requestCode == REQUEST_CODE) {
-      String name = data.getStringExtra("NAME");
+
+      String id = data.getStringExtra("ID");
       String url = data.getStringExtra("URL");
       String action = data.getStringExtra("ACTION");
+
+      Course course = null;
+      Workbook workbook = null;
+      String fileName = "";
+
+      for (CourseWithWorkbooks c: courseWithWorkbooks) {
+        for (Workbook w : c.getWorkbooks()) {
+          if (w.getId().equals(id)) {
+            course = c.getCourse();
+            workbook = w;
+            fileName = workbook.getWorkbookURL();
+            break ;
+          }
+        }
+        if (workbook != null) {
+          break ;
+        }
+      }
+
+      Intent intent = new Intent(Intent.ACTION_VIEW);
+      intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
       if (action.equalsIgnoreCase("VIEW")) {
-        String format = "https://drive.google.com/viewerng/viewer?embedded=true&url=%s";
-        String fullPath = String.format(Locale.ENGLISH, format, url);
-        Uri uri = Uri.parse(fullPath);
-        getContext().startActivity(new Intent(Intent.ACTION_VIEW, uri));
-      } else if (action.equalsIgnoreCase("SAVE")) {
-        Toast.makeText(getContext(), "Download Started", Toast.LENGTH_SHORT).show();;
+        intent.setDataAndType(Uri.parse(url), "application/pdf");
+        getContext().startActivity(intent);
+      } else if (action.equalsIgnoreCase("SAVE") && !fileName.isEmpty() && workbook != null && course != null) {
+
+        String finalFileName = fileName;
+        Workbook finalWorkbook = workbook;
+        Course finalCourse = course;
+
         workbookViewModel.downloadWorkbook(url)
           .observe(this, res -> {
             if (res != null) {
-              if (writeFileToDisk(name, res)) {
-                Toast.makeText(getContext(), "Download Complete", Toast.LENGTH_LONG).show();
+              Uri fileOnDisk;
+              if ((fileOnDisk = writeFileToDisk(finalFileName, res)) != null) {
+                intent.setDataAndType(fileOnDisk, "application/pdf");
+                intent.putExtra("NAME", "New Workbook Downloaded!");
+                intent.putExtra("BODY", finalCourse.getDescription() +
+                  " : " +
+                  finalWorkbook.getName());
+                ((CoursesActivity)getActivity()).sendWorkbookDownloadNotification(intent);
                 return;
               }
             }
@@ -198,7 +232,7 @@ public class MyWorkbooksFragment extends Fragment {
     }
   }
 
-  private boolean writeFileToDisk(String fileName, ResponseBody responseBody) {
+  private Uri writeFileToDisk(String fileName, ResponseBody responseBody) {
     File file = new File(
       Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
       fileName);
@@ -208,9 +242,11 @@ public class MyWorkbooksFragment extends Fragment {
       IOUtils.copy(in, out);
     } catch (IOException e) {
       e.printStackTrace();
-      return false;
+      return null;
     }
-    return true;
+    return CustomFileProvider.getUriForFile(getContext(),
+      getContext().getApplicationContext().getPackageName() + ".provider",
+      file);
   }
 
   private void receiveWorkbooks(List<CourseWithWorkbooks> workbooks) {

@@ -53,8 +53,8 @@ public class MyWorkbooksModalFragment extends DialogFragment{
       return;
     }
     Intent intent = new Intent();
-    intent.putExtra("NAME", getArguments().getString("NAME"));
     intent.putExtra("ACTION", value);
+    intent.putExtra("ID", getArguments().getString("ID"));
     intent.putExtra("URL", getArguments().getString("URL"));
     getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, intent);
     this.dismiss();

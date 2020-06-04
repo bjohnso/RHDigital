@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 
 import android.view.Menu;
@@ -26,11 +27,14 @@ import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.rhdigital.rhclient.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.rhdigital.rhclient.activities.auth.AuthActivity;
 import com.rhdigital.rhclient.activities.user.UserActivity;
 import com.rhdigital.rhclient.common.services.NavigationService;
+import com.rhdigital.rhclient.common.services.FirebasePushNotificationService;
+import com.rhdigital.rhclient.common.services.PushNotificationHelperService;
 import com.rhdigital.rhclient.database.model.Course;
 import com.rhdigital.rhclient.database.model.CourseWithWorkbooks;
 import com.rhdigital.rhclient.database.viewmodel.CourseViewModel;
@@ -76,6 +80,12 @@ public class CoursesActivity extends AppCompatActivity {
         if (FirebaseAuth.getInstance().getCurrentUser() == null) {
           startAuthActivity();
         }
+
+        //FirebaseMessaging.getInstance().subscribeToTopic("workbook_downloads");
+
+        PushNotificationHelperService.getINSTANCE().setContext(this);
+        PushNotificationHelperService.getINSTANCE().generateNotificationChannel();
+        PushNotificationHelperService.getINSTANCE().saveTokenRemote();
 
         courseViewModel = new CourseViewModel(getApplication());
         userViewModel = new UserViewModel(getApplication());
@@ -191,6 +201,13 @@ public class CoursesActivity extends AppCompatActivity {
 
   public LiveData<List<CourseWithWorkbooks>> getCourseWithWorkbooksObservable() {
     return courseWithWorkbooksObservable;
+  }
+
+  public void sendWorkbookDownloadNotification(Intent intent) {
+      PushNotificationHelperService.getINSTANCE().initialisePendingIntent(intent);
+      PushNotificationHelperService.getINSTANCE().displayNotification(
+        intent.getStringExtra("NAME"),
+        intent.getStringExtra("BODY"));
   }
 
   public void setToolbarTitle(String title) {
