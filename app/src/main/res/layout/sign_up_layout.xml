@@ -65,8 +65,7 @@
     app:layout_constraintTop_toBottomOf="@+id/sign_up_tab_layout"
     app:layout_constraintVertical_bias="0.0"
     tools:layout_editor_absoluteX="0dp"
-    app:defaultNavHost="false"
-    app:navGraph="@navigation/sign_up_nav_graph"/>
+    app:defaultNavHost="false" />
 
   <TextView
     android:id="@+id/button"

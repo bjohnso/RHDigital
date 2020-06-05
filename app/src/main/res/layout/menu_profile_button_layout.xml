@@ -7,8 +7,6 @@
   xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <de.hdodenhof.circleimageview.CircleImageView
-    app:civ_border_width="1dp"
-    app:civ_border_color="@color/white"
     android:background="?android:attr/selectableItemBackground"
     android:id="@+id/menu_profile_image_button"
     android:layout_width="40dp"

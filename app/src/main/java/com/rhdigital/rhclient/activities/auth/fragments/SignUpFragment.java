@@ -12,15 +12,15 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.android.material.tabs.TabLayout;
 import com.rhdigital.rhclient.R;
+import com.rhdigital.rhclient.common.services.NavigationService;
 
 public class SignUpFragment extends Fragment {
 
   // Components
-  private boolean isParent = true;
-  private NavController navController;
   private TabLayout tabLayout;
   private LinearLayout signInRedirect;
 
@@ -36,48 +36,46 @@ public class SignUpFragment extends Fragment {
   @Override
   public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
-    // Navigation
-    navController = Navigation.findNavController(view);
-    NavController childController = Navigation.findNavController(getActivity(), R.id.nav_host_sign_up);
-    NavOptions navOptions = new NavOptions.Builder()
-      .setLaunchSingleTop(true)
-      .setPopUpTo(childController.getGraph().getStartDestination(), false)
-      .build();
-    tabLayout.addOnTabSelectedListener(new TabOnClick(childController, navOptions));
-    signInRedirect.setOnClickListener(new RedirectSignInOnClick(navController));
+    //Navigation
+    NavHostFragment navHostFragment = (NavHostFragment) getChildFragmentManager().findFragmentById(R.id.nav_host_sign_up);
+    NavController navController = navHostFragment.getNavController();
+    NavigationService.getINSTANCE().initNav(getClass().getName(),
+      navController,
+      R.navigation.sign_up_nav_graph,
+      R.id.signUpPhoneFragment);
+    tabLayout.addOnTabSelectedListener(new TabOnClick(getClass().getName()));
+    signInRedirect.setOnClickListener(new RedirectSignInOnClick(getActivity().getLocalClassName()));
   }
 
   private static class RedirectSignInOnClick implements View.OnClickListener {
 
-    private NavController navController;
+    private String parentClassName;
 
-    public RedirectSignInOnClick(NavController navController) {
-      this.navController = navController;
+    public RedirectSignInOnClick(String parentClassName) {
+      this.parentClassName = parentClassName;
     }
 
     @Override
     public void onClick(View view) {
-      navController.navigate(R.id.signInFragment);
+      NavigationService.getINSTANCE().navigate(parentClassName, R.id.signInFragment, null);
     }
   }
 
   private static class TabOnClick implements TabLayout.OnTabSelectedListener {
-    private NavController navController;
-    private NavOptions navOptions;
+    private String className;
 
-    public TabOnClick(NavController navController, NavOptions navOptions){
-      this.navController = navController;
-      this.navOptions = navOptions;
+    public TabOnClick(String className){
+      this.className = className;
     }
 
     @Override
     public void onTabSelected(TabLayout.Tab tab) {
       switch (tab.getPosition()){
         case 0:
-          navController.navigate(R.id.signUpPhoneFragment, null,navOptions);
+          NavigationService.getINSTANCE().navigate(className, R.id.signUpPhoneFragment, null);
           break;
         case 1:
-          navController.navigate(R.id.signUpEmailFragment, null, navOptions);
+          NavigationService.getINSTANCE().navigate(className, R.id.signUpEmailFragment, null);
           break;
       }
     }

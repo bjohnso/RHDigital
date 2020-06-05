@@ -27,11 +27,13 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.firebase.auth.FirebaseUser;
 import com.rhdigital.rhclient.R;
 import com.rhdigital.rhclient.activities.auth.AuthActivity;
 import com.rhdigital.rhclient.common.loader.CustomLoaderFactory;
+import com.rhdigital.rhclient.common.services.NavigationService;
 import com.rhdigital.rhclient.common.util.GenericTimer;
 
 import java.util.concurrent.Executors;
@@ -116,11 +118,10 @@ public class SignInFragment extends Fragment {
   @Override
   public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
-    navController = Navigation.findNavController(view);
 
     //Set Listeners
-    signUpRedirect.setOnClickListener(new RedirectSignUpOnClick(navController));
-    submit.setOnClickListener(new SubmitOnClick(this, navController));
+    signUpRedirect.setOnClickListener(new RedirectSignUpOnClick(getActivity().getLocalClassName()));
+    submit.setOnClickListener(new SubmitOnClick(this));
   }
 
   public void setFieldsValidated() {
@@ -198,11 +199,9 @@ public class SignInFragment extends Fragment {
   public static class SubmitOnClick implements View.OnClickListener {
 
       private Fragment fragment;
-      private NavController navController;
 
-      public SubmitOnClick(Fragment fragment, NavController navController) {
+      public SubmitOnClick(Fragment fragment) {
         this.fragment = fragment;
-        this.navController = navController;
       }
 
     @Override
@@ -231,15 +230,18 @@ public class SignInFragment extends Fragment {
 
   public static class RedirectSignUpOnClick implements View.OnClickListener {
 
-      private NavController navController;
+      private String parentClassName;
 
-      public RedirectSignUpOnClick(NavController navController) {
-        this.navController = navController;
+      public RedirectSignUpOnClick(String parentClassName) {
+        this.parentClassName = parentClassName;
       }
 
     @Override
     public void onClick(View view) {
-      navController.navigate(R.id.signUpFragment);
+        NavigationService.getINSTANCE()
+          .navigate(parentClassName,
+            R.id.signUpFragment,
+            null);
     }
   }
 
