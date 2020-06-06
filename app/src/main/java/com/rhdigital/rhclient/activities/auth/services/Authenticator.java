@@ -7,6 +7,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.google.firebase.FirebaseException;
@@ -24,10 +25,10 @@ import com.rhdigital.rhclient.database.util.PopulateRoomAsync;
 
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class Authenticator {
 
-  private MutableLiveData<FirebaseUser> firebaseUser;
   private FirebaseAuth firebaseAuth;
   private FirebaseFirestore db = FirebaseFirestore.getInstance();
   private RHRepository rhRepository;
@@ -48,10 +49,9 @@ public class Authenticator {
 
   //RePopulates Room
   public MutableLiveData<ArrayList<Long>> populateRoomFromUpstream() {
-    PopulateRoomAsync
-      .getInstance()
-      .populateFromUpstream(RHDatabase.getDatabase(context));
-    return PopulateRoomAsync.getInstance().getInserts();
+    PopulateRoomAsync populateRoomAsync = new PopulateRoomAsync();
+    populateRoomAsync.populateFromUpstream(RHDatabase.getDatabase(context));
+    return populateRoomAsync.getInserts();
   }
 
   // This Method must be called upon registering of MutableLiveData to confirm user initialisation in users node
@@ -134,40 +134,79 @@ public class Authenticator {
   // EMAIL & PASSWORD
 
   // Email Registration Entry Point - This method updates MutableLiveData when successful
-  public void registerEmail(String email, String password) {
-    if (email != null && password != null && !email.isEmpty() && !password.isEmpty()) {
+  public LiveData<Boolean> registerEmail(String email, String password, String firstName, String lastName) {
+    MutableLiveData<Boolean> registrationSuccess = new MutableLiveData<>();
+    if (email != null && password != null &&
+      !email.isEmpty() && !password.isEmpty() &&
+      firstName != null && !firstName.isEmpty() &&
+      lastName != null && !lastName.isEmpty()) {
       firebaseAuth.createUserWithEmailAndPassword(email, password)
         .addOnCompleteListener(task -> {
-          if (task.isSuccessful())
-            firebaseUser.setValue(firebaseAuth.getCurrentUser());
+          if (task.isSuccessful()) {
+            registrationSuccess.setValue(true);
+          }
           else {
-            if (password.length() < 6) {
-              Toast.makeText(
-                this.context,
-                "Sorry, your password needs to be at least 6 characters. Please try again.",
-                Toast.LENGTH_LONG).show();
-            } else {
-              Toast.makeText(
-                this.context,
-                "Oops, An unknown error has occurred. This incident has been reported to the RHDigital Team. Please try again later.",
-                Toast.LENGTH_LONG).show();
-            }
+            Toast.makeText(
+              this.context,
+              "Oops, An unknown error has occurred. This incident has been reported to the RHDigital Team. Please try again later.",
+              Toast.LENGTH_LONG).show();
+            registrationSuccess.setValue(false);
           }
         });
-    } else {
-      Toast.makeText(this.context,
-        "Please enter a valid email address and password.",
-        Toast.LENGTH_LONG).show();
     }
+    return registrationSuccess;
+  }
+
+  // Updates newly created user with mandatory name and surname credentials
+  public LiveData<Boolean> postRegistration(FirebaseUser firebaseUser, String firstName, String lastName) {
+    MutableLiveData<Boolean> isRegistrationSuccessful = new MutableLiveData<>();
+    String email;
+    String cell;
+
+    if ((email = firebaseUser.getEmail()) == null) {
+      email = "";
+    }
+
+    if ((cell = firebaseUser.getPhoneNumber()) == null) {
+      cell = "";
+    }
+
+    User user = new User(
+      firebaseUser.getUid(),
+      "",
+      email,
+      cell,
+      firstName,
+      lastName,
+      "",
+      "",
+      "",
+      "",
+      "");
+
+    db.collection("users")
+      .document(firebaseAuth.getUid())
+      .set(user)
+      .addOnCompleteListener(task -> {
+        if (task.isSuccessful()) {
+          isRegistrationSuccessful.setValue(true);
+          Toast.makeText(this.context, "Successfully registered", Toast.LENGTH_LONG).show();
+        } else {
+          isRegistrationSuccessful.setValue(false);
+        }
+    });
+    return isRegistrationSuccessful;
   }
 
   // Email Authentication Entry Point - This method updates MutableLiveData when successful
-  public void authenticateEmail(String email, String password) {
+  public LiveData<Boolean> authenticateEmail(String email, String password) {
+    MutableLiveData<Boolean> isAuthenticationSuccessful = new MutableLiveData<>();
     if (email != null && password != null && !email.isEmpty() && !password.isEmpty()) {
       firebaseAuth.signInWithEmailAndPassword(email, password)
         .addOnCompleteListener(task -> {
-          if (task.isSuccessful())
-            firebaseUser.setValue(firebaseAuth.getCurrentUser());
+          if (task.isSuccessful()) {
+            isAuthenticationSuccessful.setValue(true);
+          }
           else {
             if (password.length() < 6) {
               Toast.makeText(this.context,
@@ -178,14 +217,16 @@ public class Authenticator {
                 task.getException().getMessage(),
                 Toast.LENGTH_LONG).show();
             }
-            firebaseUser.setValue(null);
+            isAuthenticationSuccessful.setValue(false);
           }
         });
     } else {
+      isAuthenticationSuccessful.setValue(false);
       Toast.makeText(this.context,
         "Please enter a valid email address and password.",
         Toast.LENGTH_LONG).show();
     }
+    return isAuthenticationSuccessful;
   }
 
   // PHONE NUMBER & PASSWORD
@@ -195,7 +236,6 @@ public class Authenticator {
     firebaseAuth.signInWithCredential(phoneAuthCredential)
       .addOnCompleteListener(task -> {
         if (task.isSuccessful()) {
-          firebaseUser.setValue(task.getResult().getUser());
         } else {
           Toast.makeText(context,
             task.getException().getMessage(),
@@ -241,10 +281,18 @@ public class Authenticator {
     }
   }
 
-  public MutableLiveData<FirebaseUser> getFirebaseUser() {
-    if (firebaseUser == null) {
-      firebaseUser = new MutableLiveData<>();
-    }
-    return firebaseUser;
+  public LiveData<Boolean> isExistingUser(String email) {
+    MutableLiveData<Boolean> isExitingUser = new MutableLiveData<>();
+    db.collection("users")
+      .whereEqualTo("email", email)
+      .get()
+      .addOnCompleteListener(task -> {
+        if (task.getResult().isEmpty()) {
+          isExitingUser.setValue(false);
+        } else {
+          isExitingUser.setValue(true);
+        }
+      });
+    return isExitingUser;
   }
 }

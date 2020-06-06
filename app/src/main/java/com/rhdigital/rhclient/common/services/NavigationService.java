@@ -48,7 +48,7 @@ public class NavigationService {
     controllerMap.put(className, navController);
   }
 
-  public void navigate(String className, int destinationId, Bundle postNavigationRestorationData) {
+  public void navigate(String className, int destinationId, Bundle data, Bundle postNavigationRestorationData) {
     if (postNavigationRestorationData != null) {
       this.postNavigationRestorationData = postNavigationRestorationData;
     }
@@ -57,7 +57,7 @@ public class NavigationService {
       .setLaunchSingleTop(true)
       .build();
     navController.getGraph().setStartDestination(destinationId);
-    navController.navigate(destinationId, null, navOptions);
+    navController.navigate(destinationId, data, navOptions);
     controllerMap.put(className, navController);
     if (!VideoPlayerService.getInstance().isFullScreen()
       && VideoPlayerService.getInstance().isVideoEnabled()

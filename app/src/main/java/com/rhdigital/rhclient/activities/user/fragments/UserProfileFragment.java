@@ -204,7 +204,7 @@ public class UserProfileFragment extends Fragment {
 
     @Override
     public void onClick(View view) {
-      NavigationService.getINSTANCE().navigate(className, R.id.userProfileEditFragment, null);
+      NavigationService.getINSTANCE().navigate(className, R.id.userProfileEditFragment, null, null);
     }
   }
 
@@ -218,7 +218,7 @@ public class UserProfileFragment extends Fragment {
 
     @Override
     public void onClick(View view) {
-      NavigationService.getINSTANCE().navigate(className, R.id.userProfileSettingsFragment, null);
+      NavigationService.getINSTANCE().navigate(className, R.id.userProfileSettingsFragment, null,null);
     }
   }
 

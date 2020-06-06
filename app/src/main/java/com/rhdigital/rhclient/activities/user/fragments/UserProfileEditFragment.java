@@ -196,7 +196,7 @@ public class UserProfileEditFragment extends Fragment {
         } else {
           NavigationService.getINSTANCE().navigate(getActivity().getLocalClassName(),
             R.id.userProfileFragment,
-            null);
+            null, null);
         }
       } else {
         TextView textView = textViewMap.get(propertyName);
@@ -248,7 +248,7 @@ public class UserProfileEditFragment extends Fragment {
       } else {
         NavigationService.getINSTANCE().navigate(className,
           R.id.userProfileFragment,
-          null);
+          null, null);
       }
     }
   }

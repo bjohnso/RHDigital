@@ -41,7 +41,7 @@ public class UserProfileSettingsFragment extends Fragment {
     public void onClick(View view) {
       NavigationService.getINSTANCE().navigate(className,
         R.id.userProfileFragment,
-        null);
+        null, null);
     }
   }
 }

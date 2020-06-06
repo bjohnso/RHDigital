@@ -238,13 +238,13 @@ public class CoursesActivity extends AppCompatActivity {
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
       switch (menuItem.getItemId()){
         case R.id.courses_bottom_nav_courses:
-          NavigationService.getINSTANCE().navigate(className, R.id.coursesTabFragment, null);
+          NavigationService.getINSTANCE().navigate(className, R.id.coursesTabFragment, null, null);
           return true;
         case R.id.courses_bottom_nav_workbooks:
-          NavigationService.getINSTANCE().navigate(className, R.id.myWorkbooksFragment, null);
+          NavigationService.getINSTANCE().navigate(className, R.id.myWorkbooksFragment, null, null);
           return true;
         case R.id.courses_bottom_nav_research:
-          NavigationService.getINSTANCE().navigate(className, R.id.myResearchFragment, null);
+          NavigationService.getINSTANCE().navigate(className, R.id.myResearchFragment, null, null);
           return true;
       }
       return false;

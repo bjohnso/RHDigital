@@ -57,7 +57,7 @@ public class SignUpFragment extends Fragment {
 
     @Override
     public void onClick(View view) {
-      NavigationService.getINSTANCE().navigate(parentClassName, R.id.signInFragment, null);
+      NavigationService.getINSTANCE().navigate(parentClassName, R.id.signInFragment, null, null);
     }
   }
 
@@ -72,10 +72,10 @@ public class SignUpFragment extends Fragment {
     public void onTabSelected(TabLayout.Tab tab) {
       switch (tab.getPosition()){
         case 0:
-          NavigationService.getINSTANCE().navigate(className, R.id.signUpPhoneFragment, null);
+          NavigationService.getINSTANCE().navigate(className, R.id.signUpPhoneFragment, null, null);
           break;
         case 1:
-          NavigationService.getINSTANCE().navigate(className, R.id.signUpEmailFragment, null);
+          NavigationService.getINSTANCE().navigate(className, R.id.signUpEmailFragment, null, null);
           break;
       }
     }

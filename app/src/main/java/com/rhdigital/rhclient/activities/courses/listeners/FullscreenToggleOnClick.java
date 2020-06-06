@@ -29,12 +29,12 @@ public class FullscreenToggleOnClick implements View.OnClickListener {
     if (!VideoPlayerService.getInstance().isFullScreen()) {
       ((CoursesActivity) context).revealVideoPlayerFullscreen(true);
       ((CoursesActivity) context).configureScreenOrientation(true);
-      NavigationService.getINSTANCE().navigate(className, R.id.coursesVideoPlayerFullscreenFragment, postNavigationRestoreData);
+      NavigationService.getINSTANCE().navigate(className, R.id.coursesVideoPlayerFullscreenFragment, null, postNavigationRestoreData);
     }
     else {
       ((CoursesActivity) context).configureScreenOrientation(false);
       ((CoursesActivity) context).revealVideoPlayerFullscreen(false);
-      NavigationService.getINSTANCE().navigate(className, R.id.coursesTabFragment, postNavigationRestoreData);
+      NavigationService.getINSTANCE().navigate(className, R.id.coursesTabFragment, null, postNavigationRestoreData);
     }
   }
 }

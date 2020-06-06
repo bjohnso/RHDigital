@@ -68,11 +68,11 @@ public class CoursesTabFragment extends Fragment {
       switch (tab.getPosition()){
         case 0:
           if (navController.getCurrentDestination().getId() != R.id.discoverCoursesFragment)
-            NavigationService.getINSTANCE().navigate(className, R.id.discoverCoursesFragment, null);
+            NavigationService.getINSTANCE().navigate(className, R.id.discoverCoursesFragment, null, null);
           break;
         case 1:
           if (navController.getCurrentDestination().getId() != R.id.myCoursesFragment)
-            NavigationService.getINSTANCE().navigate(className, R.id.myCoursesFragment, null);
+            NavigationService.getINSTANCE().navigate(className, R.id.myCoursesFragment, null, null);
           break;
       }
     }

@@ -26,16 +26,8 @@ public class PopulateRoomAsync extends AsyncTask<Void, Void, Void> {
   private CourseWithWorkbooksDAO courseWithWorkbooksDAO;
   private QuerySnapshot[] fireStoreData;
   private MutableLiveData<ArrayList<Long>> inserts;
-  private static volatile PopulateRoomAsync INSTANCE;
 
-  private PopulateRoomAsync() { }
-
-  public static PopulateRoomAsync getInstance() {
-    if (INSTANCE == null) {
-      INSTANCE = new PopulateRoomAsync();
-    }
-    return INSTANCE;
-  }
+  public PopulateRoomAsync() { }
 
   public MutableLiveData<ArrayList<Long>> getInserts() {
     if (inserts == null) {
@@ -65,7 +57,7 @@ public class PopulateRoomAsync extends AsyncTask<Void, Void, Void> {
                 setFireStoreData(
                   courseTask.getResult(),
                   workbookTask.getResult());
-                INSTANCE.execute();
+                this.execute();
               }
             });
         }

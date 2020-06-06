@@ -16,6 +16,7 @@ import androidx.navigation.Navigation;
 
 import com.google.android.material.tabs.TabLayout;
 import com.rhdigital.rhclient.R;
+import com.rhdigital.rhclient.common.services.NavigationService;
 
 public class SignUpPhoneFragment extends Fragment {
 
@@ -37,5 +38,20 @@ public class SignUpPhoneFragment extends Fragment {
   @Override
   public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
+    submitButton.setOnClickListener(new SubmitOnClick(getActivity().getLocalClassName()));
+  }
+
+  public static class SubmitOnClick implements View.OnClickListener {
+
+    private String parentClassName;
+
+    public SubmitOnClick(String parentClassName) {
+      this.parentClassName = parentClassName;
+    }
+
+    @Override
+    public void onClick(View view) {
+      NavigationService.getINSTANCE().navigate(parentClassName, R.id.signUpDetailsFragment, null, null);
+    }
   }
 }

@@ -2,12 +2,14 @@ package com.rhdigital.rhclient.activities.auth.fragments;
 
 import android.animation.AnimatorSet;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.AnimatedVectorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,19 +25,27 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.rhdigital.rhclient.R;
 import com.rhdigital.rhclient.activities.auth.AuthActivity;
+import com.rhdigital.rhclient.activities.auth.services.Authenticator;
+import com.rhdigital.rhclient.activities.courses.CoursesActivity;
 import com.rhdigital.rhclient.common.loader.CustomLoaderFactory;
 import com.rhdigital.rhclient.common.services.NavigationService;
 import com.rhdigital.rhclient.common.util.GenericTimer;
+import com.rhdigital.rhclient.database.model.User;
+import com.rhdigital.rhclient.database.viewmodel.UserViewModel;
 
+import java.util.ArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -67,9 +77,7 @@ public class SignInFragment extends Fragment {
     private LinearLayout signUpRedirect;
     private FrameLayout frameLayout;
 
-    //Auth
-    private MutableLiveData<FirebaseUser> userObservable;
-    private Context context;
+    //Observables
 
     private TextView line;
     private TextView welcome;
@@ -77,15 +85,9 @@ public class SignInFragment extends Fragment {
     private int loaderHeight = 0;
     private int loaderWidth = 0;
 
-    // Navigation
-    private NavController navController;
-
     @RequiresApi(api = Build.VERSION_CODES.M)
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.sign_in_layout, container, false);
-
-        context = getContext();
-        userObservable = ((AuthActivity)getActivity()).getAuthenticator().getFirebaseUser();
 
         // Initialise Components
         emailInput = (AutoCompleteTextView) view.findViewById(R.id.sign_in_email_input);
@@ -107,11 +109,12 @@ public class SignInFragment extends Fragment {
         frameLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
           @Override
           public void onGlobalLayout() {
-            frameLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this::onGlobalLayout);
-            initLoaderFactory();
+            if (frameLayout.getHeight() > 0 && frameLayout.getWidth() > 0) {
+              frameLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this::onGlobalLayout);
+              initLoaderFactory();
+            }
           }
         });
-
         return view;
     }
 
@@ -119,23 +122,55 @@ public class SignInFragment extends Fragment {
   public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
 
+    FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+    if (firebaseUser != null) {
+      Log.d("SIGNIN", "PREAUTH!");
+      signIn(false);
+    }
+
     //Set Listeners
     signUpRedirect.setOnClickListener(new RedirectSignUpOnClick(getActivity().getLocalClassName()));
     submit.setOnClickListener(new SubmitOnClick(this));
   }
 
+  public void signIn(boolean authenticate) {
+      AuthActivity authActivity = ((AuthActivity)getActivity());
+      if (authenticate) {
+        authActivity
+          .signIn(getEmailText(), getPasswordText())
+          .observe(getViewLifecycleOwner(), isSuccessful -> {
+            if (isSuccessful) {
+              setFieldsValidated();
+              addLoader();
+            } else {
+              setSubmitDisableTimeout();
+            }
+          });
+    } else {
+        setFieldsValidated();
+        addLoader();
+        authActivity.launchCoursesActivity();
+    }
+  }
+
   public void setFieldsValidated() {
-      this.signUpRedirect.setVisibility(View.INVISIBLE);
-      this.resetPasswordRedirect.setVisibility(View.INVISIBLE);
-      this.line.setVisibility(View.INVISIBLE);
-      this.passwordInput.setVisibility(View.INVISIBLE);
-      this.emailInput.setVisibility(View.INVISIBLE);
-      this.submit.setVisibility(View.INVISIBLE);
-      this.welcome.setVisibility(View.VISIBLE);
+    UserViewModel userViewModel = ((AuthActivity)getActivity()).getUserViewModel();
+    userViewModel.getAuthenticatedUser(FirebaseAuth.getInstance().getUid()).observe(getViewLifecycleOwner(), user -> {
+      if (user != null) {
+        this.signUpRedirect.setVisibility(View.INVISIBLE);
+        this.resetPasswordRedirect.setVisibility(View.INVISIBLE);
+        this.line.setVisibility(View.INVISIBLE);
+        this.passwordInput.setVisibility(View.INVISIBLE);
+        this.emailInput.setVisibility(View.INVISIBLE);
+        this.submit.setVisibility(View.INVISIBLE);
+        this.welcome.setText("Welcome " + user.getName());
+        this.welcome.setVisibility(View.VISIBLE);
+      }
+    });
     }
 
     public void setSubmitDisableTimeout() {
-      this.scheduledExecutorService.schedule(new GenericTimer(this), 2, TimeUnit.SECONDS);
+      this.scheduledExecutorService.schedule(new GenericTimer(this), 3, TimeUnit.SECONDS);
     }
 
     public void setSubmitDisable() {
@@ -143,13 +178,13 @@ public class SignInFragment extends Fragment {
       this.submit.setBackgroundResource(R.drawable.submit_inactive);
     }
 
-  public String getEmailText() {
-    return this.emailInput.getText().toString();
-  }
+    public String getEmailText() {
+      return this.emailInput.getText().toString();
+    }
 
-  public String getPasswordText() {
-    return this.passwordInput.getText().toString();
-  }
+    public String getPasswordText() {
+      return this.passwordInput.getText().toString();
+    }
 
   public Handler getHandler() {
     return handler;
@@ -208,23 +243,7 @@ public class SignInFragment extends Fragment {
     public void onClick(View view) {
         SignInFragment signInFragment = (SignInFragment) fragment;
         signInFragment.setSubmitDisable();
-
-      signInFragment.userObservable.observe(signInFragment.getViewLifecycleOwner(), new Observer<FirebaseUser>() {
-        @Override
-        public void onChanged(FirebaseUser firebaseUser) {
-          if (firebaseUser != null) {
-            signInFragment.setFieldsValidated();
-            signInFragment.addLoader();
-            signInFragment.userObservable.removeObserver(this);
-          } else {
-            signInFragment.setSubmitDisableTimeout();
-          }
-        }
-      });
-
-      ((AuthActivity)signInFragment.getActivity())
-        .getAuthenticator()
-        .authenticateEmail(signInFragment.getEmailText(), signInFragment.getPasswordText());
+        signInFragment.signIn(true);
     }
   }
 
@@ -241,8 +260,7 @@ public class SignInFragment extends Fragment {
         NavigationService.getINSTANCE()
           .navigate(parentClassName,
             R.id.signUpFragment,
-            null);
+            null, null);
     }
   }
-
 }

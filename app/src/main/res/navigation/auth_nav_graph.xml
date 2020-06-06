@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/auth_nav_graph">
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:id="@+id/auth_nav_graph"
+  app:startDestination="@id/signUpDetailsFragment">
 
   <fragment
     android:id="@+id/signInFragment"
@@ -12,4 +14,8 @@
     android:name="com.rhdigital.rhclient.activities.auth.fragments.SignUpFragment"
     android:label="SignUpFragment" >
   </fragment>
+  <fragment
+    android:id="@+id/signUpDetailsFragment"
+    android:name="com.rhdigital.rhclient.activities.auth.fragments.SignUpDetailsFragment"
+    android:label="SignUpDetailsFragment" />
 </navigation>

@@ -6,7 +6,9 @@ import android.os.Bundle;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.navigation.NavController;
@@ -15,11 +17,13 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.rhdigital.rhclient.R;
 import com.rhdigital.rhclient.activities.auth.services.Authenticator;
 import com.rhdigital.rhclient.activities.courses.CoursesActivity;
 import com.rhdigital.rhclient.common.services.NavigationService;
 import com.rhdigital.rhclient.database.RHDatabase;
+import com.rhdigital.rhclient.database.viewmodel.UserViewModel;
 
 import java.util.ArrayList;
 
@@ -29,18 +33,16 @@ public class AuthActivity extends AppCompatActivity {
   private String TAG = "AuthActivity";
   private Context context;
 
-    //Components
-  private View navControllerView;
-
   // Database
   RHDatabase database;
 
-    //Auth
-  private FirebaseAuth firebaseAuth;
-  private FirebaseUser firebaseUser;
+  //Auth
   private Authenticator authenticator;
 
-    //Observables
+  //ViewModel
+  private UserViewModel userViewModel;
+
+  //Observables
   private MutableLiveData<FirebaseUser> userObservable;
   private MutableLiveData<ArrayList<Long>> populateRoomObservable;
 
@@ -48,50 +50,9 @@ public class AuthActivity extends AppCompatActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     context = this;
-    firebaseAuth = FirebaseAuth.getInstance();
     authenticator = new Authenticator(this);
-
-    navControllerView = findViewById(R.id.nav_host_auth);
-
     database = RHDatabase.getDatabase(this);
-
-    //Observers
-    //LISTENS FOR ROOM POPULATION COMPLETION
-    final Observer<ArrayList<Long>> populateRoomObserver = new Observer<ArrayList<Long>>() {
-      @Override
-      public void onChanged(ArrayList<Long> ids) {
-        if (ids.size() > 0) {
-          populateRoomObservable.removeObserver(this);
-          Intent intent = new Intent(context, CoursesActivity.class);
-          authenticator.postAuthenticate(firebaseUser, intent);
-        }
-      }
-    };
-
-    // LISTENS FOR AUTHENTICATION EVENT AND TRIGGERS DATA PULL FROM UPSTREAM
-    final Observer<FirebaseUser> authObserver = new Observer<FirebaseUser>() {
-      @Override
-      public void onChanged(FirebaseUser user) {
-        if (user != null) {
-          userObservable.removeObserver(this);
-          firebaseUser = user;
-          populateRoomObservable = authenticator.populateRoomFromUpstream();
-          populateRoomObservable.observe((LifecycleOwner) context, populateRoomObserver);
-        }
-      }
-    };
-
-    // Check Auth Status
-
-    firebaseUser = firebaseAuth.getCurrentUser();
-
-    if (firebaseUser != null) {
-      populateRoomObservable = authenticator.populateRoomFromUpstream();
-      populateRoomObservable.observe((LifecycleOwner) context, populateRoomObserver);
-    }
-
-    userObservable = authenticator.getFirebaseUser();
-    userObservable.observe(this, authObserver);
+    userViewModel = new UserViewModel(getApplication());
 
     setContentView(R.layout.activity_auth);
 
@@ -106,9 +67,56 @@ public class AuthActivity extends AppCompatActivity {
       R.id.signInFragment);
   }
 
-  private void startCourseActivity() {
-    Intent intent = new Intent(this, CoursesActivity.class);
-    authenticator.postAuthenticate(firebaseUser, intent);
+  public LiveData<Boolean> signIn(String email, String password) {
+    LiveData<Boolean> authObserver = authenticator.authenticateEmail(email, password);
+    authObserver.observe(this, isSuccessful -> {
+        if (isSuccessful) {
+          launchCoursesActivity();
+        }
+      });
+    return authObserver;
+  }
+
+  public LiveData<Boolean> register(String email, String password, String firstName, String lastName) {
+    LiveData<Boolean> authObserver = authenticator.registerEmail(email, password, firstName, lastName);
+    authObserver.observe(this, isSuccessful -> {
+      if (isSuccessful) {
+        registrationLaunchCoursesActivity(firstName, lastName);
+      }
+    });
+    return authObserver;
+  }
+
+  public void registrationLaunchCoursesActivity(String firstName, String lastName) {
+    FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+    authenticator.postRegistration(firebaseUser, firstName, lastName)
+    .observe(this, isSuccessful -> {
+      if (isSuccessful) {
+        NavigationService.getINSTANCE()
+          .navigate(getLocalClassName(),
+            R.id.signInFragment,
+            null,
+            null);
+      }
+    });
+  }
+
+  public void launchCoursesActivity() {
+    FirebaseUser firebaseUser;
+    if ((firebaseUser = FirebaseAuth.getInstance().getCurrentUser()) != null) {
+      authenticator
+        .populateRoomFromUpstream()
+        .observe(this, ids -> {
+          if (ids.size() > 0) {
+            Intent intent = new Intent(context, CoursesActivity.class);
+            authenticator.postAuthenticate(firebaseUser, intent);
+          }
+        });
+    }
+  }
+
+  public UserViewModel getUserViewModel() {
+    return userViewModel;
   }
 
   public Authenticator getAuthenticator() {
