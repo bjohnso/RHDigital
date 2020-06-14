@@ -40,25 +40,37 @@ public class PopulateRoomAsync extends AsyncTask<Void, Void, Void> {
     this.fireStoreData = snapshots;
   }
 
+  //TODO: CREATE MODEL FOR COURSEPACKGES
+
   public void populateFromUpstream(RHDatabase instance) {
     FirebaseFirestore firestore = FirebaseFirestore.getInstance();
-    firestore.collection("courses")
+    firestore
+      .collection("course_packages")
       .get()
-      .addOnCompleteListener(courseTask -> {
-        if (courseTask.isSuccessful()) {
-          firestore.collectionGroup("workbooks")
+      .addOnCompleteListener(coursePackagesTask -> {
+        if (coursePackagesTask.isSuccessful()) {
+          firestore
+            .collectionGroup("courses")
             .get()
-            .addOnCompleteListener(workbookTask -> {
-              if (workbookTask.isSuccessful()) {
-                courseDAO = instance.courseDAO();
-                workbookDAO = instance.workbookDAO();
-                userDAO = instance.userDAO();
-                courseWithWorkbooksDAO = instance.courseWithWorkbooksDAO();
-                setFireStoreData(
-                  courseTask.getResult(),
-                  workbookTask.getResult());
-                this.execute();
-              }
+            .addOnCompleteListener(coursesTask -> {
+              if (coursesTask.isSuccessful()) {
+                firestore
+                  .collectionGroup("workbooks")
+                  .get()
+                  .addOnCompleteListener(workbooksTask -> {
+                    if (workbooksTask.isSuccessful()) {
+                      courseDAO = instance.courseDAO();
+                      workbookDAO = instance.workbookDAO();
+                      userDAO = instance.userDAO();
+                      courseWithWorkbooksDAO = instance.courseWithWorkbooksDAO();
+                      setFireStoreData(
+                        coursePackagesTask.getResult(),
+                        coursePackagesTask.getResult(),
+                        workbooksTask.getResult());
+                      this.execute();
+                    }
+                  });
+            }
             });
         }
       });
