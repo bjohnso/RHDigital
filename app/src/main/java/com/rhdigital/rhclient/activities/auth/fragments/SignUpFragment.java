@@ -37,12 +37,12 @@ public class SignUpFragment extends Fragment {
   public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
     //Navigation
-    NavHostFragment navHostFragment = (NavHostFragment) getChildFragmentManager().findFragmentById(R.id.nav_host_sign_up);
-    NavController navController = navHostFragment.getNavController();
-    NavigationService.getINSTANCE().initNav(getClass().getName(),
-      navController,
-      R.navigation.sign_up_nav_graph,
-      R.id.signUpPhoneFragment);
+//    NavHostFragment navHostFragment = (NavHostFragment) getChildFragmentManager().findFragmentById(R.id.nav_host_sign_up);
+//    NavController navController = navHostFragment.getNavController();
+//    NavigationService.getINSTANCE().initNav(getClass().getName(),
+//      navController,
+//      R.navigation.sign_up_nav_graph,
+//      R.id.signUpPhoneFragment);
     tabLayout.addOnTabSelectedListener(new TabOnClick(getClass().getName()));
     signInRedirect.setOnClickListener(new RedirectSignInOnClick(getActivity().getLocalClassName()));
   }
@@ -70,14 +70,14 @@ public class SignUpFragment extends Fragment {
 
     @Override
     public void onTabSelected(TabLayout.Tab tab) {
-      switch (tab.getPosition()){
-        case 0:
-          NavigationService.getINSTANCE().navigate(className, R.id.signUpPhoneFragment, null, null);
-          break;
-        case 1:
-          NavigationService.getINSTANCE().navigate(className, R.id.signUpEmailFragment, null, null);
-          break;
-      }
+//      switch (tab.getPosition()){
+//        case 0:
+//          NavigationService.getINSTANCE().navigate(className, R.id.signUpPhoneFragment, null, null);
+//          break;
+//        case 1:
+//          NavigationService.getINSTANCE().navigate(className, R.id.signUpEmailFragment, null, null);
+//          break;
+//      }
     }
 
     @Override

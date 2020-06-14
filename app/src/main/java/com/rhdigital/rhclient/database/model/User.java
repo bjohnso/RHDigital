@@ -14,9 +14,6 @@ public class User {
   @PrimaryKey
   private String id;
 
-  @ColumnInfo(name = "username")
-  private String username;
-
   @ColumnInfo(name = "email")
   private String email;
 
@@ -48,7 +45,6 @@ public class User {
   public User() { }
 
   public User(@NonNull String id,
-              String username,
               String email,
               String cell,
               String name,
@@ -59,7 +55,6 @@ public class User {
               String industry,
               String about) {
     this.id = id;
-    this.username = username;
     this.email = email;
     this.cell = cell;
     this.name = name;
@@ -73,10 +68,6 @@ public class User {
 
   private void setId(@NonNull String id) {
     this.id = id;
-  }
-
-  public void setUsername(String username) {
-    this.username = username;
   }
 
   public void setEmail(String email) {
@@ -118,10 +109,6 @@ public class User {
   @NonNull
   public String getId() {
     return id;
-  }
-
-  public String getUsername() {
-    return username;
   }
 
   public String getEmail() {

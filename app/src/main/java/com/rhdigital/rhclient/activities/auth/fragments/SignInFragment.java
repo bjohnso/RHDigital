@@ -3,6 +3,7 @@ package com.rhdigital.rhclient.activities.auth.fragments;
 import android.animation.AnimatorSet;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Observable;
 import android.graphics.drawable.AnimatedVectorDrawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -67,7 +68,9 @@ public class SignInFragment extends Fragment {
     // Animation
     private AnimatedVectorDrawable anim;
     private ImageView logo;
-    private CustomLoaderFactory customLoaderFactory = null;
+
+    //Observer
+    private LiveData<Boolean> authTask;
 
     // Components
     private AutoCompleteTextView emailInput;
@@ -75,15 +78,11 @@ public class SignInFragment extends Fragment {
     private Button submit;
     private LinearLayout resetPasswordRedirect;
     private LinearLayout signUpRedirect;
-    private FrameLayout frameLayout;
 
     //Observables
 
     private TextView line;
     private TextView welcome;
-
-    private int loaderHeight = 0;
-    private int loaderWidth = 0;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -95,7 +94,6 @@ public class SignInFragment extends Fragment {
         submit = (Button) view.findViewById(R.id.sign_in_submit_btn);
         resetPasswordRedirect = (LinearLayout) view.findViewById(R.id.sign_in_helper);
         signUpRedirect = (LinearLayout) view.findViewById(R.id.sign_in_redirect);
-        frameLayout = (FrameLayout) view.findViewById(R.id.loader);
 
         line = (TextView) view.findViewById(R.id.line);
         welcome = (TextView) view.findViewById(R.id.welcome);
@@ -106,27 +104,20 @@ public class SignInFragment extends Fragment {
         logo.setImageDrawable(anim);
         anim.start();
 
-        frameLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-          @Override
-          public void onGlobalLayout() {
-            if (frameLayout.getHeight() > 0 && frameLayout.getWidth() > 0) {
-              frameLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this::onGlobalLayout);
-              initLoaderFactory();
+      if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+        FirebaseAuth.getInstance().getCurrentUser().reload()
+          .addOnCompleteListener(task -> {
+            if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+              signIn(false);
             }
-          }
-        });
-        return view;
+          });
+      }
+      return view;
     }
 
   @Override
   public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
-
-    FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-    if (firebaseUser != null) {
-      Log.d("SIGNIN", "PREAUTH!");
-      signIn(false);
-    }
 
     //Set Listeners
     signUpRedirect.setOnClickListener(new RedirectSignUpOnClick(getActivity().getLocalClassName()));
@@ -134,43 +125,36 @@ public class SignInFragment extends Fragment {
   }
 
   public void signIn(boolean authenticate) {
-      AuthActivity authActivity = ((AuthActivity)getActivity());
       if (authenticate) {
-        authActivity
-          .signIn(getEmailText(), getPasswordText())
-          .observe(getViewLifecycleOwner(), isSuccessful -> {
+        authTask = Authenticator.getInstance()
+          .authenticate(getEmailText(), getPasswordText(), false);
+          authTask.observe(getViewLifecycleOwner(), isSuccessful -> {
+            authTask.removeObservers(getViewLifecycleOwner());
             if (isSuccessful) {
-              setFieldsValidated();
-              addLoader();
+              NavigationService.getINSTANCE()
+                .navigate(getActivity().getLocalClassName(),
+                  R.id.signInWelcomeFragment,
+                  null,
+                  null);
             } else {
               setSubmitDisableTimeout();
             }
           });
     } else {
-        setFieldsValidated();
-        addLoader();
-        authActivity.launchCoursesActivity();
+        Authenticator.getInstance()
+          .postAuthenticate(FirebaseAuth.getInstance().getCurrentUser(),
+            null,
+            null);
+        NavigationService.getINSTANCE()
+          .navigate(getActivity().getLocalClassName(),
+            R.id.signInWelcomeFragment,
+            null,
+            null);
     }
   }
 
-  public void setFieldsValidated() {
-    UserViewModel userViewModel = ((AuthActivity)getActivity()).getUserViewModel();
-    userViewModel.getAuthenticatedUser(FirebaseAuth.getInstance().getUid()).observe(getViewLifecycleOwner(), user -> {
-      if (user != null) {
-        this.signUpRedirect.setVisibility(View.INVISIBLE);
-        this.resetPasswordRedirect.setVisibility(View.INVISIBLE);
-        this.line.setVisibility(View.INVISIBLE);
-        this.passwordInput.setVisibility(View.INVISIBLE);
-        this.emailInput.setVisibility(View.INVISIBLE);
-        this.submit.setVisibility(View.INVISIBLE);
-        this.welcome.setText("Welcome " + user.getName());
-        this.welcome.setVisibility(View.VISIBLE);
-      }
-    });
-    }
-
     public void setSubmitDisableTimeout() {
-      this.scheduledExecutorService.schedule(new GenericTimer(this), 3, TimeUnit.SECONDS);
+      this.scheduledExecutorService.schedule(new GenericTimer(handler, GenericTimer.UI_UNLOCK), 3, TimeUnit.SECONDS);
     }
 
     public void setSubmitDisable() {
@@ -185,50 +169,6 @@ public class SignInFragment extends Fragment {
     public String getPasswordText() {
       return this.passwordInput.getText().toString();
     }
-
-  public Handler getHandler() {
-    return handler;
-  }
-
-  private boolean initLoaderFactory() {
-    if (frameLayout.getHeight() > 0 && frameLayout.getWidth() > 0) {
-      if (customLoaderFactory == null) {
-        customLoaderFactory = new CustomLoaderFactory(
-          getContext(),
-          frameLayout.getWidth(),
-          frameLayout.getHeight(),
-          4,
-          35,
-          25);
-        return true;
-      }
-    }
-    return false;
-  }
-
-  public void addLoader() {
-    if (customLoaderFactory != null) {
-      if (!initLoaderFactory()) {
-        removeLoader();
-      }
-      for (View v : customLoaderFactory.getChildren()) {
-        frameLayout.addView(v);
-      }
-
-      for (AnimatorSet a : customLoaderFactory.createAnimations()) {
-        a.start();
-      }
-    }
-  }
-
-  public void removeLoader() {
-    for (AnimatorSet a : customLoaderFactory.createAnimations()) {
-      a.end();
-    }
-    for (View v : customLoaderFactory.getChildren()) {
-      frameLayout.removeView(v);
-    }
-  }
 
   // Listeners
   public static class SubmitOnClick implements View.OnClickListener {
@@ -259,7 +199,7 @@ public class SignInFragment extends Fragment {
     public void onClick(View view) {
         NavigationService.getINSTANCE()
           .navigate(parentClassName,
-            R.id.signUpFragment,
+            R.id.signUpEmailFragment,
             null, null);
     }
   }

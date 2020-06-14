@@ -10,7 +10,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -31,6 +30,7 @@ import com.rhdigital.rhclient.activities.auth.AuthActivity;
 import com.rhdigital.rhclient.activities.auth.services.Authenticator;
 import com.rhdigital.rhclient.common.services.FirebaseUploadService;
 import com.rhdigital.rhclient.common.services.NavigationService;
+import com.rhdigital.rhclient.common.services.Toaster;
 import com.rhdigital.rhclient.common.util.ImageProcessor;
 import com.rhdigital.rhclient.database.model.User;
 import com.rhdigital.rhclient.database.viewmodel.UserViewModel;
@@ -49,7 +49,6 @@ public class UserActivity extends AppCompatActivity {
   private Context context;
   private static int IMAGE_PICKER_CODE = 100;
   private FirebaseFirestore remoteDB = FirebaseFirestore.getInstance();
-  private Authenticator authenticator;
   private UserViewModel userViewModel;
   private LiveData<Boolean> imageUploadObservable;
   private LiveData<User> userObservable;
@@ -61,11 +60,10 @@ public class UserActivity extends AppCompatActivity {
   protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_user);
-
+    Authenticator.getInstance().init(this);
     context = this;
 
-    authenticator = new Authenticator(this);
-
+    Toaster.getINSTANCE().setContext(this);
     //Initialise View model
     userViewModel = new UserViewModel(getApplication());
 
@@ -87,7 +85,8 @@ public class UserActivity extends AppCompatActivity {
               R.id.userProfileFragment);
           }
         } else {
-          Toast.makeText(context, R.string.server_error_documents, Toast.LENGTH_LONG);
+          Toaster.getINSTANCE()
+            .ToastMessage(context.getResources().getString(R.string.server_error_user_documents), true);
         }
       }
     };
@@ -137,7 +136,8 @@ public class UserActivity extends AppCompatActivity {
           handleImageUpload(imageUploadData);
           imageUploadData = null;
         } else {
-          Toast.makeText(this, "Could not upload Image", Toast.LENGTH_SHORT).show();
+          Toaster.getINSTANCE()
+            .ToastMessage(context.getResources().getString(R.string.server_error_image_upload), true);
         }
       }
     }
@@ -147,7 +147,6 @@ public class UserActivity extends AppCompatActivity {
     List<String> segments = data.getData().getPathSegments();
     if (data.getType() != null) {
       try {
-        Log.d("UPLOAD", data.getType());
         //Get FileDescriptor for File in external storage from URI
         ParcelFileDescriptor fileDescriptor = getContentResolver().openFileDescriptor(data.getData(), "r");
 
@@ -172,7 +171,7 @@ public class UserActivity extends AppCompatActivity {
   }
 
   public void logout() {
-    authenticator.logout();
+    Authenticator.getInstance().logout();
     Intent intent = new Intent(this, AuthActivity.class);
     startActivity(intent);
   }
@@ -208,9 +207,8 @@ public class UserActivity extends AppCompatActivity {
             "Information Saved",
             Toast.LENGTH_SHORT).show();
         } else {
-          Toast.makeText(context,
-            "Unable to connect. Please make sure you are connected to the internet and try again",
-            Toast.LENGTH_LONG).show();
+          Toaster.getINSTANCE()
+            .ToastMessage(getResources().getString(R.string.device_connection_error), true);
         }
       });
   }

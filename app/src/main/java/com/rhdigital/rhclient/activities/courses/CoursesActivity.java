@@ -77,7 +77,8 @@ public class CoursesActivity extends AppCompatActivity {
 
         this.context = this;
 
-        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
+        if (FirebaseAuth.getInstance().getCurrentUser() == null ||
+          !FirebaseAuth.getInstance().getCurrentUser().isEmailVerified()) {
           startAuthActivity();
         }
 

@@ -66,13 +66,12 @@ public class PopulateRoomAsync extends AsyncTask<Void, Void, Void> {
 
   @Override
   protected Void doInBackground(Void... voids) {
+    Log.d("POP", "POPULATED DB");
     workbookDAO.deleteAll();
     courseDAO.deleteAll();
     userDAO.deleteAll();
 
     ArrayList<Long> pop = new ArrayList<>();
-
-    Log.d("POP", "POPULATING ROOM");
 
     for (QueryDocumentSnapshot doc : fireStoreData[0]) {
       pop.add(courseDAO.insert(

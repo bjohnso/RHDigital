@@ -16,7 +16,7 @@ public abstract class UserDAO extends BaseDAO<User>{
   abstract public void deleteAll();
 
   @Query("DELETE FROM users WHERE id = :id")
-  abstract public int deleteById(int id);
+  abstract public void deleteById(String id);
 
   @Query("SELECT * FROM users WHERE id = :id")
   abstract public LiveData<User> getAuthenticatedUser(String id);

@@ -1,24 +1,44 @@
 package com.rhdigital.rhclient.activities.auth.fragments;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.rhdigital.rhclient.R;
-import com.rhdigital.rhclient.activities.auth.AuthActivity;
+import com.rhdigital.rhclient.activities.auth.services.Authenticator;
 import com.rhdigital.rhclient.common.services.NavigationService;
+import com.rhdigital.rhclient.common.util.GenericTimer;
+
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class SignUpDetailsFragment extends Fragment {
 
-  String email = "";
+  //Threading
+  private ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
+  private Handler handler = new Handler(Looper.getMainLooper()) {
+    @Override
+    public void handleMessage(@NonNull Message msg) {
+      if (msg.what == 1) {
+        submitButton.setEnabled(true);
+        submitButton.setBackgroundResource(R.drawable.submit_active);
+      }
+    }
+  };
+
+  String email;
   AutoCompleteTextView firstNameInput;
   AutoCompleteTextView lastNameInput;
   AutoCompleteTextView passwordInput;
@@ -28,7 +48,8 @@ public class SignUpDetailsFragment extends Fragment {
   public void onActivityCreated(@Nullable Bundle savedInstanceState) {
     super.onActivityCreated(savedInstanceState);
     if (getArguments() != null) {
-      email = getArguments().get("EMAIL").toString();
+      if (getArguments().get("EMAIL") != null)
+        email = getArguments().get("EMAIL").toString();
     }
   }
 
@@ -47,6 +68,15 @@ public class SignUpDetailsFragment extends Fragment {
   public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
     submitButton.setOnClickListener(new SubmitOnClick(this));
+  }
+
+  public void setSubmitDisableTimeout() {
+    this.scheduledExecutorService.schedule(new GenericTimer(handler, GenericTimer.UI_UNLOCK), 2, TimeUnit.SECONDS);
+  }
+
+  public void setSubmitDisable() {
+    this.submitButton.setEnabled(false);
+    this.submitButton.setBackgroundResource(R.drawable.submit_inactive);
   }
 
   public AutoCompleteTextView getFirstNameInput() {
@@ -75,25 +105,44 @@ public class SignUpDetailsFragment extends Fragment {
 
     @Override
     public void onClick(View view) {
-      AuthActivity authActivity = (AuthActivity) fragment.getActivity();
-      authActivity.register(fragment.getEmail(),
-        fragment.getPasswordInput().getText().toString(),
-        fragment.getFirstNameInput().getText().toString(),
-        fragment.getLastNameInput().getText().toString());
+      fragment.setSubmitDisable();
+     if (fragment.getEmail() != null) {
+       String firstName = fragment.getFirstNameInput().getText().toString();
+       String lastName = fragment.getLastNameInput().getText().toString();
+       String password = fragment.getPasswordInput().getText().toString();
+       if (isInputValid(firstName, lastName, password)) {
+         Authenticator.getInstance().register(fragment.getEmail(),
+           fragment.getPasswordInput().getText().toString(),
+           fragment.getFirstNameInput().getText().toString(),
+           fragment.getLastNameInput().getText().toString())
+           .observe(fragment.getViewLifecycleOwner(), success -> {
+             if (!success) {
+               fragment.setSubmitDisableTimeout();
+             } else {
+               NavigationService.getINSTANCE().navigate(fragment.getActivity().getLocalClassName(),
+                 R.id.signInWelcomeFragment,
+                 null,
+                 null);
+             }
+           });
+       } else {
+         fragment.setSubmitDisableTimeout();
+       }
+      }
+    }
+
+    private boolean isInputValid(String firstName, String lastName, String password) {
+      String error = null;
+      if (firstName.isEmpty() || lastName.isEmpty()) {
+        error = "Please provide your first name and last name";
+      } else if (password.length() < 6) {
+        error = "Password must contain 6 or more characters";
+      }
+      if (error != null) {
+        Toast.makeText(fragment.getContext(), error, Toast.LENGTH_LONG).show();
+        return false;
+      }
+      return true;
     }
   }
-
-//  if (password.length() < 6) {
-//    Toast.makeText(
-//      this.context,
-//      "Sorry, your password needs to be at least 6 characters. Please try again.",
-//      Toast.LENGTH_LONG).show();
-//  }
-
-//  else {
-//    Toast.makeText(this.context,
-//      "Please enter a valid email address and password.",
-//      Toast.LENGTH_LONG).show();
-//  }
-
 }

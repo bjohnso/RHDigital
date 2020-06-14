@@ -1,6 +1,7 @@
 package com.rhdigital.rhclient.database.DAO;
 
 import androidx.room.Dao;
+import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Update;
 
@@ -13,4 +14,7 @@ public abstract class BaseDAO<T> {
 
   @Update
   abstract public void update(T object);
+
+  @Delete
+  abstract public void delete(T object);
 }

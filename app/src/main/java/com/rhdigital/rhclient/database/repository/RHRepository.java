@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.google.gson.internal.$Gson$Preconditions;
 import com.rhdigital.rhclient.database.DAO.BaseDAO;
 import com.rhdigital.rhclient.database.DAO.CourseDAO;
 import com.rhdigital.rhclient.database.DAO.CourseWithWorkbooksDAO;
@@ -48,6 +49,14 @@ public class RHRepository {
 
     public LiveData<User> getAuthenticatedUser(String id) {return userDAO.getAuthenticatedUser(id);}
 
+    public void deleteUser(User user) {
+      try {
+        executorService.submit(new DeleteService(userDAO, user));
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
+
     public LiveData<List<Course>> getAllCourses() {
         return courseDAO.getAllCourses();
     }
@@ -66,11 +75,19 @@ public class RHRepository {
 
     public void authoriseCourse(String id) {
       try {
-        executorService.submit(new AuthCourseService(courseDAO, id)).get();
+        executorService.submit(new AuthCourseService(courseDAO, id, true)).get();
       } catch (Exception e) {
         e.printStackTrace();
       }
     }
+
+  public void unauthoriseAllCourses() {
+    try {
+      executorService.submit(new AuthCourseService(courseDAO, null, false)).get();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
 
     public void update(Object o) {
       try {
@@ -125,17 +142,38 @@ public class RHRepository {
       }
     }
 
+  private class DeleteService implements Callable<Void> {
+    private BaseDAO dao;
+    private Object obj;
+
+    public DeleteService(BaseDAO dao, Object obj) {
+      this.dao = dao;
+      this.obj = obj;
+    }
+
+    @Override
+    public Void call() throws Exception {
+      this.dao.delete(obj);
+      return null;
+    }
+  }
+
   private class AuthCourseService implements Callable<Integer> {
     private CourseDAO courseDAO;
     private String id;
-    public AuthCourseService(CourseDAO courseDAO, String id) {
+    private boolean authorise;
+    public AuthCourseService(CourseDAO courseDAO, String id, boolean authorise) {
       this.courseDAO = courseDAO;
       this.id = id;
+      this.authorise = authorise;
     }
 
     @Override
     public Integer call() throws Exception {
-      return this.courseDAO.authorise(id);
+      if (authorise)
+        return this.courseDAO.authorise(id);
+      this.courseDAO.deauthorise();
+      return -1;
     }
   }
 }
