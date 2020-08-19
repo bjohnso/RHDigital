@@ -27,13 +27,11 @@ import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.messaging.FirebaseMessaging;
 import com.rhdigital.rhclient.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.rhdigital.rhclient.activities.auth.AuthActivity;
 import com.rhdigital.rhclient.activities.user.UserActivity;
 import com.rhdigital.rhclient.common.services.NavigationService;
-import com.rhdigital.rhclient.common.services.FirebasePushNotificationService;
 import com.rhdigital.rhclient.common.services.PushNotificationHelperService;
 import com.rhdigital.rhclient.database.model.Course;
 import com.rhdigital.rhclient.database.model.CourseWithWorkbooks;

@@ -18,9 +18,11 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.rhdigital.rhclient.database.DAO.CourseDAO;
 import com.rhdigital.rhclient.database.DAO.CourseWithWorkbooksDAO;
+import com.rhdigital.rhclient.database.DAO.PackageDAO;
 import com.rhdigital.rhclient.database.DAO.UserDAO;
 import com.rhdigital.rhclient.database.DAO.WorkbookDAO;
 import com.rhdigital.rhclient.database.model.Course;
+import com.rhdigital.rhclient.database.model.Package;
 import com.rhdigital.rhclient.database.model.User;
 import com.rhdigital.rhclient.database.model.Workbook;
 import com.rhdigital.rhclient.database.util.PopulateRoomAsync;
@@ -31,10 +33,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-@Database(entities = {Course.class, Workbook.class, User.class}, version = 1, exportSchema = false)
+@Database(entities = {Course.class, Workbook.class, User.class}, version = 2, exportSchema = false)
 public abstract class RHDatabase extends RoomDatabase {
 
     private static volatile RHDatabase INSTANCE;
+    public abstract PackageDAO packageDAO();
     public abstract CourseDAO courseDAO();
     public abstract WorkbookDAO workbookDAO();
     public abstract UserDAO userDAO();

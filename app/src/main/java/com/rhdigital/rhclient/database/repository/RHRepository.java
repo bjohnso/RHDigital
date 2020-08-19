@@ -14,11 +14,13 @@ import com.google.gson.internal.$Gson$Preconditions;
 import com.rhdigital.rhclient.database.DAO.BaseDAO;
 import com.rhdigital.rhclient.database.DAO.CourseDAO;
 import com.rhdigital.rhclient.database.DAO.CourseWithWorkbooksDAO;
+import com.rhdigital.rhclient.database.DAO.PackageDAO;
 import com.rhdigital.rhclient.database.DAO.UserDAO;
 import com.rhdigital.rhclient.database.DAO.WorkbookDAO;
 import com.rhdigital.rhclient.database.RHDatabase;
 import com.rhdigital.rhclient.database.model.Course;
 import com.rhdigital.rhclient.database.model.CourseWithWorkbooks;
+import com.rhdigital.rhclient.database.model.Package;
 import com.rhdigital.rhclient.database.model.User;
 import com.rhdigital.rhclient.database.model.Workbook;
 
@@ -30,6 +32,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class RHRepository {
+    private PackageDAO packageDAO;
     private CourseDAO courseDAO;
     private WorkbookDAO workbookDAO;
     private UserDAO userDAO;
@@ -38,6 +41,7 @@ public class RHRepository {
 
     public RHRepository(Application application) {
         RHDatabase db = RHDatabase.getDatabase(application);
+        packageDAO = db.packageDAO();
         courseDAO = db.courseDAO();
         workbookDAO = db.workbookDAO();
         userDAO = db.userDAO();
@@ -45,6 +49,7 @@ public class RHRepository {
         executorService = Executors.newCachedThreadPool();
     }
 
+    // USER
     public LiveData<List<User>> getAllUsers() { return userDAO.getAllUsers(); };
 
     public LiveData<User> getAuthenticatedUser(String id) {return userDAO.getAuthenticatedUser(id);}
@@ -57,6 +62,14 @@ public class RHRepository {
       }
     }
 
+    // PACKAGES
+    public LiveData<List<Package>> getAllPackages() { return packageDAO.getAllPackages(); }
+
+    public LiveData<List<Package>> getAllAuthorisedPackages() {return packageDAO.getAllAuthorisedPackages(); }
+
+    public LiveData<List<Package>> getAllUndiscoveredPackages() { return packageDAO.getAllUndiscoveredPackages(); }
+
+    // COURSES
     public LiveData<List<Course>> getAllCourses() {
         return courseDAO.getAllCourses();
     }
@@ -65,13 +78,17 @@ public class RHRepository {
 
     public LiveData<List<Course>> getAllUndiscoveredCourses() { return courseDAO.getAllUndiscoveredCourses(); }
 
+    // WORKBOOKS
     public LiveData<List<Workbook>> getAllWorkbooks() { return workbookDAO.getAllWorkbooks(); }
 
+    public LiveData<List<Workbook>> getWorkbooksById(@NonNull int courseId) { return workbookDAO.getWorkbooksByCourseId(courseId); }
+
+
+    // COURSES WITH WORKBOOKS
     public LiveData<List<CourseWithWorkbooks>> getAllCoursesWithWorkbooks() { return courseWithWorkbooksDAO.getAllCoursesWithWorkbooks(); }
 
     public LiveData<List<CourseWithWorkbooks>> getAllAuthorisedCoursesWithWorkbooks() { return courseWithWorkbooksDAO.getAllAuthorisedCoursesWithWorkbooks(); }
 
-    public LiveData<List<Workbook>> getWorkbooksById(@NonNull int courseId) { return workbookDAO.getWorkbooksByCourseId(courseId); }
 
     public void authoriseCourse(String id) {
       try {
@@ -81,13 +98,13 @@ public class RHRepository {
       }
     }
 
-  public void unauthoriseAllCourses() {
-    try {
-      executorService.submit(new AuthCourseService(courseDAO, null, false)).get();
-    } catch (Exception e) {
-      e.printStackTrace();
+    public void unauthoriseAllCourses() {
+      try {
+        executorService.submit(new AuthCourseService(courseDAO, null, false)).get();
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
     }
-  }
 
     public void update(Object o) {
       try {

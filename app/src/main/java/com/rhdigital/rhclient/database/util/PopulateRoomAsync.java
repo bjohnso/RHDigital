@@ -10,16 +10,20 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.rhdigital.rhclient.database.DAO.CourseDAO;
 import com.rhdigital.rhclient.database.DAO.CourseWithWorkbooksDAO;
+import com.rhdigital.rhclient.database.DAO.PackageDAO;
 import com.rhdigital.rhclient.database.DAO.UserDAO;
 import com.rhdigital.rhclient.database.DAO.WorkbookDAO;
 import com.rhdigital.rhclient.database.RHDatabase;
 import com.rhdigital.rhclient.database.model.Course;
+import com.rhdigital.rhclient.database.model.Package;
 import com.rhdigital.rhclient.database.model.Workbook;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class PopulateRoomAsync extends AsyncTask<Void, Void, Void> {
+  private String TAG = "POPULATEROOMASYNC";
+  private PackageDAO packageDAO;
   private CourseDAO courseDAO;
   private WorkbookDAO workbookDAO;
   private UserDAO userDAO;
@@ -45,40 +49,22 @@ public class PopulateRoomAsync extends AsyncTask<Void, Void, Void> {
   public void populateFromUpstream(RHDatabase instance) {
     FirebaseFirestore firestore = FirebaseFirestore.getInstance();
     firestore
-      .collection("course_packages")
+      .collection("packages")
       .get()
-      .addOnCompleteListener(coursePackagesTask -> {
-        if (coursePackagesTask.isSuccessful()) {
-          firestore
-            .collectionGroup("courses")
-            .get()
-            .addOnCompleteListener(coursesTask -> {
-              if (coursesTask.isSuccessful()) {
-                firestore
-                  .collectionGroup("workbooks")
-                  .get()
-                  .addOnCompleteListener(workbooksTask -> {
-                    if (workbooksTask.isSuccessful()) {
-                      courseDAO = instance.courseDAO();
-                      workbookDAO = instance.workbookDAO();
-                      userDAO = instance.userDAO();
-                      courseWithWorkbooksDAO = instance.courseWithWorkbooksDAO();
-                      setFireStoreData(
-                        coursePackagesTask.getResult(),
-                        coursePackagesTask.getResult(),
-                        workbooksTask.getResult());
-                      this.execute();
-                    }
-                  });
-            }
-            });
-        }
+      .addOnSuccessListener(packagesSnapshot -> {
+        packageDAO = instance.packageDAO();
+        courseDAO = instance.courseDAO();
+        workbookDAO = instance.workbookDAO();
+        userDAO = instance.userDAO();
+        courseWithWorkbooksDAO = instance.courseWithWorkbooksDAO();
+        setFireStoreData(packagesSnapshot);
       });
   }
 
   @Override
   protected Void doInBackground(Void... voids) {
-    Log.d("POP", "POPULATED DB");
+    Log.d(TAG, "POPULATING DB...");
+    packageDAO.deleteAll();
     workbookDAO.deleteAll();
     courseDAO.deleteAll();
     userDAO.deleteAll();
@@ -86,29 +72,42 @@ public class PopulateRoomAsync extends AsyncTask<Void, Void, Void> {
     ArrayList<Long> pop = new ArrayList<>();
 
     for (QueryDocumentSnapshot doc : fireStoreData[0]) {
-      pop.add(courseDAO.insert(
-        new Course(
+      pop.add(packageDAO.insert(
+        new Package(
           doc.getId(),
-          doc.get("name").toString(),
-          doc.get("author").toString(),
-          doc.get("description").toString(),
-          doc.get("videoPosterURL").toString(),
-          doc.get("workbookPosterURL").toString(),
-          doc.get("videoURL").toString()
-        ))
-      );
+          doc.getString("title"),
+          doc.getString("packageClass"),
+          doc.getDouble("price")
+        )
+      ));
     }
 
-    for (QueryDocumentSnapshot doc : fireStoreData[1]) {
-      pop.add(workbookDAO.insert(
-        new Workbook(
-          doc.getId(),
-          doc.get("name").toString(),
-          doc.get("workbookURL").toString(),
-          doc.get("courseId").toString()
-        ))
-      );
-    }
+//    for (QueryDocumentSnapshot doc : fireStoreData[0]) {
+//      pop.add(courseDAO.insert(
+//        new Course(
+//          doc.getId(),
+//          doc.get("name").toString(),
+//          doc.get("author").toString(),
+//          doc.get("description").toString(),
+//          doc.get("videoPosterURL").toString(),
+//          doc.get("workbookPosterURL").toString(),
+//          doc.get("videoURL").toString()
+//        ))
+//      );
+//    }
+//
+//    for (QueryDocumentSnapshot doc : fireStoreData[1]) {
+//      pop.add(workbookDAO.insert(
+//        new Workbook(
+//          doc.getId(),
+//          doc.get("name").toString(),
+//          doc.get("workbookURL").toString(),
+//          doc.get("courseId").toString()
+//        ))
+//      );
+//    }
+
+    // NOTIFY POPULATION EVENT HAS OCCURRED
     this.inserts.postValue(pop);
     return null;
   }
