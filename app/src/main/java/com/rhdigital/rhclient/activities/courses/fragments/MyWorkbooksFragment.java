@@ -8,7 +8,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,7 +17,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -26,10 +24,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.rhdigital.rhclient.R;
 import com.rhdigital.rhclient.activities.courses.CoursesActivity;
-import com.rhdigital.rhclient.activities.user.UserActivity;
 import com.rhdigital.rhclient.common.providers.CustomFileProvider;
 import com.rhdigital.rhclient.database.model.Course;
-import com.rhdigital.rhclient.database.model.CourseWithWorkbooks;
+import com.rhdigital.rhclient.database.model.embedded.CourseWithWorkbooks;
 import com.rhdigital.rhclient.database.model.Workbook;
 import com.rhdigital.rhclient.database.viewmodel.WorkbookViewModel;
 import com.rhdigital.rhclient.activities.courses.adapters.WorkbooksRecyclerViewAdapter;
@@ -37,18 +34,12 @@ import com.rhdigital.rhclient.activities.courses.adapters.WorkbooksRecyclerViewA
 import org.apache.commons.io.IOUtils;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.concurrent.Phaser;
 
 import okhttp3.ResponseBody;
 

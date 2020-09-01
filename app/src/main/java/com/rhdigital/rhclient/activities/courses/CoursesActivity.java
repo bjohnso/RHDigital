@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
 
 import android.view.Menu;
@@ -34,7 +33,7 @@ import com.rhdigital.rhclient.activities.user.UserActivity;
 import com.rhdigital.rhclient.common.services.NavigationService;
 import com.rhdigital.rhclient.common.services.PushNotificationHelperService;
 import com.rhdigital.rhclient.database.model.Course;
-import com.rhdigital.rhclient.database.model.CourseWithWorkbooks;
+import com.rhdigital.rhclient.database.model.embedded.CourseWithWorkbooks;
 import com.rhdigital.rhclient.database.viewmodel.CourseViewModel;
 import com.rhdigital.rhclient.database.viewmodel.UserViewModel;
 import com.rhdigital.rhclient.database.viewmodel.WorkbookViewModel;

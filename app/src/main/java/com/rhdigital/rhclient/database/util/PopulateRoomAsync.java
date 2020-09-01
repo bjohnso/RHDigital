@@ -9,17 +9,15 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.rhdigital.rhclient.database.DAO.CourseDAO;
-import com.rhdigital.rhclient.database.DAO.CourseWithWorkbooksDAO;
+import com.rhdigital.rhclient.database.DAO.embedded.CourseWithWorkbooksDAO;
 import com.rhdigital.rhclient.database.DAO.PackageDAO;
 import com.rhdigital.rhclient.database.DAO.UserDAO;
 import com.rhdigital.rhclient.database.DAO.WorkbookDAO;
 import com.rhdigital.rhclient.database.RHDatabase;
-import com.rhdigital.rhclient.database.model.Course;
 import com.rhdigital.rhclient.database.model.Package;
 import com.rhdigital.rhclient.database.model.Workbook;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class PopulateRoomAsync extends AsyncTask<Void, Void, Void> {
   private String TAG = "POPULATEROOMASYNC";
@@ -77,6 +75,28 @@ public class PopulateRoomAsync extends AsyncTask<Void, Void, Void> {
           doc.getId(),
           doc.getString("title"),
           doc.getString("packageClass"),
+          doc.getDouble("price")
+        )
+      ));
+    }
+
+    for (QueryDocumentSnapshot doc : fireStoreData[1]) {
+      pop.add(workbookDAO.insert(
+        new Workbook(
+          doc.getId(),
+          doc.getString("title"),
+          doc.getString("packageClass"),
+          doc.getDouble("price")
+        )
+      ));
+    }
+
+    for (QueryDocumentSnapshot doc : fireStoreData[2]) {
+      pop.add(packageDAO.insert(
+        new Package(
+          doc.getId(),
+          doc.getString("title"),
+          doc.getString("language"),
           doc.getDouble("price")
         )
       ));

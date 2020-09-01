@@ -17,7 +17,7 @@ import com.google.firebase.storage.StorageReference;
 import com.rhdigital.rhclient.database.http.ApiClient;
 import com.rhdigital.rhclient.database.http.ApiInterface;
 import com.rhdigital.rhclient.database.model.Course;
-import com.rhdigital.rhclient.database.model.CourseWithWorkbooks;
+import com.rhdigital.rhclient.database.model.embedded.CourseWithWorkbooks;
 import com.rhdigital.rhclient.database.model.Workbook;
 ;
 import java.util.HashMap;

@@ -3,10 +3,19 @@ package com.rhdigital.rhclient.database.model;
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.ForeignKey;
 import androidx.room.Ignore;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "courses")
+import static androidx.room.ForeignKey.CASCADE;
+
+@Entity(tableName = "courses",
+  foreignKeys = @ForeignKey(onDelete = CASCADE,
+    entity = Package.class,
+    parentColumns = "id",
+    childColumns = "package_id"
+  ), indices = {@Index("package_id")})
 public class Course {
     @ColumnInfo(name = "id")
     @NonNull
@@ -14,8 +23,12 @@ public class Course {
     private String id;
 
     @NonNull
-    @ColumnInfo(name = "name")
-    private String name;
+    @ColumnInfo(name = "package_id")
+    private String packageId;
+
+    @NonNull
+    @ColumnInfo(name = "title")
+    private String title;
 
     @NonNull
     @ColumnInfo(name = "author")
@@ -26,46 +39,36 @@ public class Course {
     private String description;
 
     @NonNull
-    @ColumnInfo(name = "videoPosterURL")
-    private String videoPosterURL;
+    @ColumnInfo(name = "poster_url")
+    private String posterURL;
 
-    @NonNull
-    @ColumnInfo(name = "workbookPosterURL")
-    private String workbookPosterURL;
-
-    @NonNull
-    @ColumnInfo(name = "videoURL")
-    private String videoURL;
-
-    @ColumnInfo(name = "isAuthorised")
+    @ColumnInfo(name = "is_authorised")
     private boolean isAuthorised = false;
 
     @Ignore
     public Course() { }
 
-    public Course(@NonNull String id, @NonNull String name, @NonNull String author, @NonNull String description, @NonNull String videoPosterURL, @NonNull String workbookPosterURL, @NonNull String videoURL) {
+    public Course(@NonNull String id, @NonNull String packageId,
+                  @NonNull String title, @NonNull String author,
+                  @NonNull String description, @NonNull String posterURL)
+    {
       this.id = id;
-      this.name = name;
+      this.packageId = packageId;
+      this.title = title;
       this.author = author;
       this.description = description;
-      this.videoPosterURL = videoPosterURL;
-      this.workbookPosterURL = workbookPosterURL;
-      this.videoURL = videoURL;
+      this.posterURL = posterURL;
     }
 
-    public String getId() {
-        return id;
-    }
+  @NonNull
+  public String getTitle() {
+    return title;
+  }
 
-    @NonNull
-    public String getDescription() {
-        return description;
-    }
-
-    @NonNull
-    public String getName() {
-        return name;
-    }
+  @NonNull
+  public String getId() {
+    return id;
+  }
 
   @NonNull
   public String getAuthor() {
@@ -73,70 +76,49 @@ public class Course {
   }
 
   @NonNull
-  public String getVideoPosterURL() {
-    return videoPosterURL;
+  public String getDescription() {
+    return description;
   }
 
   @NonNull
-  public String getWorkbookPosterURL() {
-    return workbookPosterURL;
+  public String getPackageId() {
+    return packageId;
   }
 
   @NonNull
-    public String getVideoURL() {
-        return videoURL;
-    }
-
-  public void setAuthorised(boolean authorised) {
-    isAuthorised = authorised;
+  public String getPosterURL() {
+    return posterURL;
   }
 
   public boolean isAuthorised() {
     return isAuthorised;
   }
 
-  public void setDescription(@NonNull String description) {
-        this.description = description;
-    }
+  public void setAuthorised(boolean authorised) {
+    isAuthorised = authorised;
+  }
 
-    public void setId(@NonNull String id) {
-        this.id = id;
-    }
+  public void setTitle(@NonNull String title) {
+    this.title = title;
+  }
 
-    public void setName(@NonNull String name) {
-        this.name = name;
-    }
+  public void setId(@NonNull String id) {
+    this.id = id;
+  }
 
   public void setAuthor(@NonNull String author) {
     this.author = author;
   }
 
-  public void setVideoPosterURL(@NonNull String videoPosterURL) {
-    this.videoPosterURL = videoPosterURL;
+  public void setDescription(@NonNull String description) {
+    this.description = description;
   }
 
-  public void setWorkbookPosterURL(@NonNull String workbookPosterURL) {
-    this.workbookPosterURL = workbookPosterURL;
+  public void setPackageId(@NonNull String packageId) {
+    this.packageId = packageId;
   }
 
-  public void setVideoURL(@NonNull String videoURL) {
-        this.videoURL = videoURL;
-    }
-
-  @NonNull
-  @Override
-  public String toString() {
-    return "Id: "
-      + this.id
-      + "\nName: "
-      + this.name
-      + "\nvideoPosterURL: "
-      + this.videoPosterURL
-      + "\nworkbookPosterURL: "
-      + this.workbookPosterURL
-      + "\nvideoURL: "
-      + this.videoURL
-      + "\nauthorised: "
-      + this.isAuthorised;
+  public void setPosterURL(@NonNull String posterURL) {
+    this.posterURL = posterURL;
   }
 }

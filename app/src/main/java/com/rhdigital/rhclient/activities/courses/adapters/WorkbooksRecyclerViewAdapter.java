@@ -5,20 +5,17 @@ import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.rhdigital.rhclient.R;
 import com.rhdigital.rhclient.activities.courses.view.WorkbooksViewHolder;
 import com.rhdigital.rhclient.database.model.Course;
-import com.rhdigital.rhclient.database.model.CourseWithWorkbooks;
+import com.rhdigital.rhclient.database.model.embedded.CourseWithWorkbooks;
 import com.rhdigital.rhclient.database.model.Workbook;
-import com.rhdigital.rhclient.common.services.RemoteResourceService;
 import com.rhdigital.rhclient.database.viewmodel.WorkbookViewModel;
 
 import java.util.HashMap;

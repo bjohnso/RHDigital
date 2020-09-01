@@ -1,5 +1,6 @@
 package com.rhdigital.rhclient.database.DAO;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Query;
@@ -11,7 +12,8 @@ import com.rhdigital.rhclient.database.model.User;
 import java.util.List;
 
 @Dao
-public abstract class UserDAO extends BaseDAO<User>{
+public abstract class UserDAO extends BaseDAO<User> {
+
   @Query("DELETE FROM users")
   abstract public void deleteAll();
 
@@ -19,9 +21,12 @@ public abstract class UserDAO extends BaseDAO<User>{
   abstract public void deleteById(String id);
 
   @Query("SELECT * FROM users WHERE id = :id")
+  abstract public LiveData<User> findById(@NonNull String id);
+
+  @Query("SELECT * FROM users WHERE id = :id")
   abstract public LiveData<User> getAuthenticatedUser(String id);
 
   @Query("SELECT * FROM users")
-  abstract public LiveData<List<User>> getAllUsers();
+  abstract public LiveData<List<User>> getAll();
 
 }

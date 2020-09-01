@@ -22,78 +22,84 @@ public class Workbook {
     @PrimaryKey
     private String id;
 
-    @NonNull
-    @ColumnInfo(name = "name")
-    private String name;
-
-    @NonNull
-    @ColumnInfo(name = "workbookURL")
-    private String workbookURL;
-
     @ColumnInfo(name = "course_id")
     private String courseId;
+
+    @NonNull
+    @ColumnInfo(name = "title")
+    private String title;
+
+    @NonNull
+    @ColumnInfo(name = "language")
+    private String language;
+
+    @NonNull
+    @ColumnInfo(name = "url")
+    private String url;
+
+    @ColumnInfo(name = "is_authorised")
+    private boolean isAuthorised = false;
 
     @Ignore
     public Workbook() {}
 
-    @Ignore
-    public Workbook(@NonNull String id, @NonNull String name, @NonNull String workbookURL) {
+    public Workbook(@NonNull String id, @NonNull String courseId, @NonNull String title, @NonNull String language, @NonNull String url) {
       this.id = id;
-      this.name = name;
-      this.workbookURL = workbookURL;
-    }
-
-    public Workbook(@NonNull String id, @NonNull String name, @NonNull String workbookURL, @NonNull String courseId) {
-      this.id = id;
-      this.name = name;
-      this.workbookURL = workbookURL;
       this.courseId = courseId;
-    }
-
-    @NonNull
-    public String getName() {
-        return name;
-    }
-
-    @NonNull
-    public String getWorkbookURL() {
-        return workbookURL;
-    }
-
-    public String getCourseId() {
-        return courseId;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setName(@NonNull String name) {
-        this.name = name;
-    }
-
-    public void setId(@NonNull String id) {
-        this.id = id;
-    }
-
-    public void setWorkbookURL(@NonNull String workbookURL) {
-        this.workbookURL = workbookURL;
-    }
-
-    public void setCourseId(String courseId) {
-        this.courseId = courseId;
+      this.title = title;
+      this.language = language;
+      this.url = url;
     }
 
   @NonNull
-  @Override
-  public String toString() {
-    return "Id: "
-      + this.id
-      + "\nName: "
-      + this.name
-      + "\nWorkbookURL: "
-      + this.workbookURL
-      + "\nCourseId: "
-      + this.courseId;
+  public String getTitle() {
+    return title;
+  }
+
+  @NonNull
+  public String getId() {
+    return id;
+  }
+
+  public String getCourseId() {
+    return courseId;
+  }
+
+  @NonNull
+  public String getLanguage() {
+    return language;
+  }
+
+  @NonNull
+  public String getUrl() {
+    return url;
+  }
+
+  public boolean isAuthorised() {
+    return isAuthorised;
+  }
+
+  public void setTitle(@NonNull String title) {
+    this.title = title;
+  }
+
+  public void setId(@NonNull String id) {
+    this.id = id;
+  }
+
+  public void setCourseId(String courseId) {
+    this.courseId = courseId;
+  }
+
+  public void setLanguage(@NonNull String language) {
+    this.language = language;
+  }
+
+  public void setUrl(@NonNull String url) {
+    this.url = url;
+  }
+
+  public void setAuthorised(boolean authorised) {
+    isAuthorised = authorised;
   }
 }

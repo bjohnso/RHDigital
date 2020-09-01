@@ -3,6 +3,7 @@ package com.rhdigital.rhclient.database.model;
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "packages")
@@ -18,52 +19,24 @@ public class Package {
   private String title;
 
   @NonNull
-  @ColumnInfo(name = "packageClass")
-  private String packageClass;
+  @ColumnInfo(name = "type")
+  private String type;
 
   @NonNull
-  @ColumnInfo(name = "packageClass")
+  @ColumnInfo(name = "price")
   private Double price;
 
-  @ColumnInfo(name = "isAuthorised")
+  @ColumnInfo(name = "is_authorised")
   private boolean isAuthorised = false;
 
+  @Ignore
   public Package() {}
 
-  public Package(@NonNull String id, @NonNull String title, @NonNull String packageClass, @NonNull Double price) {
+  public Package(@NonNull String id, @NonNull String title, @NonNull String type, @NonNull Double price) {
     this.id = id;
     this.title = title;
-    this.packageClass = packageClass;
+    this.type = type;
     this.price = price;
-  }
-
-  public void setId(@NonNull String id) {
-    this.id = id;
-  }
-
-  public void setPackageClass(@NonNull String packageClass) {
-    this.packageClass = packageClass;
-  }
-
-  public void setPrice(@NonNull Double price) {
-    this.price = price;
-  }
-
-  public void setTitle(@NonNull String title) {
-    this.title = title;
-  }
-
-  public void setAuthorised(boolean authorised) {
-    isAuthorised = authorised;
-  }
-
-  public boolean isAuthorised() {
-    return isAuthorised;
-  }
-
-  @NonNull
-  public Double getPrice() {
-    return price;
   }
 
   @NonNull
@@ -72,26 +45,41 @@ public class Package {
   }
 
   @NonNull
-  public String getPackageClass() {
-    return packageClass;
-  }
-
-  @NonNull
   public String getTitle() {
     return title;
   }
 
   @NonNull
-  @Override
-  public String toString() {
-    return "Id: "
-      + this.id
-      + "\nTitle: "
-      + this.title
-      + "\npackageClass: "
-      + this.packageClass
-      + "\nPrice: "
-      + this.price;
+  public Double getPrice() {
+    return price;
   }
 
+  @NonNull
+  public String getType() {
+    return type;
+  }
+
+  public boolean isAuthorised() {
+    return isAuthorised;
+  }
+
+  public void setId(@NonNull String id) {
+    this.id = id;
+  }
+
+  public void setTitle(@NonNull String title) {
+    this.title = title;
+  }
+
+  public void setPrice(@NonNull Double price) {
+    this.price = price;
+  }
+
+  public void setAuthorised(boolean authorised) {
+    isAuthorised = authorised;
+  }
+
+  public void setType(@NonNull String type) {
+    this.type = type;
+  }
 }
