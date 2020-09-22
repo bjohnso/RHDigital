@@ -17,4 +17,5 @@ public abstract class BaseDAO<T> {
 
   @Delete
   abstract public void delete(T object);
+
 }

@@ -9,6 +9,8 @@ import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import com.rhdigital.rhclient.database.DAO.CourseDAO;
+import com.rhdigital.rhclient.database.DAO.ReportDAO;
+import com.rhdigital.rhclient.database.DAO.VideoDAO;
 import com.rhdigital.rhclient.database.DAO.embedded.CourseWithWorkbooksDAO;
 import com.rhdigital.rhclient.database.DAO.PackageDAO;
 import com.rhdigital.rhclient.database.DAO.UserDAO;
@@ -21,10 +23,12 @@ import com.rhdigital.rhclient.database.model.Workbook;
 public abstract class RHDatabase extends RoomDatabase {
 
     private static volatile RHDatabase INSTANCE;
-    public abstract PackageDAO packageDAO();
     public abstract CourseDAO courseDAO();
-    public abstract WorkbookDAO workbookDAO();
+    public abstract PackageDAO packageDAO();
+    public abstract ReportDAO reportDAO();
     public abstract UserDAO userDAO();
+    public abstract VideoDAO videoDAO();
+    public abstract WorkbookDAO workbookDAO();
     public abstract CourseWithWorkbooksDAO courseWithWorkbooksDAO();
 
     public static RHDatabase getDatabase(final Context context) {
