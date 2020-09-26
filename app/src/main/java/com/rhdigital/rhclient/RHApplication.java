@@ -5,8 +5,6 @@ import android.content.res.Configuration;
 
 import androidx.annotation.NonNull;
 
-import com.rhdigital.rhclient.activities.courses.services.VideoPlayerService;
-
 public class RHApplication extends Application {
 
   @Override
@@ -24,7 +22,7 @@ public class RHApplication extends Application {
     super.onLowMemory();
   }
 
-  public VideoPlayerService getVideoPlayerService() {
-      return VideoPlayerService.getInstance();
-    }
+//  public VideoPlayerService getVideoPlayerService() {
+//      return VideoPlayerService.getInstance();
+//    }
 }

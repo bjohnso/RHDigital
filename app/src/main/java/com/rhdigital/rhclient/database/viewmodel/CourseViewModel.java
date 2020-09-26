@@ -11,7 +11,6 @@ import androidx.lifecycle.LiveData;
 
 import com.rhdigital.rhclient.database.model.Course;
 import com.rhdigital.rhclient.database.repository.RHRepository;
-import com.rhdigital.rhclient.common.services.RemoteResourceService;
 
 import java.util.HashMap;
 import java.util.List;
@@ -32,9 +31,9 @@ public class CourseViewModel extends AndroidViewModel {
 
     public LiveData<List<Course>> getAllUndiscoveredCourses() {return rhRepository.getAllUndiscoveredCourses(); }
 
-    public LiveData<HashMap<String, Uri>> getAllVideoUri(List<Course> courses, int width, int height) { return new RemoteResourceService().getAllVideoURI(courses, width, height); }
-
-    public LiveData<HashMap<String, Bitmap>> getAllVideoPosters(Context context, List<Course> courses, int width, int height) { return new RemoteResourceService().getAllBitmap(context, courses, width, height, true); }
+//    public LiveData<HashMap<String, Uri>> getAllVideoUri(List<Course> courses, int width, int height) { return new RemoteResourceService().getAllVideoURI(courses, width, height); }
+//
+//    public LiveData<HashMap<String, Bitmap>> getAllVideoPosters(Context context, List<Course> courses, int width, int height) { return new RemoteResourceService().getAllBitmap(context, courses, width, height, true); }
 
     public void insert(Course course) {
         rhRepository.insert(course);

@@ -33,7 +33,6 @@ public class Video {
   @ColumnInfo(name = "language")
   private String language;
 
-  @NonNull
   @ColumnInfo(name = "subtitle")
   private String subtitle;
 
@@ -49,7 +48,7 @@ public class Video {
 
   public Video(@NonNull String id, @NonNull String courseId,
                @NonNull String title, @NonNull String language,
-               @NonNull String subtitle, @NonNull String url) {
+               String subtitle, @NonNull String url) {
     this.id = id;
     this.courseId = courseId;
     this.title = title;

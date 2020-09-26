@@ -3,11 +3,20 @@ package com.rhdigital.rhclient.database.constants;
 public class Collections {
 
   public static final String collections[] = {
-    "courses",
     "packages",
+    "courses",
     "reports",
-    "users",
     "videos",
-    "workbooks"
+    "workbooks",
+    "users",
+  };
+
+  public static final String DAOs[] = {
+    "package",
+    "course",
+    "report",
+    "video",
+    "workbook",
+    "user",
   };
 }

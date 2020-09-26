@@ -2,12 +2,14 @@ package com.rhdigital.rhclient.database.DAO;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
+import androidx.room.Dao;
 import androidx.room.Query;
 
 import com.rhdigital.rhclient.database.model.Video;
 
 import java.util.List;
 
+@Dao
 public abstract class VideoDAO extends BaseDAO<Video> {
   // DELETE
   @Query("DELETE FROM videos")

@@ -10,7 +10,6 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.rhdigital.rhclient.common.services.RemoteResourceService;
 import com.rhdigital.rhclient.database.model.User;
 import com.rhdigital.rhclient.database.repository.RHRepository;
 
@@ -33,11 +32,11 @@ public class UserViewModel extends AndroidViewModel {
     rhRepository.update(user);
   }
 
-  public LiveData<HashMap<String, Uri>> getAllDocumentUri(String... docIds) {
-    return new RemoteResourceService().getAllDocumentURI(docIds);
-  }
-
-  public LiveData<Bitmap> getProfilePhoto(Context context, String id, int width, int height) {
-    return new RemoteResourceService().getProfilePhoto(context, id, width, height);
-  }
+//  public LiveData<HashMap<String, Uri>> getAllDocumentUri(String... docIds) {
+//    return new RemoteResourceService().getAllDocumentURI(docIds);
+//  }
+//
+//  public LiveData<Bitmap> getProfilePhoto(Context context, String id, int width, int height) {
+//    return new RemoteResourceService().getProfilePhoto(context, id, width, height);
+//  }
 }

@@ -3,13 +3,14 @@ package com.rhdigital.rhclient.database.services;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.rhdigital.rhclient.database.DAO.BaseDAO;
 import com.rhdigital.rhclient.database.DAO.CourseDAO;
 import com.rhdigital.rhclient.database.DAO.ReportDAO;
 import com.rhdigital.rhclient.database.DAO.VideoDAO;
@@ -26,21 +27,28 @@ import com.rhdigital.rhclient.database.model.Workbook;
 
 import static com.rhdigital.rhclient.database.constants.Collections.collections;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-public class PopulateRoomAsync extends AsyncTask<Void, Void, Void> {
+public class PopulateRoomAsync extends AsyncTask<LinkedHashMap<String, QuerySnapshot>, Void, Void> {
   private String TAG = "POPULATEROOMASYNC";
+  // DAO
   private CourseDAO courseDAO;
   private PackageDAO packageDAO;
   private ReportDAO reportDAO;
   private UserDAO userDAO;
   private VideoDAO videoDAO;
   private WorkbookDAO workbookDAO;
-  private HashMap<String, QuerySnapshot> fireStoreData = new HashMap<>();
+  // FIREBASE
+  private FirebaseChainBuilder firebaseChainBuilder = new FirebaseChainBuilder();
+  private ExecutorService executorService = Executors.newSingleThreadExecutor();
+  private Task firebaseCollectionChain;
+  // OBSERVABLE
   private MutableLiveData<ArrayList<Long>> inserts;
 
   public PopulateRoomAsync() { }
@@ -52,31 +60,51 @@ public class PopulateRoomAsync extends AsyncTask<Void, Void, Void> {
     return inserts;
   }
 
-  private void updateFireStoreData (String collection, QuerySnapshot snapshot) {
-    this.fireStoreData.put(collection, snapshot);
+  private void initialiseDAOs(RHDatabase instance){
+    courseDAO = instance.courseDAO();
+    packageDAO = instance.packageDAO();
+    reportDAO = instance.reportDAO();
+    userDAO = instance.userDAO();
+    videoDAO = instance.videoDAO();
+    workbookDAO = instance.workbookDAO();
+//    for (String collection: collections) {
+//      try {
+//        Log.d(TAG, "FIELD : " + collection + "DAO");
+//        Field field = this.getClass().getDeclaredField(collection + "DAO");
+//        field.setAccessible(true);
+//        for (Method method: instance.getClass().getDeclaredMethods()) {
+//          if (method.getName().contains("DAO")) {
+//            Log.d(TAG, "INSTANCE : " + method.invoke(instance).toString());
+//          }
+//        }
+//        field.set(this, instance.getClass().getDeclaredMethod(collection + "DAO").getDefaultValue());
+//      } catch (NoSuchFieldException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+//        e.printStackTrace();
+//      }
+//    }
   }
 
   public void populateFromUpstream(RHDatabase instance) {
-    FirebaseFirestore firestore = FirebaseFirestore.getInstance();
-
-    for (String collection: collections) {
-      firestore
-        .collection(collection)
-        .get()
-        .addOnSuccessListener(snapshot -> {
-          try {
-            Field field = this.getClass().getDeclaredField(collection + "DAO");
-            field.setAccessible(true);
-            field.set(this, instance.getClass().getDeclaredField(collection + "DAO"));
-            updateFireStoreData(collection, snapshot);
-            if (collection == collections[collections.length - 1]) {
-              this.execute();
-            }
-          } catch (NoSuchFieldException | IllegalAccessException e) {
-            e.printStackTrace();
-          }
-        });
+    initialiseDAOs(instance);
+    firebaseCollectionChain = Tasks.call(executorService, CallableFunction.callable(firebaseChainBuilder, collections[0]));
+    for (int i = 1; i < collections.length; i++) {
+      firebaseCollectionChain = firebaseCollectionChain
+        .continueWith(
+          executorService,
+          CallableFunction
+            .continuation(firebaseChainBuilder,
+              collections[i],
+              firebaseCollectionChain
+            )
+        );
     }
+    firebaseCollectionChain.addOnCompleteListener(task -> {
+      if (task.isSuccessful()) {
+        this.execute(firebaseChainBuilder.getQuerySnapshotMap());
+      } else {
+        Log.d(TAG, "FAILED :" + task.getException().getMessage());
+      }
+    });
   }
 
   public void deleteAllFromLocal() {
@@ -89,16 +117,17 @@ public class PopulateRoomAsync extends AsyncTask<Void, Void, Void> {
   }
 
   @Override
-  protected Void doInBackground(Void... voids) {
-    Log.d(TAG, "POPULATING DB...");
+  protected Void doInBackground(LinkedHashMap<String, QuerySnapshot>... fireStoreData) {
+    Log.d(TAG, "POPULATING DB... " + fireStoreData[0]);
 
     deleteAllFromLocal();
 
     ArrayList<Long> pop = new ArrayList<>();
 
-    Iterator<Map.Entry<String, QuerySnapshot>> it = fireStoreData.entrySet().iterator();
+    Iterator<Map.Entry<String, QuerySnapshot>> it = fireStoreData[0].entrySet().iterator();
     while (it.hasNext()) {
       Map.Entry<String, QuerySnapshot> pair = it.next();
+      Log.d(TAG, "Collection : " + pair.getKey());
 
       for (QueryDocumentSnapshot doc : pair.getValue()) {
         switch (pair.getKey()) {
@@ -113,6 +142,7 @@ public class PopulateRoomAsync extends AsyncTask<Void, Void, Void> {
                 doc.getString("posterURL")
               )
             ));
+            break;
           case "packages":
             pop.add(packageDAO.insert(
               new Package(
@@ -122,6 +152,7 @@ public class PopulateRoomAsync extends AsyncTask<Void, Void, Void> {
                 doc.getDouble("price")
               )
             ));
+            break;
           case "reports":
             pop.add(reportDAO.insert(
               new Report(
@@ -131,6 +162,7 @@ public class PopulateRoomAsync extends AsyncTask<Void, Void, Void> {
                 doc.getString("url")
               )
             ));
+            break;
           case "users":
             pop.add(userDAO.insert(
               new User(
@@ -146,6 +178,7 @@ public class PopulateRoomAsync extends AsyncTask<Void, Void, Void> {
                 doc.getString("about")
               )
             ));
+            break;
           case "videos":
             pop.add(videoDAO.insert(
               new Video(
@@ -157,6 +190,7 @@ public class PopulateRoomAsync extends AsyncTask<Void, Void, Void> {
                 doc.getString("url")
               )
             ));
+            break;
           case "workbooks":
             pop.add(workbookDAO.insert(
               new Workbook(
@@ -167,13 +201,13 @@ public class PopulateRoomAsync extends AsyncTask<Void, Void, Void> {
                 doc.getString("url")
               )
             ));
+            break;
         }
       }
-
     }
 
     // NOTIFY POPULATION EVENT HAS OCCURRED
-    this.inserts.postValue(pop);
+    //this.inserts.postValue(pop);
     return null;
   }
 }

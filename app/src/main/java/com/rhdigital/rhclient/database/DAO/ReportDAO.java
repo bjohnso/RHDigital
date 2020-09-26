@@ -2,11 +2,13 @@ package com.rhdigital.rhclient.database.DAO;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
+import androidx.room.Dao;
 import androidx.room.Query;
 import com.rhdigital.rhclient.database.model.Report;
 
 import java.util.List;
 
+@Dao
 public abstract class ReportDAO extends BaseDAO<Report> {
 
   // DELETE

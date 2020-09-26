@@ -16,10 +16,13 @@ import com.rhdigital.rhclient.database.DAO.PackageDAO;
 import com.rhdigital.rhclient.database.DAO.UserDAO;
 import com.rhdigital.rhclient.database.DAO.WorkbookDAO;
 import com.rhdigital.rhclient.database.model.Course;
+import com.rhdigital.rhclient.database.model.Package;
+import com.rhdigital.rhclient.database.model.Report;
 import com.rhdigital.rhclient.database.model.User;
+import com.rhdigital.rhclient.database.model.Video;
 import com.rhdigital.rhclient.database.model.Workbook;
 
-@Database(entities = {Course.class, Workbook.class, User.class}, version = 2, exportSchema = false)
+@Database(entities = {Course.class, Package.class, Report.class, User.class, Video.class, Workbook.class}, version = 2, exportSchema = false)
 public abstract class RHDatabase extends RoomDatabase {
 
     private static volatile RHDatabase INSTANCE;
