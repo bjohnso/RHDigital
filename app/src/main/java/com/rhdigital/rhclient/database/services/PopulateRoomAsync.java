@@ -5,10 +5,8 @@ import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.rhdigital.rhclient.database.DAO.CourseDAO;
@@ -25,10 +23,14 @@ import com.rhdigital.rhclient.database.model.User;
 import com.rhdigital.rhclient.database.model.Video;
 import com.rhdigital.rhclient.database.model.Workbook;
 
-import static com.rhdigital.rhclient.database.constants.Collections.collections;
+import static com.rhdigital.rhclient.database.constants.DatabaseConstants.DAOPath;
+import static com.rhdigital.rhclient.database.constants.DatabaseConstants.collections;
+import static com.rhdigital.rhclient.database.constants.DatabaseConstants.DAOs;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -61,27 +63,16 @@ public class PopulateRoomAsync extends AsyncTask<LinkedHashMap<String, QuerySnap
   }
 
   private void initialiseDAOs(RHDatabase instance){
-    courseDAO = instance.courseDAO();
-    packageDAO = instance.packageDAO();
-    reportDAO = instance.reportDAO();
-    userDAO = instance.userDAO();
-    videoDAO = instance.videoDAO();
-    workbookDAO = instance.workbookDAO();
-//    for (String collection: collections) {
-//      try {
-//        Log.d(TAG, "FIELD : " + collection + "DAO");
-//        Field field = this.getClass().getDeclaredField(collection + "DAO");
-//        field.setAccessible(true);
-//        for (Method method: instance.getClass().getDeclaredMethods()) {
-//          if (method.getName().contains("DAO")) {
-//            Log.d(TAG, "INSTANCE : " + method.invoke(instance).toString());
-//          }
-//        }
-//        field.set(this, instance.getClass().getDeclaredMethod(collection + "DAO").getDefaultValue());
-//      } catch (NoSuchFieldException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-//        e.printStackTrace();
-//      }
-//    }
+    for (String dao: DAOs) {
+      try {
+        // USE REFLECTION
+        Field field = this.getClass().getDeclaredField(dao);
+        field.setAccessible(true);
+        field.set(this, instance.getClass().getDeclaredMethod(dao).invoke(instance));
+      } catch (NoSuchFieldException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+        e.printStackTrace();
+      }
+    }
   }
 
   public void populateFromUpstream(RHDatabase instance) {
@@ -108,12 +99,18 @@ public class PopulateRoomAsync extends AsyncTask<LinkedHashMap<String, QuerySnap
   }
 
   public void deleteAllFromLocal() {
-    courseDAO.deleteAll();
-    packageDAO.deleteAll();
-    reportDAO.deleteAll();
-    userDAO.deleteAll();
-    videoDAO.deleteAll();
-    workbookDAO.deleteAll();
+    for (String dao: DAOs) {
+      try {
+        // USE REFLECTION
+        Field field = (this.getClass().getDeclaredField(dao));
+        field.setAccessible(true);
+        Object daoClass = field.get(this);
+        String className = daoClass.getClass().getCanonicalName();
+        daoClass.getClass().getDeclaredMethod("deleteAll").invoke(daoClass);
+      } catch (NoSuchFieldException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+        e.printStackTrace();
+      }
+    }
   }
 
   @Override
@@ -121,7 +118,6 @@ public class PopulateRoomAsync extends AsyncTask<LinkedHashMap<String, QuerySnap
     Log.d(TAG, "POPULATING DB... " + fireStoreData[0]);
 
     deleteAllFromLocal();
-
     ArrayList<Long> pop = new ArrayList<>();
 
     Iterator<Map.Entry<String, QuerySnapshot>> it = fireStoreData[0].entrySet().iterator();

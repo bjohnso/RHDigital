@@ -1,6 +1,6 @@
 package com.rhdigital.rhclient.database.constants;
 
-public class Collections {
+public class DatabaseConstants {
 
   public static final String collections[] = {
     "packages",
@@ -12,11 +12,13 @@ public class Collections {
   };
 
   public static final String DAOs[] = {
-    "package",
-    "course",
-    "report",
-    "video",
-    "workbook",
-    "user",
+    "packageDAO",
+    "courseDAO",
+    "reportDAO",
+    "videoDAO",
+    "workbookDAO",
+    "userDAO",
   };
+
+  public static final String DAOPath = "com.rhdigital.rhclient.database.DAO.";
 }
