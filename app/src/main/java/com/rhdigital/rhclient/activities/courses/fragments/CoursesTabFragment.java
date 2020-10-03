@@ -49,7 +49,7 @@
 //    NavigationService.getINSTANCE().initNav(
 //      getClass().getName(),
 //      navController,
-//      R.navigation.courses_tab_nav_graph,
+//      R.navigation.programs_tab_nav_graph,
 //      R.id.discoverCoursesFragment);
 //    tabLayout.addOnTabSelectedListener(new TabOnClick(navController, getClass().getName()));
 //  }

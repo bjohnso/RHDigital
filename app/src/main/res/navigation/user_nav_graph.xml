@@ -1,19 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
-  android:id="@+id/user_nav_graph"
-  app:startDestination="@id/userProfileFragment">
+  android:id="@+id/user_nav_graph">
 
-  <fragment
-    android:id="@+id/userProfileFragment"
-    android:name="com.rhdigital.rhclient.activities.user.fragments.UserProfileFragment"
-    android:label="UserProfileFragment" />
-  <fragment
-    android:id="@+id/userProfileEditFragment"
-    android:name="com.rhdigital.rhclient.activities.user.fragments.UserProfileEditFragment"
-    android:label="UserProfileEditFragment" />
-  <fragment
-    android:id="@+id/userProfileSettingsFragment"
-    android:name="com.rhdigital.rhclient.activities.user.fragments.UserProfileSettingsFragment"
-    android:label="UserProfileSettingsFragment" />
+<!--  <fragment-->
+<!--    android:id="@+id/userProfileFragment"-->
+<!--    android:name="com.rhdigital.rhclient.activities.user.fragments.UserProfileFragment"-->
+<!--    android:label="UserProfileFragment" />-->
+<!--  <fragment-->
+<!--    android:id="@+id/userProfileEditFragment"-->
+<!--    android:name="com.rhdigital.rhclient.activities.user.fragments.UserProfileEditFragment"-->
+<!--    android:label="UserProfileEditFragment" />-->
+<!--  <fragment-->
+<!--    android:id="@+id/userProfileSettingsFragment"-->
+<!--    android:name="com.rhdigital.rhclient.activities.user.fragments.UserProfileSettingsFragment"-->
+<!--    android:label="UserProfileSettingsFragment" />-->
 </navigation>

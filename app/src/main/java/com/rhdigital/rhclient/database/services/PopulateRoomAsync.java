@@ -29,7 +29,6 @@ import static com.rhdigital.rhclient.database.constants.DatabaseConstants.DAOs;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -51,7 +50,7 @@ public class PopulateRoomAsync extends AsyncTask<LinkedHashMap<String, QuerySnap
   private ExecutorService executorService = Executors.newSingleThreadExecutor();
   private Task firebaseCollectionChain;
   // OBSERVABLE
-  private MutableLiveData<ArrayList<Long>> inserts;
+  private MutableLiveData<ArrayList<Long>> inserts = new MutableLiveData<>();
 
   public PopulateRoomAsync() { }
 
@@ -203,7 +202,7 @@ public class PopulateRoomAsync extends AsyncTask<LinkedHashMap<String, QuerySnap
     }
 
     // NOTIFY POPULATION EVENT HAS OCCURRED
-    //this.inserts.postValue(pop);
+    this.inserts.postValue(pop);
     return null;
   }
 }

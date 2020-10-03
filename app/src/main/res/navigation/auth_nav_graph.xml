@@ -1,32 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
-  android:id="@+id/auth_nav_graph"
-  app:startDestination="@id/signUpDetailsFragment">
+  android:id="@+id/auth_nav_graph">
 
-  <fragment
-    android:id="@+id/signInFragment"
-    android:name="com.rhdigital.rhclient.activities.auth.fragments.SignInFragment"
-    android:label="SignInFragment" >
-  </fragment>
-  <fragment
-    android:id="@+id/signUpDetailsFragment"
-    android:name="com.rhdigital.rhclient.activities.auth.fragments.SignUpDetailsFragment"
-    android:label="SignUpDetailsFragment" />
-  <fragment
-    android:id="@+id/signUpEmailFragment"
-    android:name="com.rhdigital.rhclient.activities.auth.fragments.SignUpEmailFragment"
-    android:label="SignUpEmailFragment" />
-  <fragment
-    android:id="@+id/signInWelcomeFragment"
-    android:name="com.rhdigital.rhclient.activities.auth.fragments.SignInWelcomeFragment"
-    android:label="SignInWelcomeFragment" />
-  <fragment
-    android:id="@+id/EmailVerificationFragment"
-    android:name="com.rhdigital.rhclient.activities.auth.fragments.EmailVerificationFragment"
-    android:label="EmailVerificationFragment" />
-  <fragment
-    android:id="@+id/changeEmailFragment"
-    android:name="com.rhdigital.rhclient.activities.auth.fragments.ChangeEmailFragment"
-    android:label="ChangeEmailFragment" />
+<!--  <fragment-->
+<!--    android:id="@+id/signInFragment"-->
+<!--    android:name="com.rhdigital.rhclient.activities.rhauth.fragments.SignInFragment"-->
+<!--    android:label="SignInFragment" >-->
+<!--  </fragment>-->
+<!--  <fragment-->
+<!--    android:id="@+id/signUpDetailsFragment"-->
+<!--    android:name="com.rhdigital.rhclient.activities.rhauth.fragments.SignUpDetailsFragment"-->
+<!--    android:label="SignUpDetailsFragment" />-->
+<!--  <fragment-->
+<!--    android:id="@+id/signUpEmailFragment"-->
+<!--    android:name="com.rhdigital.rhclient.activities.rhauth.fragments.SignUpEmailFragment"-->
+<!--    android:label="SignUpEmailFragment" />-->
+<!--  <fragment-->
+<!--    android:id="@+id/signInWelcomeFragment"-->
+<!--    android:name="com.rhdigital.rhclient.activities.rhauth.fragments.SignInWelcomeFragment"-->
+<!--    android:label="SignInWelcomeFragment" />-->
+<!--  <fragment-->
+<!--    android:id="@+id/EmailVerificationFragment"-->
+<!--    android:name="com.rhdigital.rhclient.activities.rhauth.fragments.EmailVerificationFragment"-->
+<!--    android:label="EmailVerificationFragment" />-->
+<!--  <fragment-->
+<!--    android:id="@+id/changeEmailFragment"-->
+<!--    android:name="com.rhdigital.rhclient.activities.rhauth.fragments.ChangeEmailFragment"-->
+<!--    android:label="ChangeEmailFragment" />-->
 </navigation>
