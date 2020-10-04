@@ -10,20 +10,19 @@ import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.rhdigital.rhclient.database.DAO.CourseDAO;
+import com.rhdigital.rhclient.database.DAO.ProgramDAO;
 import com.rhdigital.rhclient.database.DAO.ReportDAO;
 import com.rhdigital.rhclient.database.DAO.VideoDAO;
-import com.rhdigital.rhclient.database.DAO.PackageDAO;
 import com.rhdigital.rhclient.database.DAO.UserDAO;
 import com.rhdigital.rhclient.database.DAO.WorkbookDAO;
 import com.rhdigital.rhclient.database.RHDatabase;
 import com.rhdigital.rhclient.database.model.Course;
-import com.rhdigital.rhclient.database.model.Package;
+import com.rhdigital.rhclient.database.model.Program;
 import com.rhdigital.rhclient.database.model.Report;
 import com.rhdigital.rhclient.database.model.User;
 import com.rhdigital.rhclient.database.model.Video;
 import com.rhdigital.rhclient.database.model.Workbook;
 
-import static com.rhdigital.rhclient.database.constants.DatabaseConstants.DAOPath;
 import static com.rhdigital.rhclient.database.constants.DatabaseConstants.collections;
 import static com.rhdigital.rhclient.database.constants.DatabaseConstants.DAOs;
 
@@ -40,7 +39,7 @@ public class PopulateRoomAsync extends AsyncTask<LinkedHashMap<String, QuerySnap
   private String TAG = "POPULATEROOMASYNC";
   // DAO
   private CourseDAO courseDAO;
-  private PackageDAO packageDAO;
+  private ProgramDAO programDAO;
   private ReportDAO reportDAO;
   private UserDAO userDAO;
   private VideoDAO videoDAO;
@@ -130,21 +129,21 @@ public class PopulateRoomAsync extends AsyncTask<LinkedHashMap<String, QuerySnap
             pop.add(courseDAO.insert(
               new Course(
                 doc.getId(),
-                doc.getString("packageId"),
+                doc.getString("programId"),
                 doc.getString("title"),
                 doc.getString("author"),
-                doc.getString("description"),
-                doc.getString("posterURL")
+                doc.getString("description")
               )
             ));
             break;
-          case "packages":
-            pop.add(packageDAO.insert(
-              new Package(
+          case "programs":
+            pop.add(programDAO.insert(
+              new Program(
                 doc.getId(),
                 doc.getString("title"),
                 doc.getString("type"),
-                doc.getDouble("price")
+                doc.getDouble("price"),
+                doc.getString("posterUrl")
               )
             ));
             break;
@@ -152,7 +151,7 @@ public class PopulateRoomAsync extends AsyncTask<LinkedHashMap<String, QuerySnap
             pop.add(reportDAO.insert(
               new Report(
                 doc.getId(),
-                doc.getString("packageId"),
+                doc.getString("programId"),
                 doc.getString("month"),
                 doc.getString("url")
               )
@@ -182,7 +181,8 @@ public class PopulateRoomAsync extends AsyncTask<LinkedHashMap<String, QuerySnap
                 doc.getString("title"),
                 doc.getString("language"),
                 doc.getString("subtitle"),
-                doc.getString("url")
+                doc.getString("videoUrl"),
+                doc.getString("thumbnailUrl")
               )
             ));
             break;

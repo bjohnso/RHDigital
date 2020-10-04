@@ -37,8 +37,12 @@ public class Video {
   private String subtitle;
 
   @NonNull
-  @ColumnInfo(name = "url")
-  private String url;
+  @ColumnInfo(name = "video_url")
+  private String videoUrl;
+
+  @NonNull
+  @ColumnInfo(name = "thumbnail_url")
+  private String thumbnailUrl;
 
   @ColumnInfo(name = "is_authorised")
   private boolean isAuthorised = false;
@@ -48,22 +52,26 @@ public class Video {
 
   public Video(@NonNull String id, @NonNull String courseId,
                @NonNull String title, @NonNull String language,
-               String subtitle, @NonNull String url) {
+               String subtitle, @NonNull String videoUrl,
+               String thumbnailUrl) {
     this.id = id;
     this.courseId = courseId;
     this.title = title;
     this.language = language;
     this.subtitle = subtitle;
-    this.url = url;
+    this.videoUrl = videoUrl;
+    this.thumbnailUrl = thumbnailUrl;
   }
 
   public void setAuthorised(boolean authorised) {
     isAuthorised = authorised;
   }
 
-  public void setUrl(@NonNull String url) {
-    this.url = url;
+  public void setVideoUrl(@NonNull String videoUrl) {
+    this.videoUrl = videoUrl;
   }
+
+  public void setThumbnailUrl(@NonNull String thumbnailUrl) { this.thumbnailUrl = thumbnailUrl; }
 
   public void setId(@NonNull String id) {
     this.id = id;
@@ -86,8 +94,13 @@ public class Video {
   }
 
   @NonNull
-  public String getUrl() {
-    return url;
+  public String getVideoUrl() {
+    return videoUrl;
+  }
+
+  @NonNull
+  public String getThumbnailUrl() {
+    return thumbnailUrl;
   }
 
   @NonNull

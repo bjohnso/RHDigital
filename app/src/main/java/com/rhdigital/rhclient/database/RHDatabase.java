@@ -9,25 +9,25 @@ import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import com.rhdigital.rhclient.database.DAO.CourseDAO;
+import com.rhdigital.rhclient.database.DAO.ProgramDAO;
 import com.rhdigital.rhclient.database.DAO.ReportDAO;
 import com.rhdigital.rhclient.database.DAO.VideoDAO;
 import com.rhdigital.rhclient.database.DAO.embedded.CourseWithWorkbooksDAO;
-import com.rhdigital.rhclient.database.DAO.PackageDAO;
 import com.rhdigital.rhclient.database.DAO.UserDAO;
 import com.rhdigital.rhclient.database.DAO.WorkbookDAO;
 import com.rhdigital.rhclient.database.model.Course;
-import com.rhdigital.rhclient.database.model.Package;
+import com.rhdigital.rhclient.database.model.Program;
 import com.rhdigital.rhclient.database.model.Report;
 import com.rhdigital.rhclient.database.model.User;
 import com.rhdigital.rhclient.database.model.Video;
 import com.rhdigital.rhclient.database.model.Workbook;
 
-@Database(entities = {Course.class, Package.class, Report.class, User.class, Video.class, Workbook.class}, version = 2, exportSchema = false)
+@Database(entities = {Course.class, Program.class, Report.class, User.class, Video.class, Workbook.class}, version = 1, exportSchema = false)
 public abstract class RHDatabase extends RoomDatabase {
 
     private static volatile RHDatabase INSTANCE;
     public abstract CourseDAO courseDAO();
-    public abstract PackageDAO packageDAO();
+    public abstract ProgramDAO programDAO();
     public abstract ReportDAO reportDAO();
     public abstract UserDAO userDAO();
     public abstract VideoDAO videoDAO();

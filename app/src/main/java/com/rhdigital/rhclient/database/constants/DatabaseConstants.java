@@ -3,7 +3,7 @@ package com.rhdigital.rhclient.database.constants;
 public class DatabaseConstants {
 
   public static final String collections[] = {
-    "packages",
+    "programs",
     "courses",
     "reports",
     "videos",
@@ -12,7 +12,7 @@ public class DatabaseConstants {
   };
 
   public static final String DAOs[] = {
-    "packageDAO",
+    "programDAO",
     "courseDAO",
     "reportDAO",
     "videoDAO",

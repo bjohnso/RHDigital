@@ -19,7 +19,7 @@ public abstract class ReportDAO extends BaseDAO<Report> {
   abstract public int deleteById(int id);
 
   // GET
-  @Query("SELECT * FROM reports WHERE package_id = :id")
+  @Query("SELECT * FROM reports WHERE program_id = :id")
   abstract public LiveData<List<Report>> findByPackageId(@NonNull String id);
 
   @Query("SELECT * FROM reports WHERE id = :id")

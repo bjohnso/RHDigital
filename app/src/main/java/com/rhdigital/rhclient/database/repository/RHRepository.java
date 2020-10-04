@@ -2,23 +2,21 @@ package com.rhdigital.rhclient.database.repository;
 
 import android.app.Application;
 
-import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 
 import com.rhdigital.rhclient.database.DAO.BaseDAO;
 import com.rhdigital.rhclient.database.DAO.CourseDAO;
+import com.rhdigital.rhclient.database.DAO.ProgramDAO;
 import com.rhdigital.rhclient.database.DAO.ReportDAO;
 import com.rhdigital.rhclient.database.DAO.VideoDAO;
 import com.rhdigital.rhclient.database.DAO.embedded.CourseWithWorkbooksDAO;
-import com.rhdigital.rhclient.database.DAO.PackageDAO;
 import com.rhdigital.rhclient.database.DAO.UserDAO;
 import com.rhdigital.rhclient.database.DAO.WorkbookDAO;
 import com.rhdigital.rhclient.database.RHDatabase;
 import com.rhdigital.rhclient.database.model.Course;
 import com.rhdigital.rhclient.database.model.Report;
 import com.rhdigital.rhclient.database.model.Video;
-import com.rhdigital.rhclient.database.model.embedded.CourseWithWorkbooks;
-import com.rhdigital.rhclient.database.model.Package;
+import com.rhdigital.rhclient.database.model.Program;
 import com.rhdigital.rhclient.database.model.User;
 import com.rhdigital.rhclient.database.model.Workbook;
 
@@ -29,7 +27,7 @@ import java.util.concurrent.Executors;
 
 public class RHRepository {
     private CourseDAO courseDAO;
-    private PackageDAO packageDAO;
+    private ProgramDAO programDAO;
     private ReportDAO reportDAO;
     private UserDAO userDAO;
     private VideoDAO videoDAO;
@@ -40,7 +38,7 @@ public class RHRepository {
     public RHRepository(Application application) {
         RHDatabase db = RHDatabase.getDatabase(application);
         courseDAO = db.courseDAO();
-        packageDAO = db.packageDAO();
+        programDAO = db.programDAO();
         reportDAO = db.reportDAO();
         userDAO = db.userDAO();
         videoDAO = db.videoDAO();
@@ -58,12 +56,12 @@ public class RHRepository {
 
     public LiveData<List<Course>> getAllUndiscoveredCourses() { return courseDAO.getAllUnauthorised(); }
 
-    // PACKAGES
-    public LiveData<List<Package>> getAllPackages() { return packageDAO.getAll(); }
+    // PROGRAMS
+    public LiveData<List<Program>> getAllPrograms() { return programDAO.getAll(); }
 
-    public LiveData<List<Package>> getAllAuthorisedPackages() {return packageDAO.getAllAuthorised(); }
+    public LiveData<List<Program>> getAllAuthorisedPrograms() {return programDAO.getAllAuthorised(); }
 
-    public LiveData<List<Package>> getAllUndiscoveredPackages() { return packageDAO.getAllUnauthorised(); }
+    public LiveData<List<Program>> getAllUndiscoveredPrograms() { return programDAO.getAllUnauthorised(); }
 
     // REPORTS
     public LiveData<List<Report>> getAllReports() { return reportDAO.getAll(); }

@@ -28,7 +28,7 @@ android {
           [
             'src/main/res/layouts/rhapp',
             'src/main/res/layouts/rhapp/programs',
-            'src/main/res/layouts/auth',
+            'src/main/res/layouts/rhauth',
             'src/main/res/layouts',
             'src/main/res'
          ]

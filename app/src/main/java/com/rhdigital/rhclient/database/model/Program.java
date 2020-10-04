@@ -6,8 +6,8 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "packages")
-public class Package {
+@Entity(tableName = "programs")
+public class Program {
 
   @ColumnInfo(name = "id")
   @NonNull
@@ -26,17 +26,22 @@ public class Package {
   @ColumnInfo(name = "price")
   private Double price;
 
+  @NonNull
+  @ColumnInfo(name = "poster_url")
+  private String posterUrl;
+
   @ColumnInfo(name = "is_authorised")
   private boolean isAuthorised = false;
 
   @Ignore
-  public Package() {}
+  public Program() {}
 
-  public Package(@NonNull String id, @NonNull String title, @NonNull String type, @NonNull Double price) {
+  public Program(@NonNull String id, @NonNull String title, @NonNull String type, @NonNull Double price, @NonNull String posterUrl) {
     this.id = id;
     this.title = title;
     this.type = type;
     this.price = price;
+    this.posterUrl = posterUrl;
   }
 
   @NonNull
@@ -58,6 +63,9 @@ public class Package {
   public String getType() {
     return type;
   }
+
+  @NonNull
+  public String getPosterUrl() { return posterUrl; }
 
   public boolean isAuthorised() {
     return isAuthorised;
@@ -82,4 +90,6 @@ public class Package {
   public void setType(@NonNull String type) {
     this.type = type;
   }
+
+  public void setPosterUrl(@NonNull String posterUrl) { this.posterUrl = posterUrl; }
 }

@@ -5,8 +5,6 @@ import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Query;
 
-import com.rhdigital.rhclient.database.model.Course;
-import com.rhdigital.rhclient.database.model.Package;
 import com.rhdigital.rhclient.database.model.Workbook;
 
 import java.util.List;

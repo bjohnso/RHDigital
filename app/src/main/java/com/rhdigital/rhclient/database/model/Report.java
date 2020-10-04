@@ -12,19 +12,19 @@ import static androidx.room.ForeignKey.CASCADE;
 
 @Entity(tableName = "reports",
   foreignKeys = @ForeignKey(onDelete = CASCADE,
-    entity = Package.class,
+    entity = Program.class,
     parentColumns = "id",
-    childColumns = "package_id"
-  ), indices = {@Index("package_id")})
+    childColumns = "program_id"
+  ), indices = {@Index("program_id")})
 public class Report {
   @ColumnInfo(name = "id")
   @NonNull
   @PrimaryKey
   private String id;
 
-  @ColumnInfo(name = "package_id")
+  @ColumnInfo(name = "program_id")
   @NonNull
-  private String packageId;
+  private String programId;
 
   @NonNull
   @ColumnInfo(name = "month")
@@ -40,18 +40,16 @@ public class Report {
   @Ignore
   public Report() {}
 
-  public Report(@NonNull String id, @NonNull String packageId,
+  public Report(@NonNull String id, @NonNull String programId,
                 @NonNull String month, @NonNull String url) {
     this.id = id;
-    this.packageId = packageId;
+    this.programId = programId;
     this.month = month;
     this.url = url;
   }
 
   @NonNull
-  public String getPackageId() {
-    return packageId;
-  }
+  public String getProgramId() { return programId; }
 
   @NonNull
   public String getId() {
@@ -72,9 +70,7 @@ public class Report {
     return isAuthorised;
   }
 
-  public void setPackageId(@NonNull String packageId) {
-    this.packageId = packageId;
-  }
+  public void setProgramId(@NonNull String programId) { this.programId = programId; }
 
   public void setId(@NonNull String id) {
     this.id = id;

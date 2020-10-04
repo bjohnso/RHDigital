@@ -12,10 +12,10 @@ import static androidx.room.ForeignKey.CASCADE;
 
 @Entity(tableName = "courses",
   foreignKeys = @ForeignKey(onDelete = CASCADE,
-    entity = Package.class,
+    entity = Program.class,
     parentColumns = "id",
-    childColumns = "package_id"
-  ), indices = {@Index("package_id")})
+    childColumns = "program_id"
+  ), indices = {@Index("program_id")})
 public class Course {
     @ColumnInfo(name = "id")
     @NonNull
@@ -23,8 +23,8 @@ public class Course {
     private String id;
 
     @NonNull
-    @ColumnInfo(name = "package_id")
-    private String packageId;
+    @ColumnInfo(name = "program_id")
+    private String programId;
 
     @NonNull
     @ColumnInfo(name = "title")
@@ -38,26 +38,21 @@ public class Course {
     @ColumnInfo(name = "description")
     private String description;
 
-    @NonNull
-    @ColumnInfo(name = "poster_url")
-    private String posterURL;
-
     @ColumnInfo(name = "is_authorised")
     private boolean isAuthorised = false;
 
     @Ignore
     public Course() { }
 
-    public Course(@NonNull String id, @NonNull String packageId,
+    public Course(@NonNull String id, @NonNull String programId,
                   @NonNull String title, @NonNull String author,
-                  @NonNull String description, @NonNull String posterURL)
+                  @NonNull String description)
     {
       this.id = id;
-      this.packageId = packageId;
+      this.programId = programId;
       this.title = title;
       this.author = author;
       this.description = description;
-      this.posterURL = posterURL;
     }
 
   @NonNull
@@ -81,14 +76,7 @@ public class Course {
   }
 
   @NonNull
-  public String getPackageId() {
-    return packageId;
-  }
-
-  @NonNull
-  public String getPosterURL() {
-    return posterURL;
-  }
+  public String getProgramId() { return programId; }
 
   public boolean isAuthorised() {
     return isAuthorised;
@@ -114,11 +102,5 @@ public class Course {
     this.description = description;
   }
 
-  public void setPackageId(@NonNull String packageId) {
-    this.packageId = packageId;
-  }
-
-  public void setPosterURL(@NonNull String posterURL) {
-    this.posterURL = posterURL;
-  }
+  public void setProgramId(@NonNull String programId) { this.programId = programId; }
 }
