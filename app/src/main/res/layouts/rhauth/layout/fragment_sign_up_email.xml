@@ -24,7 +24,7 @@
       android:background="@drawable/bar"
       android:drawablePadding="5dp"
       android:hint="Email address"
-      android:inputType="phone"
+      android:inputType="textEmailAddress"
       android:paddingStart="10dp"
       android:textColor="@color/input_text"
       android:textSize="12sp" />
@@ -42,3 +42,4 @@
   </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+

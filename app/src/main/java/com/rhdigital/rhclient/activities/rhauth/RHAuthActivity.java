@@ -13,20 +13,30 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.rhdigital.rhclient.R;
 
+import com.rhdigital.rhclient.activities.rhauth.services.AuthFieldValidationService;
 import com.rhdigital.rhclient.common.services.NavigationService;
 
 import com.rhdigital.rhclient.database.model.User;
 import com.rhdigital.rhclient.database.viewmodel.UserViewModel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import static com.rhdigital.rhclient.activities.rhauth.constants.ValidationConstants.EMAIL_STRATEGY;
+import static com.rhdigital.rhclient.activities.rhauth.constants.ValidationConstants.PARTIAL_STRATEGY;
 
 
 public class RHAuthActivity extends AppCompatActivity {
+
+  private AuthFieldValidationService authFieldValidationService = new AuthFieldValidationService();
 
   //ViewModel
   private UserViewModel userViewModel;
 
   private LiveData<User> usertask;
+
+  private HashMap<String, String> authFieldsMap = new HashMap<>();
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -46,10 +56,20 @@ public class RHAuthActivity extends AppCompatActivity {
       R.id.signInFragment);
   }
 
-  public void updateUserEmail(String uuid, String newEmail) {
-  }
+  public void updateAuthField(String key, String value) { this.authFieldsMap.put(key, value); }
 
-  public void launchCoursesActivity() {
+  public HashMap<String, String> getAuthFieldsMap() { return this.authFieldsMap; }
+
+  //TODO: HANDLE MULTIPLE STRATEGIES
+  public List<String> validateAuthFields(String STRATEGY) {
+    if (STRATEGY == EMAIL_STRATEGY) {
+      return this.authFieldValidationService.validateEmailStrategyData(this.authFieldsMap);
+    }
+
+    if (STRATEGY == PARTIAL_STRATEGY) {
+      return this.authFieldValidationService.validatePartialStrategyData(this.authFieldsMap);
+    }
+    return null;
   }
 
   //TODO: IMPLEMENT PHONE AUTHENTICATION

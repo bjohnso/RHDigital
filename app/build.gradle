@@ -29,6 +29,7 @@ android {
             'src/main/res/layouts/rhapp',
             'src/main/res/layouts/rhapp/programs',
             'src/main/res/layouts/rhauth',
+            'src/main/res/layouts/rhsplash',
             'src/main/res/layouts',
             'src/main/res'
          ]
@@ -62,10 +63,11 @@ dependencies {
 
   //Retrofit
   implementation 'com.squareup.retrofit2:retrofit:2.5.0'
-  implementation 'com.google.code.gson:gson:2.8.5'
+  implementation 'com.google.code.gson:gson:2.8.6'
   implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
 
   // Firebase & Firestore
+  implementation 'com.google.firebase:firebase-functions:19.0.2'
   implementation 'com.google.firebase:firebase-analytics:17.5.0'
   implementation 'com.google.firebase:firebase-firestore:21.7.0'
   implementation 'com.google.firebase:firebase-storage:19.2.0'

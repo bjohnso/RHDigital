@@ -31,9 +31,12 @@ import androidx.lifecycle.LiveData;
 import com.google.firebase.auth.FirebaseAuth;
 
 import com.rhdigital.rhclient.R;
+import com.rhdigital.rhclient.common.services.NavigationService;
+import com.rhdigital.rhclient.common.util.GenericTimer;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class SignInFragment extends Fragment {
 
@@ -48,10 +51,6 @@ public class SignInFragment extends Fragment {
         }
       }
     };
-
-    // Animation
-    private AnimatedVectorDrawable anim;
-    private ImageView logo;
 
     //Observer
     private LiveData<Boolean> authTask;
@@ -70,23 +69,17 @@ public class SignInFragment extends Fragment {
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.sign_in_layout, container, false);
+        View view = inflater.inflate(R.layout.fragment_sign_in, container, false);
 
         // Initialise Components
         emailInput = (AutoCompleteTextView) view.findViewById(R.id.sign_in_email_input);
         passwordInput = (AutoCompleteTextView) view.findViewById(R.id.sign_in_password_input);
         submit = (Button) view.findViewById(R.id.sign_in_submit_btn);
         resetPasswordRedirect = (LinearLayout) view.findViewById(R.id.sign_in_helper);
-        signUpRedirect = (LinearLayout) view.findViewById(R.id.sign_in_redirect);
+        signUpRedirect = (LinearLayout) view.findViewById(R.id.sign_up_redirect);
 
         line = (TextView) view.findViewById(R.id.line);
         welcome = (TextView) view.findViewById(R.id.welcome);
-
-        // Animation
-        anim = (AnimatedVectorDrawable) getContext().getDrawable(R.drawable.rh_vector_animation);
-        logo = view.findViewById(R.id.sign_in_logo);
-        logo.setImageDrawable(anim);
-        anim.start();
 
       return view;
     }
@@ -103,9 +96,9 @@ public class SignInFragment extends Fragment {
   public void signIn(boolean authenticate) {
   }
 
-//    public void setSubmitDisableTimeout() {
-//      this.scheduledExecutorService.schedule(new GenericTimer(handler, GenericTimer.UI_UNLOCK), 3, TimeUnit.SECONDS);
-//    }
+    public void setSubmitDisableTimeout() {
+      this.scheduledExecutorService.schedule(new GenericTimer(handler, GenericTimer.UI_UNLOCK), 3, TimeUnit.SECONDS);
+    }
 
     public void setSubmitDisable() {
       this.submit.setEnabled(false);
@@ -147,10 +140,10 @@ public class SignInFragment extends Fragment {
 
     @Override
     public void onClick(View view) {
-//        NavigationService.getINSTANCE()
-//          .navigate(parentClassName,
-//            R.id.signUpEmailFragment,
-//            null, null);
+        NavigationService.getINSTANCE()
+          .navigate(parentClassName,
+            R.id.signUpTabFragment,
+            null, null);
     }
   }
 }
