@@ -17,7 +17,6 @@ import androidx.fragment.app.Fragment;
 
 import com.rhdigital.rhclient.R;
 import com.rhdigital.rhclient.activities.rhauth.RHAuthActivity;
-import com.rhdigital.rhclient.common.services.NavigationService;
 import com.rhdigital.rhclient.common.util.GenericTimer;
 
 import java.util.List;
@@ -123,14 +122,20 @@ public class SignUpDetailsFragment extends Fragment {
       rhAuthActivity.updateAuthField("firstName", fragment.getFirstNameInput().getText().toString());
       rhAuthActivity.updateAuthField("lastName", fragment.getLastNameInput().getText().toString());
       rhAuthActivity.updateAuthField("password", fragment.getPasswordInput().getText().toString());
-      fragment.updateValidationErrors(rhAuthActivity.validateAuthFields(PARTIAL_STRATEGY));
-//      if (fragment.getValidationErrors().size() < 1) {
-//        NavigationService.getINSTANCE()
-//          .navigate(rhAuthActivity.getLocalClassName(),
-//            R.id.signUpDetailsFragment,
-//            null,
-//            null);
-//      }
+      rhAuthActivity.validateAuthFields(PARTIAL_STRATEGY)
+        .observe(fragment.getViewLifecycleOwner(), validationErrors -> {
+          fragment.setSubmitDisableTimeout();
+          if (validationErrors != null) {
+            fragment.updateValidationErrors(validationErrors);
+            if (fragment.getValidationErrors().size() < 1) {
+              rhAuthActivity.signUp().observe(fragment.getViewLifecycleOwner(), result -> {
+                Toast.makeText(fragment.getContext(), "Sign Up Was Attempted", Toast.LENGTH_LONG);
+              });
+            }
+          } else {
+            Toast.makeText(fragment.getContext(), "Auth Validation Service Failed", Toast.LENGTH_LONG);
+          }
+        });
     }
   }
 }

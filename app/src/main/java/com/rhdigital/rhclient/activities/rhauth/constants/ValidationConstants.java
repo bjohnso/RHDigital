@@ -22,7 +22,7 @@ public class ValidationConstants {
   public static final HashMap<String, List<String>> GLOBAL_FIELD_MAP;
   static {
     GLOBAL_FIELD_MAP = new HashMap<>();
-    GLOBAL_FIELD_MAP.put("email", Arrays.asList("textValidation", "emailValidation"));
+    GLOBAL_FIELD_MAP.put("email", Arrays.asList("textValidation", "emailValidation", "emailVerification"));
     GLOBAL_FIELD_MAP.put("password", Arrays.asList("textValidation", "passwordValidation"));
     GLOBAL_FIELD_MAP.put("firstName", Arrays.asList("textValidation"));
     GLOBAL_FIELD_MAP.put("lastName", Arrays.asList("textValidation"));

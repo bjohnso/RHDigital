@@ -14,7 +14,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 
 import com.rhdigital.rhclient.R;
 import com.rhdigital.rhclient.activities.rhauth.RHAuthActivity;
@@ -69,7 +68,7 @@ public class SignUpEmailFragment extends Fragment {
   }
 
   public void setSubmitDisableTimeout() {
-    this.scheduledExecutorService.schedule(new GenericTimer(handler, GenericTimer.UI_UNLOCK), 2, TimeUnit.SECONDS);
+    this.scheduledExecutorService.schedule(new GenericTimer(handler, GenericTimer.UI_UNLOCK), 1, TimeUnit.SECONDS);
   }
 
   public void setSubmitDisable() {
@@ -119,23 +118,24 @@ public class SignUpEmailFragment extends Fragment {
     @Override
     public void onClick(View view) {
       fragment.setSubmitDisable();
-      fragment.setSubmitDisableTimeout();
       String email = fragment.getEmailInput().getText().toString();
       rhAuthActivity.updateAuthField("email", email);
-      fragment.updateValidationErrors(rhAuthActivity.validateAuthFields(PARTIAL_STRATEGY));
-      if (fragment.getValidationErrors().size() < 1) {
-        fragment.authAPIService.validateEmail(email).observe(fragment, apiValidation -> {
-          if (apiValidation != "VALID") {
-            fragment.updateValidationErrors(apiValidation);
+      rhAuthActivity.validateAuthFields(PARTIAL_STRATEGY)
+        .observe(fragment.getViewLifecycleOwner(), validationErrors -> {
+          fragment.setSubmitDisableTimeout();
+          if (validationErrors != null) {
+            fragment.updateValidationErrors(validationErrors);
+            if (fragment.getValidationErrors().size() < 1) {
+              NavigationService.getINSTANCE()
+                .navigate(rhAuthActivity.getLocalClassName(),
+                  R.id.signUpDetailsFragment,
+                  null,
+                  null);
+            }
           } else {
-            NavigationService.getINSTANCE()
-              .navigate(rhAuthActivity.getLocalClassName(),
-                R.id.signUpDetailsFragment,
-                null,
-                null);
+            Toast.makeText(fragment.getContext(), "Auth Validation Service Failed", Toast.LENGTH_LONG);
           }
         });
-      }
     }
   }
 }
