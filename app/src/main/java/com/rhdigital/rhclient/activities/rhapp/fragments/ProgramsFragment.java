@@ -23,7 +23,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.rhdigital.rhclient.R;
 import com.rhdigital.rhclient.activities.rhapp.RHAppActivity;
 import com.rhdigital.rhclient.activities.rhapp.adapters.ProgramsRecyclerViewAdapter;
-import com.rhdigital.rhclient.database.model.Course;
 import com.rhdigital.rhclient.database.model.Program;
 import com.rhdigital.rhclient.viewholder.ProgramViewModel;
 

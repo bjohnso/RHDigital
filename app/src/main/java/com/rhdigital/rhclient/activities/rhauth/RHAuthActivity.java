@@ -27,6 +27,7 @@ import com.rhdigital.rhclient.activities.rhauth.services.AuthAPIService;
 import com.rhdigital.rhclient.activities.rhauth.services.AuthFieldValidationService;
 import com.rhdigital.rhclient.common.services.NavigationService;
 
+import com.rhdigital.rhclient.common.util.RHAPIResult;
 import com.rhdigital.rhclient.database.model.User;
 import com.rhdigital.rhclient.database.services.CallableFunction;
 import com.rhdigital.rhclient.database.viewmodel.UserViewModel;
@@ -86,33 +87,33 @@ public class RHAuthActivity extends AppCompatActivity {
   public HashMap<String, String> getAuthFieldsMap() { return this.authFieldsMap; }
 
   // TODO : VALIDATE EMAIL STRATEGY BEFORE CALLING THIS!!!
-  public LiveData<Object> signUp() {
+  public LiveData<RHAPIResult> signUp() {
     startLoader();
-    MutableLiveData<Object> signUpResultData = new MutableLiveData<>();
+    MutableLiveData<RHAPIResult> signUpResultData = new MutableLiveData<>();
     Tasks.call(executorService, CallableFunction.callable(this.authAPIService, new Pair<>("signUpNewUser", authFieldsMap)))
       .addOnSuccessListener(data -> {
-        stopLoader();
         signUpResultData.postValue(data);
+        stopLoader();
       })
       .addOnFailureListener(error -> {
+        signUpResultData.postValue(null);
         stopLoader();
-        signUpResultData.postValue(error);
       });
     return signUpResultData;
   }
 
   //TODO: HANDLE MULTIPLE STRATEGIES
-  public LiveData<List<String>> validateAuthFields(String STRATEGY) {
+  public LiveData<List<String>> validateAuthFields(int STRATEGY) {
     startLoader();
     MutableLiveData<List<String>> validationResultData = new MutableLiveData<>();
-    Tasks.call(executorService, CallableFunction.callable(this.authFieldValidationService, this.authFieldsMap))
+    Tasks.call(executorService, CallableFunction.callable(this.authFieldValidationService, this.authFieldsMap, STRATEGY))
       .addOnSuccessListener(validationErrors -> {
-          stopLoader();
           validationResultData.postValue(validationErrors);
+          stopLoader();
       })
       .addOnFailureListener(error -> {
-          stopLoader();
           validationResultData.postValue(null);
+          stopLoader();
       });
     return validationResultData;
   }

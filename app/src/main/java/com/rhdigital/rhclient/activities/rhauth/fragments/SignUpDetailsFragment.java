@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import androidx.fragment.app.Fragment;
 
 import com.rhdigital.rhclient.R;
 import com.rhdigital.rhclient.activities.rhauth.RHAuthActivity;
+import com.rhdigital.rhclient.activities.rhauth.constants.ValidationConstants;
 import com.rhdigital.rhclient.common.util.GenericTimer;
 
 import java.util.List;
@@ -24,9 +26,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import static com.rhdigital.rhclient.activities.rhauth.constants.ValidationConstants.PARTIAL_STRATEGY;
-
 public class SignUpDetailsFragment extends Fragment {
+
+  private final String TAG = this.getClass().getSimpleName().toUpperCase();
 
   private List<String> validationErrors;
 
@@ -78,6 +80,8 @@ public class SignUpDetailsFragment extends Fragment {
     displayValidationErrors();
   }
 
+  public String getTAG() { return TAG; }
+
   public List<String> getValidationErrors() { return validationErrors; }
 
   private void displayValidationErrors() {
@@ -118,22 +122,27 @@ public class SignUpDetailsFragment extends Fragment {
     @Override
     public void onClick(View view) {
       fragment.setSubmitDisable();
-      fragment.setSubmitDisableTimeout();
       rhAuthActivity.updateAuthField("firstName", fragment.getFirstNameInput().getText().toString());
       rhAuthActivity.updateAuthField("lastName", fragment.getLastNameInput().getText().toString());
       rhAuthActivity.updateAuthField("password", fragment.getPasswordInput().getText().toString());
-      rhAuthActivity.validateAuthFields(PARTIAL_STRATEGY)
+      rhAuthActivity.validateAuthFields(ValidationConstants.VALIDATION_STRATEGY_SIGN_UP_DETAILS)
         .observe(fragment.getViewLifecycleOwner(), validationErrors -> {
-          fragment.setSubmitDisableTimeout();
           if (validationErrors != null) {
             fragment.updateValidationErrors(validationErrors);
             if (fragment.getValidationErrors().size() < 1) {
               rhAuthActivity.signUp().observe(fragment.getViewLifecycleOwner(), result -> {
-                Toast.makeText(fragment.getContext(), "Sign Up Was Attempted", Toast.LENGTH_LONG);
+                fragment.setSubmitDisableTimeout();
+                if (result != null) {
+                  Log.d(fragment.getTAG(), result.getMessage());
+                  Toast.makeText(fragment.getContext(), result.getMessage(), Toast.LENGTH_LONG).show();
+                }
               });
+            } else {
+              fragment.setSubmitDisableTimeout();
             }
           } else {
-            Toast.makeText(fragment.getContext(), "Auth Validation Service Failed", Toast.LENGTH_LONG);
+            fragment.setSubmitDisableTimeout();
+            Toast.makeText(fragment.getContext(), "Auth Validation Service Failed", Toast.LENGTH_LONG).show();
           }
         });
     }

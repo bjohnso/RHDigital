@@ -16,10 +16,10 @@ public class FirebaseChainBuilder implements CallableFunction<Object, Object> {
   private String collectionKey;
 
   @Override
-  public Task<QuerySnapshot> call(Object arg) throws Exception {
+  public Task<QuerySnapshot> call(Object... args) throws Exception {
     Semaphore semaphore = new Semaphore(0);
     AtomicReference<Task<QuerySnapshot>> querySnapshotTask = new AtomicReference<>();
-    collectionKey = (String) arg;
+    collectionKey = (String) args[0];
     FirebaseFirestore firestore = FirebaseFirestore.getInstance();
     firestore.collection(collectionKey)
       .get()

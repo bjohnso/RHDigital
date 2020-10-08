@@ -17,7 +17,7 @@ import androidx.fragment.app.Fragment;
 
 import com.rhdigital.rhclient.R;
 import com.rhdigital.rhclient.activities.rhauth.RHAuthActivity;
-import com.rhdigital.rhclient.activities.rhauth.services.AuthAPIService;
+import com.rhdigital.rhclient.activities.rhauth.constants.ValidationConstants;
 import com.rhdigital.rhclient.common.services.NavigationService;
 import com.rhdigital.rhclient.common.util.GenericTimer;
 
@@ -27,13 +27,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import static com.rhdigital.rhclient.activities.rhauth.constants.ValidationConstants.PARTIAL_STRATEGY;
-
 public class SignUpEmailFragment extends Fragment {
 
   private List<String> validationErrors;
-
-  private AuthAPIService authAPIService = new AuthAPIService();
 
   //Threading
   private ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
@@ -120,7 +116,7 @@ public class SignUpEmailFragment extends Fragment {
       fragment.setSubmitDisable();
       String email = fragment.getEmailInput().getText().toString();
       rhAuthActivity.updateAuthField("email", email);
-      rhAuthActivity.validateAuthFields(PARTIAL_STRATEGY)
+      rhAuthActivity.validateAuthFields(ValidationConstants.VALIDATION_STRATEGY_SIGN_UP_EMAIL)
         .observe(fragment.getViewLifecycleOwner(), validationErrors -> {
           fragment.setSubmitDisableTimeout();
           if (validationErrors != null) {

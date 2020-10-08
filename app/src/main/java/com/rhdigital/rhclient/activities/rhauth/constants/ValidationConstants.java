@@ -7,24 +7,38 @@ import java.util.List;
 
 public class ValidationConstants {
 
-  public static String EMAIL_STRATEGY = "emailStrategy";
-  public static String PARTIAL_STRATEGY = "partialStrategy";
+  public static int VALIDATION_STRATEGY_FULL_EMAIL = 0;
+  public static int VALIDATION_STRATEGY_SIGN_UP_EMAIL = 1;
+  public static int VALIDATION_STRATEGY_SIGN_UP_DETAILS = 2;
 
-  public static final HashMap<String, List<String>> EMAIL_STRATEGY_MAP;
+  private static final HashMap<String, List<String>> VALIDATION_STRATEGY_FULL_EMAIL_MAP;
   static {
-    EMAIL_STRATEGY_MAP = new HashMap<>();
-    EMAIL_STRATEGY_MAP.put("email", Arrays.asList("textValidation", "emailValidation"));
-    EMAIL_STRATEGY_MAP.put("password", Arrays.asList("textValidation", "passwordValidation"));
-    EMAIL_STRATEGY_MAP.put("firstName", Arrays.asList("textValidation"));
-    EMAIL_STRATEGY_MAP.put("lastName", Arrays.asList("textValidation"));
+    VALIDATION_STRATEGY_FULL_EMAIL_MAP = new HashMap<>();
+    VALIDATION_STRATEGY_FULL_EMAIL_MAP.put("email", Arrays.asList("textValidation", "emailValidation", "emailVerification"));
+    VALIDATION_STRATEGY_FULL_EMAIL_MAP.put("password", Arrays.asList("textValidation", "passwordValidation"));
+    VALIDATION_STRATEGY_FULL_EMAIL_MAP.put("firstName", Arrays.asList("textValidation"));
+    VALIDATION_STRATEGY_FULL_EMAIL_MAP.put("lastName", Arrays.asList("textValidation"));
   }
 
-  public static final HashMap<String, List<String>> GLOBAL_FIELD_MAP;
+  private static final HashMap<String, List<String>> VALIDATION_STRATEGY_SIGN_UP_EMAIL_MAP;
   static {
-    GLOBAL_FIELD_MAP = new HashMap<>();
-    GLOBAL_FIELD_MAP.put("email", Arrays.asList("textValidation", "emailValidation", "emailVerification"));
-    GLOBAL_FIELD_MAP.put("password", Arrays.asList("textValidation", "passwordValidation"));
-    GLOBAL_FIELD_MAP.put("firstName", Arrays.asList("textValidation"));
-    GLOBAL_FIELD_MAP.put("lastName", Arrays.asList("textValidation"));
+    VALIDATION_STRATEGY_SIGN_UP_EMAIL_MAP = new HashMap<>();
+    VALIDATION_STRATEGY_SIGN_UP_EMAIL_MAP.put("email", Arrays.asList("textValidation", "emailValidation", "emailVerification"));
+  }
+
+  private static final HashMap<String, List<String>> VALIDATION_STRATEGY_SIGN_UP_DETAILS_MAP;
+  static {
+    VALIDATION_STRATEGY_SIGN_UP_DETAILS_MAP = new HashMap<>();
+    VALIDATION_STRATEGY_SIGN_UP_DETAILS_MAP.put("password", Arrays.asList("textValidation", "passwordValidation"));
+    VALIDATION_STRATEGY_SIGN_UP_DETAILS_MAP.put("firstName", Arrays.asList("textValidation"));
+    VALIDATION_STRATEGY_SIGN_UP_DETAILS_MAP.put("lastName", Arrays.asList("textValidation"));
+  }
+
+  public static final HashMap<Integer, HashMap<String, List<String>>> VALIDATION_STRATEGY_MAP;
+  static {
+    VALIDATION_STRATEGY_MAP = new HashMap<>();
+    VALIDATION_STRATEGY_MAP.put(VALIDATION_STRATEGY_FULL_EMAIL, VALIDATION_STRATEGY_FULL_EMAIL_MAP);
+    VALIDATION_STRATEGY_MAP.put(VALIDATION_STRATEGY_SIGN_UP_EMAIL, VALIDATION_STRATEGY_SIGN_UP_EMAIL_MAP);
+    VALIDATION_STRATEGY_MAP.put(VALIDATION_STRATEGY_SIGN_UP_DETAILS, VALIDATION_STRATEGY_SIGN_UP_DETAILS_MAP);
   }
 }

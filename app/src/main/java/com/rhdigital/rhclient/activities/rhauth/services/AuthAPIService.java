@@ -3,10 +3,10 @@ package com.rhdigital.rhclient.activities.rhauth.services;
 import android.util.Log;
 import android.util.Pair;
 
-import androidx.lifecycle.MutableLiveData;
-
 import com.google.firebase.functions.FirebaseFunctions;
+import com.google.firebase.functions.FirebaseFunctionsException;
 import com.google.gson.Gson;
+import com.rhdigital.rhclient.common.util.RHAPIResult;
 import com.rhdigital.rhclient.database.services.CallableFunction;
 
 import org.json.JSONException;
@@ -18,69 +18,85 @@ import java.util.HashMap;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class AuthAPIService implements CallableFunction<Pair<String, Object>, Object> {
+public class AuthAPIService implements CallableFunction<Object, RHAPIResult> {
 
-  public String verifyEmail(Object arg) {
+  private final String TAG = this.getClass().getSimpleName();
+
+  public RHAPIResult verifyEmail(Object arg) {
     String email = (String) arg;
     Semaphore semaphore = new Semaphore(0);
-    AtomicReference<String> result = new AtomicReference<>("");
+    AtomicReference<RHAPIResult> taskResult = new AtomicReference<>(null);
     JSONObject data = new JSONObject();
     try {
       data.put("email", email);
       FirebaseFunctions.getInstance()
       .getHttpsCallable("fetchUserByEmail")
       .call(data)
-      .addOnSuccessListener(response -> {
-        Log.d("AUTHAPI", response.getData().toString());
-        result.set("This email address already belongs to an account");
+      .addOnSuccessListener(apiResult -> {
+        Log.d(TAG, apiResult.getData().toString());
+        taskResult.set(new RHAPIResult(RHAPIResult.AUTH_ERROR_EXISTING_EMAIL, apiResult.getData(), true));
         semaphore.release();
       })
       .addOnFailureListener(error -> {
-        result.set("VALID");
+        FirebaseFunctionsException exception = (FirebaseFunctionsException) error;
+        Log.d(TAG, exception.toString());
+
+        if (exception.getCode() == FirebaseFunctionsException.Code.NOT_FOUND) {
+          taskResult.set(new RHAPIResult(RHAPIResult.VALIDATION_SUCCESS, exception.getDetails(), false));
+        } else {
+          taskResult.set(new RHAPIResult(RHAPIResult.INTERNAL_ERROR_SERVER_ERROR, exception.getDetails(), false));
+        }
         semaphore.release();
       });
       semaphore.acquire();
     } catch (InterruptedException | JSONException e) {
       e.printStackTrace();
     }
-    return result.get();
+    return taskResult.get();
   }
 
-  public Object signUpNewUser(Object arg) {
+  public RHAPIResult signUpNewUser(Object arg) {
     HashMap<String, String> authFieldsMap = (HashMap<String, String>) arg;
     Gson gson = new Gson();
     String data = gson.toJson(authFieldsMap);
     Semaphore semaphore = new Semaphore(0);
-    AtomicReference<Object> result = new AtomicReference<>(null);
+    AtomicReference<RHAPIResult> taskResult = new AtomicReference<>(null);
     try {
       JSONObject signUpData = new JSONObject(data);
       FirebaseFunctions.getInstance()
         .getHttpsCallable("signUpNewUser")
         .call(signUpData)
-        .addOnSuccessListener(response -> {
-          Log.d("AUTHAPI", response.getData().toString());
-          result.set(response.getData());
+        .addOnSuccessListener(apiResult -> {
+          Log.d(TAG, apiResult.getData().toString());
+          taskResult.set(new RHAPIResult(RHAPIResult.AUTH_SUCCESS_SIGN_UP, apiResult.getData(), true));
           semaphore.release();
         })
         .addOnFailureListener(error -> {
-          Log.d("AUTHAPI", error.getMessage());
-          result.set(error.getMessage());
+          FirebaseFunctionsException exception = (FirebaseFunctionsException) error;
+          Log.d(TAG, exception.toString());
+
+          if (exception.getCode() == FirebaseFunctionsException.Code.INVALID_ARGUMENT) {
+            taskResult.set(new RHAPIResult(RHAPIResult.AUTH_ERROR_INVALID_SIGN_UP, exception.getDetails(), false));
+          } else {
+            taskResult.set(new RHAPIResult(RHAPIResult.INTERNAL_ERROR_SERVER_ERROR, exception.getDetails(), false));
+          }
           semaphore.release();
         });
       semaphore.acquire();
     } catch (InterruptedException | JSONException e) {
       e.printStackTrace();
     }
-    return result.get();
+    return taskResult.get();
   }
 
   @Override
-  public Object call(Pair<String, Object> pair) throws Exception {
+  public RHAPIResult call(Object... args) throws Exception {
+    Pair<String, Object> pair = (Pair<String, Object>) args[0];
     try {
       // USE REFLECTION TO INFER POINTER TO CLASS MEMBER
       Method method = this.getClass().getDeclaredMethod(pair.first, Object.class);
       method.setAccessible(true);
-      return method.invoke(this, pair.second);
+      return (RHAPIResult) method.invoke(this, pair.second);
     } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
       e.printStackTrace();
     };
@@ -88,7 +104,7 @@ public class AuthAPIService implements CallableFunction<Pair<String, Object>, Ob
   }
 
   @Override
-  public String then(Pair<String, Object>... args) throws Exception {
+  public RHAPIResult then(Object... args) throws Exception {
     return null;
   }
 }
