@@ -45,9 +45,7 @@ public class Program {
   }
 
   @NonNull
-  public String getId() {
-    return id;
-  }
+  public String getId() { return id; }
 
   @NonNull
   public String getTitle() {

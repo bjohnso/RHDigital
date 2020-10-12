@@ -16,4 +16,8 @@
     android:id="@+id/signUpDetailsFragment"
     android:name="com.rhdigital.rhclient.activities.rhauth.fragments.SignUpDetailsFragment"
     android:label="SignUpEmailFragment" />
+  <fragment
+    android:id="@+id/signUpEmailVerificationFragment"
+    android:name="com.rhdigital.rhclient.activities.rhauth.fragments.SignUpEmailVerificationFragment"
+    android:label="SignUpEmailVerificationFragment" />
 </navigation>

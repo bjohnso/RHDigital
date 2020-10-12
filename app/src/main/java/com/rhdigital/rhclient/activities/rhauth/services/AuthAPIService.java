@@ -3,9 +3,15 @@ package com.rhdigital.rhclient.activities.rhauth.services;
 import android.util.Log;
 import android.util.Pair;
 
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.EmailAuthCredential;
+import com.google.firebase.auth.EmailAuthProvider;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.functions.FirebaseFunctions;
 import com.google.firebase.functions.FirebaseFunctionsException;
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.stream.JsonReader;
 import com.rhdigital.rhclient.common.util.RHAPIResult;
 import com.rhdigital.rhclient.database.services.CallableFunction;
 
@@ -22,7 +28,7 @@ public class AuthAPIService implements CallableFunction<Object, RHAPIResult> {
 
   private final String TAG = this.getClass().getSimpleName();
 
-  public RHAPIResult verifyEmail(Object arg) {
+  public RHAPIResult verifyUniqueEmail(Object arg) {
     String email = (String) arg;
     Semaphore semaphore = new Semaphore(0);
     AtomicReference<RHAPIResult> taskResult = new AtomicReference<>(null);
@@ -55,6 +61,10 @@ public class AuthAPIService implements CallableFunction<Object, RHAPIResult> {
     return taskResult.get();
   }
 
+//  public RHAPIResult getEmailVerificationStatus() {
+//
+//  }
+
   public RHAPIResult signUpNewUser(Object arg) {
     HashMap<String, String> authFieldsMap = (HashMap<String, String>) arg;
     Gson gson = new Gson();
@@ -68,7 +78,11 @@ public class AuthAPIService implements CallableFunction<Object, RHAPIResult> {
         .call(signUpData)
         .addOnSuccessListener(apiResult -> {
           Log.d(TAG, apiResult.getData().toString());
-          taskResult.set(new RHAPIResult(RHAPIResult.AUTH_SUCCESS_SIGN_UP, apiResult.getData(), true));
+          taskResult.set(new RHAPIResult(
+            RHAPIResult.AUTH_SUCCESS_SIGN_UP,
+            EmailAuthProvider.getCredential(authFieldsMap.get("email"),
+              authFieldsMap.get("password")), true)
+          );
           semaphore.release();
         })
         .addOnFailureListener(error -> {

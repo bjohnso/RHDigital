@@ -94,7 +94,7 @@ public class AuthFieldValidationService implements CallableFunction<Object, List
 
   public Pair<String, String> emailVerification(Pair<String, String> pair) {
     try {
-      RHAPIResult result = this.authAPIService.call(new Pair<>("verifyEmail", pair.second));
+      RHAPIResult result = this.authAPIService.call(new Pair<>("verifyUniqueEmail", pair.second));
       return new Pair<>(pair.first, result.getMessage());
     } catch (Exception e) {
       e.printStackTrace();

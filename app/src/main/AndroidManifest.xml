@@ -39,12 +39,16 @@
 <!--        android:screenOrientation="portrait"-->
 <!--        tools:ignore="LockedOrientationActivity" />-->
 
-<!--      <service android:name=".common.services.FirebasePushNotificationService"-->
-<!--        android:exported="false">-->
-<!--        <intent-filter>-->
-<!--          <action android:name="com.google.firebase.MESSAGING_EVENT" />-->
-<!--        </intent-filter>-->
-<!--      </service>-->
+      <service android:name=".common.services.FirebasePushNotificationService"
+        android:exported="false">
+        <intent-filter>
+          <action android:name="com.google.firebase.MESSAGING_EVENT" />
+        </intent-filter>
+      </service>
+
+      <meta-data
+        android:name="com.google.firebase.messaging.default_notification_channel_id"
+        android:value="RHDigital_Notification_Channel" />
 
 <!--      <provider-->
 <!--        android:name=".common.providers.CustomFileProvider"-->

@@ -19,6 +19,7 @@ import androidx.fragment.app.Fragment;
 import com.rhdigital.rhclient.R;
 import com.rhdigital.rhclient.activities.rhauth.RHAuthActivity;
 import com.rhdigital.rhclient.activities.rhauth.constants.ValidationConstants;
+import com.rhdigital.rhclient.common.services.NavigationService;
 import com.rhdigital.rhclient.common.util.GenericTimer;
 
 import java.util.List;
@@ -134,7 +135,11 @@ public class SignUpDetailsFragment extends Fragment {
                 fragment.setSubmitDisableTimeout();
                 if (result != null) {
                   Log.d(fragment.getTAG(), result.getMessage());
-                  Toast.makeText(fragment.getContext(), result.getMessage(), Toast.LENGTH_LONG).show();
+                  NavigationService.getINSTANCE()
+                    .navigate(rhAuthActivity.getLocalClassName(),
+                      R.id.signUpEmailVerificationFragment,
+                      null,
+                      null);
                 }
               });
             } else {
