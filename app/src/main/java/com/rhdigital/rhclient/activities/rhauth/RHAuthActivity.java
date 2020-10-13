@@ -1,23 +1,16 @@
 package com.rhdigital.rhclient.activities.rhauth;
 
 
-import android.app.Notification;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.os.Parcel;
-import android.provider.ContactsContract;
-import android.telecom.Call;
 import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
-
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import androidx.lifecycle.LiveData;
@@ -27,20 +20,17 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.EmailAuthCredential;
-import com.google.firebase.auth.EmailAuthProvider;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.rpc.context.AttributeContext;
 import com.rhdigital.rhclient.R;
 
+import com.rhdigital.rhclient.activities.rhapp.RHAppActivity;
 import com.rhdigital.rhclient.activities.rhauth.services.AuthAPIService;
 import com.rhdigital.rhclient.activities.rhauth.services.AuthFieldValidationService;
-import com.rhdigital.rhclient.common.services.FirebasePushNotificationService;
 import com.rhdigital.rhclient.common.services.NavigationService;
 
 import com.rhdigital.rhclient.common.services.PushNotificationHelperService;
@@ -118,6 +108,12 @@ public class RHAuthActivity extends AppCompatActivity {
   @Override
   protected void onStart() {
     super.onStart();
+
+    if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+      if (FirebaseAuth.getInstance().getCurrentUser().isEmailVerified()) {
+        initRHApp();
+      }
+    }
     registerBroadcastReceiver();
     PushNotificationHelperService.getINSTANCE().setContext(this);
     PushNotificationHelperService.getINSTANCE().generateNotificationChannel();
@@ -157,9 +153,9 @@ public class RHAuthActivity extends AppCompatActivity {
     Tasks.call(executorService, CallableFunction.callable(this.authAPIService, new Pair<>("signUpNewUser", authFieldsMap)))
       .addOnSuccessListener(data -> {
         AuthCredential credential = (AuthCredential) data.getPayload();
+        stopLoader();
         signIn(credential);
         signUpResultData.postValue(data);
-        stopLoader();
       })
       .addOnFailureListener(error -> {
         signUpResultData.postValue(null);
@@ -168,12 +164,28 @@ public class RHAuthActivity extends AppCompatActivity {
     return signUpResultData;
   }
 
-  public void signIn(AuthCredential authCredential) {
-    FirebaseAuth.getInstance().signInWithCredential(authCredential);
+  public LiveData<RHAPIResult> signIn(AuthCredential authCredential) {
+    startLoader();
+    MutableLiveData<RHAPIResult> signInResultData = new MutableLiveData<>();
+    FirebaseAuth.getInstance().signInWithCredential(authCredential)
+      .addOnSuccessListener(authResult -> {
+        signInResultData.postValue(new RHAPIResult("Sign In Successful", authResult, true));
+        stopLoader();
+      })
+      .addOnFailureListener(error -> {
+        stopLoader();
+        signInResultData.postValue(new RHAPIResult(error.getMessage(), error, false));
+      });
+    return signInResultData;
   }
 
   public LiveData<String> subscribeToEmailVerification() {
     return this.emailVerificationResult;
+  }
+
+  public void initRHApp() {
+    Intent intent = new Intent(this, RHAppActivity.class);
+    startActivity(intent);
   }
 
   //TODO: HANDLE MULTIPLE STRATEGIES

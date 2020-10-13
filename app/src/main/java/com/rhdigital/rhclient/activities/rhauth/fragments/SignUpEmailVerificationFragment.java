@@ -31,11 +31,11 @@ public class SignUpEmailVerificationFragment extends Fragment {
     super.onStart();
     if (FirebaseAuth.getInstance().getCurrentUser() != null) {
       if (FirebaseAuth.getInstance().getCurrentUser().isEmailVerified()) {
-        initRHApp();
+        ((RHAuthActivity)getActivity()).initRHApp();
       } else {
         ((RHAuthActivity)getActivity()).subscribeToEmailVerification()
           .observe(getViewLifecycleOwner(), result -> {
-            initRHApp();
+            ((RHAuthActivity)getActivity()).initRHApp();
           });
       }
     } else {
@@ -63,11 +63,6 @@ public class SignUpEmailVerificationFragment extends Fragment {
     super.onViewCreated(view, savedInstanceState);
     verificationResendRedirect.setOnClickListener(new VerificationResendOnClick(this));
     changeEmailRedirect.setOnClickListener(new ChangeEmailOnClick(this));
-  }
-
-  public void initRHApp() {
-    Intent intent = new Intent(getContext(), RHAppActivity.class);
-    getContext().startActivity(intent);
   }
 
   public static class ChangeEmailOnClick implements View.OnClickListener {

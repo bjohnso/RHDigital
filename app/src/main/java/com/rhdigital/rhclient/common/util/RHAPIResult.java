@@ -12,7 +12,7 @@ public class RHAPIResult {
   public static final String VALIDATION_SUCCESS = "VALID";
   public static final String AUTH_SUCCESS_SIGN_UP = "Your account has successfully been created.";
 
-  boolean success;
+  Boolean success;
   String message;
   Object payload;
 
@@ -23,6 +23,14 @@ public class RHAPIResult {
   }
 
   public RHAPIResult() {}
+
+  public Boolean getSuccess() {
+    return success;
+  }
+
+  public void setSuccess(Boolean success) {
+    this.success = success;
+  }
 
   public String getMessage() { return message; }
 

@@ -8,6 +8,7 @@ import android.graphics.drawable.AnimatedVectorDrawable;
 import android.os.Bundle;
 import android.widget.ImageView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.rhdigital.rhclient.R;
 import com.rhdigital.rhclient.activities.rhauth.RHAuthActivity;
 import com.rhdigital.rhclient.database.RHDatabase;
@@ -26,6 +27,8 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
       setContentView(R.layout.actvity_rhsplash);
+
+    FirebaseAuth.getInstance().signOut();
 
       PopulateRoomAsync populateRoomAsync = new PopulateRoomAsync();
       populateRoomAsync.getInserts().observe(this, (Observer<List<Long>>) inserts -> {

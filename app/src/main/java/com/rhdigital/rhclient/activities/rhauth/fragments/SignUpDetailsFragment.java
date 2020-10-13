@@ -134,7 +134,6 @@ public class SignUpDetailsFragment extends Fragment {
               rhAuthActivity.signUp().observe(fragment.getViewLifecycleOwner(), result -> {
                 fragment.setSubmitDisableTimeout();
                 if (result != null) {
-                  Log.d(fragment.getTAG(), result.getMessage());
                   NavigationService.getINSTANCE()
                     .navigate(rhAuthActivity.getLocalClassName(),
                       R.id.signUpEmailVerificationFragment,
