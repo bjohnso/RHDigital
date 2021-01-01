@@ -2,10 +2,8 @@ package com.rhdigital.rhclient.activities.rhapp.fragments;
 
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.media.tv.TvContract;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,14 +15,15 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.rhdigital.rhclient.R;
-import com.rhdigital.rhclient.activities.rhapp.RHAppActivity;
 import com.rhdigital.rhclient.activities.rhapp.adapters.ProgramsRecyclerViewAdapter;
+import com.rhdigital.rhclient.activities.rhapp.viewmodel.RHAppViewModel;
 import com.rhdigital.rhclient.database.model.Program;
-import com.rhdigital.rhclient.viewholder.ProgramViewModel;
+import com.rhdigital.rhclient.databinding.FragmentProgramsBinding;
+import com.rhdigital.rhclient.activities.rhapp.viewmodel.ProgramsViewModel;
 
 import java.util.HashMap;
 import java.util.List;
@@ -33,8 +32,12 @@ public class ProgramsFragment extends Fragment {
 
     private final String TAG = "PROGRAMS_FRAGMENT";
 
+    // VIEW
+    private FragmentProgramsBinding binding;
+
     // VIEW MODEL
-    private ProgramViewModel programsViewModel;
+    private ProgramsViewModel programsViewModel;
+    private RHAppViewModel rhAppViewModel;
 
     // ADAPTERS
     private ProgramsRecyclerViewAdapter programsRecyclerViewAdapter;
@@ -42,15 +45,12 @@ public class ProgramsFragment extends Fragment {
     private List<Program> programs;
 
     // OBSERVABLES
-    private LiveData<HashMap<String, Bitmap>> programPosterObservable;
-    private LiveData<List<Program>> programObservable;
+    private LiveData<HashMap<String, Bitmap>> programsPosterObservable;
+    private LiveData<List<Program>> programsObservable;
 
     // OBSERVERS
-    private Observer<HashMap<String, Bitmap>> programPosterObserver;
-    private Observer<List<Program>> programObserver;
-
-    // COMPONENTS
-    private RecyclerView recyclerView;
+    private Observer<HashMap<String, Bitmap>> programsPosterObserver;
+    private Observer<List<Program>> programsObserver;
 
     private int width = 0;
     private int height = 0;
@@ -58,70 +58,63 @@ public class ProgramsFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-      View view = inflater.inflate(R.layout.fragment_programs, container, false);
+      binding = FragmentProgramsBinding.inflate(getLayoutInflater());
 
-      Log.d(TAG, "INIT");
+      rhAppViewModel = new ViewModelProvider(getActivity()).get(RHAppViewModel.class);
+      programsViewModel = new ProgramsViewModel(getActivity().getApplication());
+      programsViewModel.configureRHAppViewModel();
+      binding.setViewModel(programsViewModel);
 
-      // CALCULATE VIEW DIMENSIONS
-      calculateImageDimensions();
-
-      // TODO: IDENTIFY SELF IN THE FRAGMENT MANAGER
-
-      // IDENTIFY SELF IN THE PARENT ACTIVITY
-//      ((RHAppActivity)this.getActivity()).setToolbarTitle("Programs");
-
-      // TODO: INITIALISE COMPONENTS
-
-      // INITIALISE LIVE DATA
       initialiseLiveData();
+      initialiseUI();
 
-      // INITIALISE RECYCLERVIEW
-      initialiseRecyclerView(view);
+      return binding.getRoot();
+    }
 
-      return view;
+    private void initialiseUI() {
+        calculateImageDimensions();
+        initialiseRecyclerView();
     }
 
     private void initialiseLiveData() {
-      programsViewModel = new ProgramViewModel(getActivity().getApplication());
-      programsRecyclerViewAdapter = new ProgramsRecyclerViewAdapter(getContext());
-      programPosterObserver = new Observer<HashMap<String, Bitmap>>() {
-        @Override
-        public void onChanged(HashMap<String, Bitmap> posterMap) {
-          if (posterMap != null) {
-            if (programs.size() == posterMap.size()) {
-              programPosterObservable.removeObserver(this);
-              onUpdateProgramPosters(posterMap);
+        programsRecyclerViewAdapter = new ProgramsRecyclerViewAdapter(getContext());
+        programsPosterObserver = new Observer<HashMap<String, Bitmap>>() {
+            @Override
+            public void onChanged(HashMap<String, Bitmap> posterMap) {
+              if (posterMap != null) {
+                if (programs.size() == posterMap.size()) {
+                  programsPosterObservable.removeObserver(this);
+                  onUpdateProgramPosters(posterMap);
+                }
+              } else {
+                Toast.makeText(getContext(), R.string.server_error_courses, Toast.LENGTH_LONG).show();
+              }
             }
-          } else {
-            Toast.makeText(getContext(), R.string.server_error_courses, Toast.LENGTH_LONG);
-          }
-        }
-      };
+        };
 
-      programObserver = new Observer<List<Program>>() {
-        @Override
-        public void onChanged(List<Program> programs) {
-          if (programs != null) {
-            programObservable.removeObserver(this);
-            onUpdatePrograms(programs);
-          } else {
-            Toast.makeText(getContext(), R.string.server_error_courses, Toast.LENGTH_LONG);
-          }
-        }
-      };
+          programsObserver = new Observer<List<Program>>() {
+            @Override
+            public void onChanged(List<Program> programs) {
+              if (programs != null) {
+                programsObservable.removeObserver(this);
+                onUpdatePrograms(programs);
+              } else {
+                Toast.makeText(getContext(), R.string.server_error_courses, Toast.LENGTH_LONG).show();
+              }
+            }
+          };
 
-      programObservable = programsViewModel.getAllUndiscoveredPrograms();
-      programObservable.observe(getViewLifecycleOwner(), programObserver);
+          programsObservable = programsViewModel.getAllUndiscoveredPrograms();
+          programsObservable.observe(getViewLifecycleOwner(), programsObserver);
     }
 
-    private void initialiseRecyclerView(View view) {
-      recyclerView = view.findViewById(R.id.programs_recycler);
-      recyclerView.setHasFixedSize(true);
-      recyclerView.setItemViewCacheSize(10);
-      recyclerView.setDrawingCacheEnabled(true);
-      recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_AUTO);
-      recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
-      recyclerView.setAdapter(programsRecyclerViewAdapter);
+    private void initialiseRecyclerView() {
+      binding.programsRecycler.setHasFixedSize(true);
+      binding.programsRecycler.setItemViewCacheSize(10);
+      binding.programsRecycler.setDrawingCacheEnabled(true);
+      binding.programsRecycler.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_AUTO);
+      binding.programsRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
+      binding.programsRecycler.setAdapter(programsRecyclerViewAdapter);
     }
 
     private void calculateImageDimensions() {
@@ -142,11 +135,11 @@ public class ProgramsFragment extends Fragment {
     private void onUpdatePrograms(List<Program> programs) {
       programsRecyclerViewAdapter.setPrograms(programs);
       this.programs = programs;
-      if (programPosterObservable != null) {
-        programPosterObservable.removeObservers(this);
+      if (programsPosterObservable != null) {
+        programsPosterObservable.removeObservers(this);
       }
-      programPosterObservable = programsViewModel.getAllProgramPosters(getContext(), programs, width, height);
-      programPosterObservable.observe(getActivity(), programPosterObserver);
+      programsPosterObservable = programsViewModel.getAllProgramPosters(getContext(), programs, width, height);
+      programsPosterObservable.observe(getActivity(), programsPosterObserver);
     }
 
     private void onUpdateProgramPosters(HashMap<String, Bitmap> posterMap) {

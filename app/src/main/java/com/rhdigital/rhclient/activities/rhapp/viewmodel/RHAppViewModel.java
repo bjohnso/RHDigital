@@ -12,9 +12,9 @@ import androidx.lifecycle.ViewModel;
 
 public class RHAppViewModel extends ViewModel {
 
-    public MutableLiveData<String> title = new MutableLiveData("Programs");
-    public MutableLiveData<Boolean> isTitleCenter = new MutableLiveData(true);
-    public MutableLiveData<Boolean> isBackButtonActive = new MutableLiveData(true);
+    public MutableLiveData<String> title = new MutableLiveData("");
+    public MutableLiveData<Boolean> isTitleCenter = new MutableLiveData(false);
+    public MutableLiveData<Boolean> isBackButtonActive = new MutableLiveData(false);
 
     @BindingAdapter("app:center")
     public static void setCenter(View view, Boolean isCenter) {

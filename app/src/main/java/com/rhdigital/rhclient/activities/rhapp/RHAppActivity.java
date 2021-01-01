@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
@@ -23,12 +24,16 @@ public class RHAppActivity extends AppCompatActivity {
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+
+    // VIEW BINDING
     binding = ActivityRhappBinding.inflate(getLayoutInflater());
-    binding.setViewModel(new RHAppViewModel());
+    binding.setViewModel(
+            new ViewModelProvider(this).get(RHAppViewModel.class)
+    );
     setContentView(binding.getRoot());
 
     // INITIALISE VIEW COMPONENTS
-    mToolbar = findViewById(R.id.topNavigationView);
+    mToolbar = binding.topNavigationView;
 
     // INITIALISE NAVIGATION COMPONENT && CALL NAVIGATION SERVICE
     NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
@@ -41,9 +46,5 @@ public class RHAppActivity extends AppCompatActivity {
       R.id.programsTabFragment);
 
 
-  }
-
-  public void setToolbarTitle(String title) {
-    mToolbar.setTitle(title);
   }
 }

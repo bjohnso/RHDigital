@@ -56,7 +56,7 @@
       </com.google.android.material.appbar.AppBarLayout>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-    <fragment
+    <androidx.fragment.app.FragmentContainerView
         android:id="@+id/nav_host_rhapp"
         android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_below="@id/app_bar"
