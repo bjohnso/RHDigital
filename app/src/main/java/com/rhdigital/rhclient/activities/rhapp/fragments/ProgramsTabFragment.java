@@ -23,7 +23,7 @@ public class ProgramsTabFragment extends Fragment {
   @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-      View view = inflater.inflate(R.layout.tab_programs, container, false);
+      View view = inflater.inflate(R.layout.fragment_programs_tab, container, false);
       tabLayout = (TabLayout) view.findViewById(R.id.tab_layout);
       Log.d("PROGRAMSTABFRAG", "CREATED");
       return view;

@@ -1,10 +1,6 @@
 package com.rhdigital.rhclient.activities.rhapp;
 
 import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.util.Log;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,17 +10,22 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.rhdigital.rhclient.R;
+import com.rhdigital.rhclient.activities.rhapp.viewmodel.RHAppViewModel;
 import com.rhdigital.rhclient.common.services.NavigationService;
+import com.rhdigital.rhclient.databinding.ActivityRhappBinding;
 
 public class RHAppActivity extends AppCompatActivity {
 
   private Toolbar mToolbar;
   private BottomNavigationView mBottomNavigationView;
+  private ActivityRhappBinding binding;
 
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_rhapp);
+    binding = ActivityRhappBinding.inflate(getLayoutInflater());
+    binding.setViewModel(new RHAppViewModel());
+    setContentView(binding.getRoot());
 
     // INITIALISE VIEW COMPONENTS
     mToolbar = findViewById(R.id.topNavigationView);

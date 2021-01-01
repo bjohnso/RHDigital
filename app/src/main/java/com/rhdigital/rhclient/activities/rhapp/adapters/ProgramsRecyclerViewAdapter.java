@@ -51,7 +51,7 @@ public class ProgramsRecyclerViewAdapter extends RecyclerView.Adapter<ProgramsVi
         }
     }
 
-  public void setPrograms(List<Program> programs) {
+    public void setPrograms(List<Program> programs) {
         this.programs = programs;
         notifyDataSetChanged();
     }

@@ -68,7 +68,7 @@ public class ProgramsFragment extends Fragment {
       // TODO: IDENTIFY SELF IN THE FRAGMENT MANAGER
 
       // IDENTIFY SELF IN THE PARENT ACTIVITY
-      ((RHAppActivity)this.getActivity()).setToolbarTitle("Programs");
+//      ((RHAppActivity)this.getActivity()).setToolbarTitle("Programs");
 
       // TODO: INITIALISE COMPONENTS
 
