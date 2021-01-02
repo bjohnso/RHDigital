@@ -11,6 +11,7 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.rhdigital.rhclient.R;
+import com.rhdigital.rhclient.RHApplication;
 import com.rhdigital.rhclient.activities.rhapp.viewmodel.RHAppViewModel;
 import com.rhdigital.rhclient.common.services.NavigationService;
 import com.rhdigital.rhclient.databinding.ActivityRhappBinding;
@@ -24,6 +25,9 @@ public class RHAppActivity extends AppCompatActivity {
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+
+    // REGISTER ACTIVITY TO APPLICATION
+    ((RHApplication)getApplicationContext()).setCurrentActivity(this);
 
     // VIEW BINDING
     binding = ActivityRhappBinding.inflate(getLayoutInflater());
@@ -44,7 +48,5 @@ public class RHAppActivity extends AppCompatActivity {
       navController,
       R.navigation.rhapp_nav_graph,
       R.id.programsTabFragment);
-
-
   }
 }

@@ -4,6 +4,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +22,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.rhdigital.rhclient.R;
 import com.rhdigital.rhclient.activities.rhapp.adapters.ProgramsRecyclerViewAdapter;
 import com.rhdigital.rhclient.activities.rhapp.viewmodel.RHAppViewModel;
+import com.rhdigital.rhclient.common.interfaces.OnClickCallback;
 import com.rhdigital.rhclient.database.model.Program;
 import com.rhdigital.rhclient.databinding.FragmentProgramsBinding;
 import com.rhdigital.rhclient.activities.rhapp.viewmodel.ProgramsViewModel;
@@ -77,7 +79,12 @@ public class ProgramsFragment extends Fragment {
     }
 
     private void initialiseLiveData() {
-        programsRecyclerViewAdapter = new ProgramsRecyclerViewAdapter(getContext());
+        OnClickCallback callback = () -> {
+            Log.d("CALLBACK", "HELLO WORLD");
+        };
+        programsRecyclerViewAdapter = new ProgramsRecyclerViewAdapter(
+                getContext(), callback
+        );
         programsPosterObserver = new Observer<HashMap<String, Bitmap>>() {
             @Override
             public void onChanged(HashMap<String, Bitmap> posterMap) {

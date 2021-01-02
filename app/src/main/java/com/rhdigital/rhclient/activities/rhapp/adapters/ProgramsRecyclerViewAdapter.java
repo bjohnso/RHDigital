@@ -15,8 +15,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.rhdigital.rhclient.R;
 import com.rhdigital.rhclient.activities.rhapp.viewholder.ProgramsViewHolder;
+import com.rhdigital.rhclient.common.interfaces.OnClickCallback;
 import com.rhdigital.rhclient.database.model.Program;
 
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 
@@ -24,10 +26,12 @@ import java.util.List;
 public class ProgramsRecyclerViewAdapter extends RecyclerView.Adapter<ProgramsViewHolder> {
     private List<Program> programs;
     private Context context;
+    private OnClickCallback callback;
     private HashMap<String, Bitmap> imageBitMap;
 
-    public ProgramsRecyclerViewAdapter(Context context) {
+    public ProgramsRecyclerViewAdapter(Context context, OnClickCallback callback) {
       this.context = context;
+      this.callback = callback;
     }
 
     @NonNull
@@ -35,7 +39,7 @@ public class ProgramsRecyclerViewAdapter extends RecyclerView.Adapter<ProgramsVi
     public ProgramsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
       LayoutInflater inflater = LayoutInflater.from(parent.getContext());
       ViewGroup view = (ViewGroup) inflater.inflate(R.layout.view_holder_programs, parent, false);
-      return new ProgramsViewHolder(view);
+      return new ProgramsViewHolder(view, callback);
     }
 
 

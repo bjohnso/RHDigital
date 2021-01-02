@@ -5,12 +5,13 @@ import android.content.Context;
 import android.graphics.Bitmap;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelStoreOwner;
 
 import com.rhdigital.rhclient.R;
+import com.rhdigital.rhclient.RHApplication;
 import com.rhdigital.rhclient.common.services.RemoteResourceService;
 import com.rhdigital.rhclient.database.model.Program;
 import com.rhdigital.rhclient.database.repository.RHRepository;
@@ -28,8 +29,9 @@ public class ProgramsViewModel extends AndroidViewModel {
   }
 
   public void configureRHAppViewModel() {
-    RHAppViewModel rhAppViewModel =
-            new ViewModelProvider(getApplication()).get(RHAppViewModel.class);
+    ViewModelStoreOwner viewModelStoreOwner =
+            (ViewModelStoreOwner) ((RHApplication)getApplication().getApplicationContext()).getCurrentActivity();
+    RHAppViewModel rhAppViewModel = new ViewModelProvider(viewModelStoreOwner).get(RHAppViewModel.class);
     rhAppViewModel.isBackButtonActive.postValue(false);
     rhAppViewModel.isTitleCenter.postValue(false);
     rhAppViewModel.title.setValue(getApplication().getString(R.string.title_programs));
