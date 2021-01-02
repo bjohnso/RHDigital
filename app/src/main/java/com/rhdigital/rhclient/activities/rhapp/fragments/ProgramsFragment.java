@@ -20,9 +20,11 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.rhdigital.rhclient.R;
+import com.rhdigital.rhclient.activities.rhapp.RHAppActivity;
 import com.rhdigital.rhclient.activities.rhapp.adapters.ProgramsRecyclerViewAdapter;
 import com.rhdigital.rhclient.activities.rhapp.viewmodel.RHAppViewModel;
 import com.rhdigital.rhclient.common.interfaces.OnClickCallback;
+import com.rhdigital.rhclient.common.services.NavigationService;
 import com.rhdigital.rhclient.database.model.Program;
 import com.rhdigital.rhclient.databinding.FragmentProgramsBinding;
 import com.rhdigital.rhclient.activities.rhapp.viewmodel.ProgramsViewModel;
@@ -62,7 +64,6 @@ public class ProgramsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
       binding = FragmentProgramsBinding.inflate(getLayoutInflater());
 
-      rhAppViewModel = new ViewModelProvider(getActivity()).get(RHAppViewModel.class);
       programsViewModel = new ProgramsViewModel(getActivity().getApplication());
       programsViewModel.configureRHAppViewModel();
       binding.setViewModel(programsViewModel);
@@ -79,8 +80,14 @@ public class ProgramsFragment extends Fragment {
     }
 
     private void initialiseLiveData() {
-        OnClickCallback callback = () -> {
-            Log.d("CALLBACK", "HELLO WORLD");
+        OnClickCallback callback = (program) -> {
+            Bundle bundle = new Bundle();
+            bundle.putString("programId", ((Program)program).getId());
+            NavigationService.getINSTANCE()
+                    .navigate(
+                            getActivity().getLocalClassName(),
+                            R.id.coursesFragment, bundle, null
+                    );
         };
         programsRecyclerViewAdapter = new ProgramsRecyclerViewAdapter(
                 getContext(), callback

@@ -4,6 +4,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,9 +17,11 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelStoreOwner;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.rhdigital.rhclient.R;
+import com.rhdigital.rhclient.RHApplication;
 import com.rhdigital.rhclient.activities.rhapp.adapters.CoursesRecyclerViewAdapter;
 import com.rhdigital.rhclient.activities.rhapp.viewmodel.CoursesViewModel;
 import com.rhdigital.rhclient.activities.rhapp.viewmodel.RHAppViewModel;
@@ -37,7 +40,6 @@ public class CoursesFragment extends Fragment {
 
     // VIEW MODEL
     private CoursesViewModel coursesViewModel;
-    private RHAppViewModel rhAppViewModel;
 
     // ADAPTERS
     private CoursesRecyclerViewAdapter coursesRecyclerViewAdapter;
@@ -58,14 +60,15 @@ public class CoursesFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentCoursesBinding.inflate(getLayoutInflater());
 
-        rhAppViewModel = new ViewModelProvider(getActivity()).get(RHAppViewModel.class);
-        coursesViewModel = new CoursesViewModel(getActivity().getApplication(), "");
-        coursesViewModel.configureRHAppViewModel();
+        coursesViewModel = new CoursesViewModel(getActivity().getApplication());
+        coursesViewModel.configureRHAppViewModel(getArguments().getString("programId"))
+                .observe(getViewLifecycleOwner(), complete -> {
+                    if (complete) {
+                        initialiseLiveData();
+                        initialiseUI();
+                    }
+                });
         binding.setViewModel(coursesViewModel);
-
-        initialiseLiveData();
-        initialiseUI();
-
         return binding.getRoot();
     }
 
@@ -75,7 +78,7 @@ public class CoursesFragment extends Fragment {
     }
 
     private void initialiseLiveData() {
-//        coursesRecyclerViewAdapter = new CoursesRecyclerViewAdapter(getContext());
+        coursesRecyclerViewAdapter = new CoursesRecyclerViewAdapter(getContext());
         coursesPosterObserver = new Observer<HashMap<String, Bitmap>>() {
             @Override
             public void onChanged(HashMap<String, Bitmap> posterMap) {
@@ -102,7 +105,7 @@ public class CoursesFragment extends Fragment {
             }
         };
 
-//        coursesObservable = coursesViewModel.getAllUndiscoveredPrograms();
+        coursesObservable = coursesViewModel.getCourses();
         coursesObservable.observe(getViewLifecycleOwner(), coursesObserver);
     }
 
@@ -131,15 +134,15 @@ public class CoursesFragment extends Fragment {
     }
 
     private void onUpdatePrograms(List<Course> courses) {
-//        coursesRecyclerViewAdapter.setPrograms(programs);
+        coursesRecyclerViewAdapter.setCourses(courses);
         if (coursesPosterObservable != null) {
             coursesPosterObservable.removeObservers(this);
         }
-//        coursesPosterObservable = coursesViewModel.getAllProgramPosters(getContext(), courses, width, height);
+        coursesPosterObservable = coursesViewModel.getAllCoursePosters(getContext(), courses, width, height);
         coursesPosterObservable.observe(getActivity(), coursesPosterObserver);
     }
 
     private void onUpdateProgramPosters(HashMap<String, Bitmap> posterMap) {
-//        coursesRecyclerViewAdapter.setPosterUriMap(posterMap);
+        coursesRecyclerViewAdapter.setPosterUriMap(posterMap);
     }
 }

@@ -28,7 +28,7 @@ public class ProgramsViewHolder extends RecyclerView.ViewHolder {
     actionButton = itemView.findViewById(R.id.programs_action_button);
 
     actionButton.setOnClickListener(view -> {
-      callback.invoke();
+      callback.invoke(program);
     });
 
     // View Tree Management

@@ -31,6 +31,7 @@ public class RHAppActivity extends AppCompatActivity {
 
     // VIEW BINDING
     binding = ActivityRhappBinding.inflate(getLayoutInflater());
+    binding.setLifecycleOwner(this);
     binding.setViewModel(
             new ViewModelProvider(this).get(RHAppViewModel.class)
     );
@@ -47,6 +48,6 @@ public class RHAppActivity extends AppCompatActivity {
       getLocalClassName(),
       navController,
       R.navigation.rhapp_nav_graph,
-      R.id.programsTabFragment);
+      R.id.programsFragment);
   }
 }

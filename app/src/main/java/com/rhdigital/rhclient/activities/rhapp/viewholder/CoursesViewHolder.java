@@ -24,7 +24,7 @@ public class CoursesViewHolder extends RecyclerView.ViewHolder {
     public CoursesViewHolder(@NonNull View itemView) {
         super(itemView);
 
-        imageView = itemView.findViewById(R.id.programs_image);
+        imageView = itemView.findViewById(R.id.ivImage);
         actionButton = itemView.findViewById(R.id.programs_action_button);
 
         // View Tree Management

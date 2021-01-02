@@ -5,10 +5,11 @@ import android.app.Application;
 import android.content.res.Configuration;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 public class RHApplication extends Application {
 
-  private Activity currentActivity = null;
+  private AppCompatActivity currentActivity = null;
 
   @Override
   public void onCreate() {
@@ -25,7 +26,7 @@ public class RHApplication extends Application {
     super.onLowMemory();
   }
 
-  public void setCurrentActivity(Activity activity) {
+  public void setCurrentActivity(AppCompatActivity activity) {
     this.currentActivity = activity;
   }
 
