@@ -7,7 +7,7 @@ import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "programs")
-public class Program {
+public class Program extends Model {
 
   @ColumnInfo(name = "id")
   @NonNull
