@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<layout>
-
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
   <data>
     <import type="android.view.View"/>
     <variable
@@ -9,9 +9,7 @@
         type="com.rhdigital.rhclient.activities.rhapp.viewmodel.RHAppViewModel" />
   </data>
 
-  <RelativeLayout
-      xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:app="http://schemas.android.com/apk/res-auto"
+  <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:background="@drawable/background_alt"
@@ -59,21 +57,21 @@
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/nav_host_rhapp"
         android:name="androidx.navigation.fragment.NavHostFragment"
-        android:layout_below="@id/app_bar"
-        android:layout_above="@id/bottomNavigationView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:defaultNavHost="false" />
+        android:layout_height="0dp"
+        app:defaultNavHost="false"
+        app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView"
+        app:layout_constraintTop_toBottomOf="@+id/app_bar" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:layout_alignParentBottom="true"
+        android:background="@color/bar"
         app:itemIconTint="@drawable/bottom_nav_colors"
         app:itemTextColor="@drawable/bottom_nav_colors"
-        app:menu="@menu/courses_menu_bottom"
-        android:background="@color/bar"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:menu="@menu/courses_menu_bottom" />
 
-  </RelativeLayout>
+  </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

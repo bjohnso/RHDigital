@@ -21,7 +21,9 @@
   <string name="loader_circle_7">M 524.2 230.7 C 519.083 230.7 514.171 232.735 510.553 236.353 C 506.935 239.971 504.9 244.883 504.9 250 C 504.9 255.117 506.935 260.029 510.553 263.647 C 514.171 267.265 519.083 269.3 524.2 269.3 C 529.317 269.3 534.229 267.265 537.847 263.647 C 541.465 260.029 543.5 255.117 543.5 250 C 543.5 244.883 541.465 239.971 537.847 236.353 C 534.229 232.735 529.317 230.7 524.2 230.7 Z</string>
 
   //Content Error Messages
+  <string name="server_error_programs">Error loading programs. Please try again later.</string>
   <string name="server_error_courses">Error loading courses. Please try again later.</string>
+  <string name="server_error_workbooks">Error loading workbooks. Please try again later.</string>
   <string name="server_error_user_documents">Error loading user profile documents. Please try again later.</string>
   <string name="server_error_user">Error loading user profile. Please try again later.</string>
   <string name="server_error_image_upload">Error uploading image. Please try again later.</string>

@@ -1,6 +1,5 @@
 package com.rhdigital.rhclient.activities.rhapp.adapters;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.view.LayoutInflater;
@@ -11,18 +10,19 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.rhdigital.rhclient.R;
 import com.rhdigital.rhclient.activities.rhapp.viewholder.CoursesViewHolder;
 import com.rhdigital.rhclient.database.model.Course;
+import com.rhdigital.rhclient.database.model.Program;
 
 import java.util.HashMap;
 import java.util.List;
 
 public class CoursesRecyclerViewAdapter extends RecyclerView.Adapter<CoursesViewHolder> {
 
+    private Program program;
     private List<Course> courses;
-    private Context context;
     private HashMap<String, Bitmap> imageBitMap;
 
-    public CoursesRecyclerViewAdapter(Context context) {
-        this.context = context;
+    public CoursesRecyclerViewAdapter(Program program) {
+        this.program = program;
     }
 
     @NonNull
@@ -40,10 +40,15 @@ public class CoursesRecyclerViewAdapter extends RecyclerView.Adapter<CoursesView
         if (courses != null && imageBitMap != null) {
             Course course = courses.get(position);
             holder.bind(
+                    program,
                     course,
                     imageBitMap.get(course.getId())
             );
         }
+    }
+
+    public void setProgram(Program program) {
+        this.program = program;
     }
 
     public void setCourses(List<Course> courses) {

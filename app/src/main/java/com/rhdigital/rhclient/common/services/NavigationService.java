@@ -64,6 +64,12 @@ public class NavigationService {
 //    }
   }
 
+  public void navigateBack(String className) {
+    NavController navController = controllerMap.get(className);
+    navController.popBackStack();
+    controllerMap.put(className, navController);
+  }
+
   public Bundle getPostNavigationRestorationData() {
     return postNavigationRestorationData;
   }

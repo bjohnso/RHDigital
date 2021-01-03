@@ -40,6 +40,10 @@ public class RHAppActivity extends AppCompatActivity {
     // INITIALISE VIEW COMPONENTS
     mToolbar = binding.topNavigationView;
 
+    binding.btnBack.setOnClickListener(view -> {
+      NavigationService.getINSTANCE().navigateBack(getLocalClassName());
+    });
+
     // INITIALISE NAVIGATION COMPONENT && CALL NAVIGATION SERVICE
     NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
       .findFragmentById(R.id.nav_host_rhapp);

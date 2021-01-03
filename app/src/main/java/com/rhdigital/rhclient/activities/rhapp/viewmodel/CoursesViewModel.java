@@ -34,7 +34,7 @@ public class CoursesViewModel extends AndroidViewModel {
         rhRepository = new RHRepository(application);
     }
 
-    public LiveData<Boolean> configureRHAppViewModel(String programId) {
+    public LiveData<Boolean> init(String programId) {
         MutableLiveData complete = new MutableLiveData(false);
         LifecycleOwner lifecycleOwner = (LifecycleOwner) ((RHApplication)getApplication()).getCurrentActivity();
         program = rhRepository.getProgram(programId);

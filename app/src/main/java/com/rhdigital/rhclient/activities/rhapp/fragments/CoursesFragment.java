@@ -4,7 +4,6 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,15 +15,11 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelStoreOwner;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.rhdigital.rhclient.R;
-import com.rhdigital.rhclient.RHApplication;
 import com.rhdigital.rhclient.activities.rhapp.adapters.CoursesRecyclerViewAdapter;
 import com.rhdigital.rhclient.activities.rhapp.viewmodel.CoursesViewModel;
-import com.rhdigital.rhclient.activities.rhapp.viewmodel.RHAppViewModel;
 import com.rhdigital.rhclient.database.model.Course;
 import com.rhdigital.rhclient.databinding.FragmentCoursesBinding;
 
@@ -61,7 +56,7 @@ public class CoursesFragment extends Fragment {
         binding = FragmentCoursesBinding.inflate(getLayoutInflater());
 
         coursesViewModel = new CoursesViewModel(getActivity().getApplication());
-        coursesViewModel.configureRHAppViewModel(getArguments().getString("programId"))
+        coursesViewModel.init(getArguments().getString("programId"))
                 .observe(getViewLifecycleOwner(), complete -> {
                     if (complete) {
                         initialiseLiveData();
@@ -78,7 +73,7 @@ public class CoursesFragment extends Fragment {
     }
 
     private void initialiseLiveData() {
-        coursesRecyclerViewAdapter = new CoursesRecyclerViewAdapter(getContext());
+        coursesRecyclerViewAdapter = new CoursesRecyclerViewAdapter(coursesViewModel.program.getValue());
         coursesPosterObserver = new Observer<HashMap<String, Bitmap>>() {
             @Override
             public void onChanged(HashMap<String, Bitmap> posterMap) {
@@ -98,7 +93,7 @@ public class CoursesFragment extends Fragment {
             public void onChanged(List<Course> courses) {
                 if (courses != null) {
                     coursesObservable.removeObserver(this);
-                    onUpdatePrograms(courses);
+                    onUpdateCourses(courses);
                 } else {
                     Toast.makeText(getContext(), R.string.server_error_courses, Toast.LENGTH_LONG).show();
                 }
@@ -133,7 +128,7 @@ public class CoursesFragment extends Fragment {
         height = Math.round(px);
     }
 
-    private void onUpdatePrograms(List<Course> courses) {
+    private void onUpdateCourses(List<Course> courses) {
         coursesRecyclerViewAdapter.setCourses(courses);
         if (coursesPosterObservable != null) {
             coursesPosterObservable.removeObservers(this);

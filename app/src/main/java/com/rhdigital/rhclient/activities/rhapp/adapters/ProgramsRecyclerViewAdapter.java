@@ -25,12 +25,10 @@ import java.util.List;
 
 public class ProgramsRecyclerViewAdapter extends RecyclerView.Adapter<ProgramsViewHolder> {
     private List<Program> programs;
-    private Context context;
     private OnClickCallback callback;
     private HashMap<String, Bitmap> imageBitMap;
 
-    public ProgramsRecyclerViewAdapter(Context context, OnClickCallback callback) {
-      this.context = context;
+    public ProgramsRecyclerViewAdapter(OnClickCallback callback) {
       this.callback = callback;
     }
 

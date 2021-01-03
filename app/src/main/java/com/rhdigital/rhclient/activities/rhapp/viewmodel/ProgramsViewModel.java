@@ -32,7 +32,7 @@ public class ProgramsViewModel extends AndroidViewModel {
     rhRepository = new RHRepository(application);
   }
 
-  public void configureRHAppViewModel() {
+  public void init() {
     ViewModelStoreOwner viewModelStoreOwner =
             (ViewModelStoreOwner) ((RHApplication)getApplication()).getCurrentActivity();
     RHAppViewModel rhAppViewModel = new ViewModelProvider(viewModelStoreOwner).get(RHAppViewModel.class);

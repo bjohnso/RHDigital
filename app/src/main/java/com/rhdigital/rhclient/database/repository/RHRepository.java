@@ -99,6 +99,8 @@ public class RHRepository {
 
     public LiveData<List<Workbook>> getAllUndiscoveredWorkbooks() { return workbookDAO.getAllUnauthorised(); }
 
+    public LiveData<List<Workbook>> getAllWorkbooksByCourseId(@NonNull String courseId) { return workbookDAO.findByCourseId(courseId); }
+
 
     public void authoriseCourse(@NonNull String id) {
       try {

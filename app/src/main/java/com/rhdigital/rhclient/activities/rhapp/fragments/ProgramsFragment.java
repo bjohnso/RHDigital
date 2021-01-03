@@ -65,7 +65,7 @@ public class ProgramsFragment extends Fragment {
       binding = FragmentProgramsBinding.inflate(getLayoutInflater());
 
       programsViewModel = new ProgramsViewModel(getActivity().getApplication());
-      programsViewModel.configureRHAppViewModel();
+      programsViewModel.init();
       binding.setViewModel(programsViewModel);
 
       initialiseLiveData();
@@ -89,9 +89,7 @@ public class ProgramsFragment extends Fragment {
                             R.id.coursesFragment, bundle, null
                     );
         };
-        programsRecyclerViewAdapter = new ProgramsRecyclerViewAdapter(
-                getContext(), callback
-        );
+        programsRecyclerViewAdapter = new ProgramsRecyclerViewAdapter(callback);
         programsPosterObserver = new Observer<HashMap<String, Bitmap>>() {
             @Override
             public void onChanged(HashMap<String, Bitmap> posterMap) {
