@@ -9,13 +9,15 @@ import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 import com.rhdigital.rhclient.R;
 import com.rhdigital.rhclient.activities.rhapp.viewholder.CoursesViewHolder;
+import com.rhdigital.rhclient.common.ancestors.BaseViewHolder;
 import com.rhdigital.rhclient.database.model.Course;
 import com.rhdigital.rhclient.database.model.Program;
+import com.rhdigital.rhclient.databinding.ItemCoursesBinding;
 
 import java.util.HashMap;
 import java.util.List;
 
-public class CoursesRecyclerViewAdapter extends RecyclerView.Adapter<CoursesViewHolder> {
+public class CoursesRecyclerViewAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 
     private Program program;
     private List<Course> courses;
@@ -29,14 +31,14 @@ public class CoursesRecyclerViewAdapter extends RecyclerView.Adapter<CoursesView
     @Override
     public CoursesViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        ViewGroup view = (ViewGroup) inflater.inflate(R.layout.view_holder_courses, parent, false);
-        return new CoursesViewHolder(view);
+        ItemCoursesBinding binding = ItemCoursesBinding.inflate(inflater, parent, false);
+        return new CoursesViewHolder(binding);
     }
 
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
-    public void onBindViewHolder(@NonNull CoursesViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull BaseViewHolder holder, int position) {
         if (courses != null && imageBitMap != null) {
             Course course = courses.get(position);
             holder.bind(

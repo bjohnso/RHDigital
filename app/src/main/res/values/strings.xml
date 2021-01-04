@@ -12,6 +12,11 @@
   <string name="sign_up_redirect_action"><p>Log in.</p></string>
   <string name="sign_up_email_verification_text"><p>"A verification link has been sent to your email address, "</p></string>
   <string name="sign_up_email_verification_action"><p>Resend verification.</p></string>
+
+  <string name="workbooks_title">Workbooks</string>
+
+  <string name="courses_button_enroll">ENROLL NOW</string>
+
   <string name="loader_circle_1">M 160.3 230.7 C 155.183 230.7 150.271 232.735 146.653 236.353 C 143.035 239.971 141 244.883 141 250 C 141 255.117 143.035 260.029 146.653 263.647 C 150.271 267.265 155.183 269.3 160.3 269.3 C 165.417 269.3 170.329 267.265 173.947 263.647 C 177.565 260.029 179.6 255.117 179.6 250 C 179.6 244.883 177.565 239.971 173.947 236.353 C 170.329 232.735 165.417 230.7 160.3 230.7 Z</string>
   <string name="loader_circle_2">M 221 230.7 C 215.883 230.7 210.971 232.735 207.353 236.353 C 203.735 239.971 201.7 244.883 201.7 250 C 201.7 255.117 203.735 260.029 207.353 263.647 C 210.971 267.265 215.883 269.3 221 269.3 C 226.117 269.3 231.029 267.265 234.647 263.647 C 238.265 260.029 240.3 255.117 240.3 250 C 240.3 244.883 238.265 239.971 234.647 236.353 C 231.029 232.735 226.117 230.7 221 230.7 Z</string>
   <string name="loader_circle_3">M 281.6 229.7 C 276.483 229.7 271.571 231.735 267.953 235.353 C 264.335 238.971 262.3 243.883 262.3 249 C 262.3 254.117 264.335 259.029 267.953 262.647 C 271.571 266.265 276.483 268.3 281.6 268.3 C 286.717 268.3 291.629 266.265 295.247 262.647 C 298.865 259.029 300.9 254.117 300.9 249 C 300.9 243.883 298.865 238.971 295.247 235.353 C 291.629 231.735 286.717 229.7 281.6 229.7 Z</string>
@@ -35,7 +40,6 @@
   <string name="server_error_reset_password">Error resetting password. Please try again later.</string>
   <string name="server_error_email_verification">Error sending email verification link. Please try again later.</string>
   <string name="server_error_email_update">Error updating email address. Please try again later.</string>
-
 
   //Input Validation Error Messages
   <string name="user_error_password_length">Sorry, your password needs to be at least 6 characters. Please try again.</string>

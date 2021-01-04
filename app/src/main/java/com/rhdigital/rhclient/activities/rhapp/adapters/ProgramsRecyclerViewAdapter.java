@@ -1,6 +1,5 @@
 package com.rhdigital.rhclient.activities.rhapp.adapters;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 
 import android.os.Build.VERSION_CODES;
@@ -18,7 +17,6 @@ import com.rhdigital.rhclient.activities.rhapp.viewholder.ProgramsViewHolder;
 import com.rhdigital.rhclient.common.interfaces.OnClickCallback;
 import com.rhdigital.rhclient.database.model.Program;
 
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 
@@ -36,7 +34,7 @@ public class ProgramsRecyclerViewAdapter extends RecyclerView.Adapter<ProgramsVi
     @Override
     public ProgramsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
       LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-      ViewGroup view = (ViewGroup) inflater.inflate(R.layout.view_holder_programs, parent, false);
+      ViewGroup view = (ViewGroup) inflater.inflate(R.layout.item_programs, parent, false);
       return new ProgramsViewHolder(view, callback);
     }
 

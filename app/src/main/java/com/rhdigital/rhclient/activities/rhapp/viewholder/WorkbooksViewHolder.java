@@ -5,12 +5,12 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.rhdigital.rhclient.R;
+import com.rhdigital.rhclient.common.ancestors.BaseViewHolder;
 import com.rhdigital.rhclient.database.model.Workbook;
 
-public class WorkbooksViewHolder extends RecyclerView.ViewHolder {
+public class WorkbooksViewHolder extends BaseViewHolder {
 
     private TextView tvTitle;
     private Button actionButton;

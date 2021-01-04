@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData;
 
 import com.rhdigital.rhclient.database.DAO.BaseDAO;
 import com.rhdigital.rhclient.database.DAO.CourseDAO;
+import com.rhdigital.rhclient.database.DAO.CourseDescriptionDAO;
 import com.rhdigital.rhclient.database.DAO.ProgramDAO;
 import com.rhdigital.rhclient.database.DAO.ReportDAO;
 import com.rhdigital.rhclient.database.DAO.VideoDAO;
@@ -15,6 +16,7 @@ import com.rhdigital.rhclient.database.DAO.UserDAO;
 import com.rhdigital.rhclient.database.DAO.WorkbookDAO;
 import com.rhdigital.rhclient.database.RHDatabase;
 import com.rhdigital.rhclient.database.model.Course;
+import com.rhdigital.rhclient.database.model.CourseDescription;
 import com.rhdigital.rhclient.database.model.Report;
 import com.rhdigital.rhclient.database.model.Video;
 import com.rhdigital.rhclient.database.model.Program;
@@ -28,6 +30,7 @@ import java.util.concurrent.Executors;
 
 public class RHRepository {
     private CourseDAO courseDAO;
+    private CourseDescriptionDAO courseDescriptionDAO;
     private ProgramDAO programDAO;
     private ReportDAO reportDAO;
     private UserDAO userDAO;
@@ -39,6 +42,7 @@ public class RHRepository {
     public RHRepository(Application application) {
         RHDatabase db = RHDatabase.getDatabase(application);
         courseDAO = db.courseDAO();
+        courseDescriptionDAO = db.courseDescriptionDAO();
         programDAO = db.programDAO();
         reportDAO = db.reportDAO();
         userDAO = db.userDAO();
@@ -58,6 +62,9 @@ public class RHRepository {
     public LiveData<Course> getCourse(@NonNull String courseId) { return courseDAO.findById(courseId); }
 
     public LiveData<List<Course>> getAllCoursesByProgramId(@NonNull String programId) { return courseDAO.findByProgramId(programId); }
+
+    // COURSE DESCRIPTIONS
+    public LiveData<List<CourseDescription>> getAllCourseDescriptionsByCourseId(@NonNull String courseId) { return courseDescriptionDAO.findByCourseId(courseId); }
 
     // PROGRAMS
     public LiveData<List<Program>> getAllPrograms() { return programDAO.getAll(); }

@@ -6,13 +6,13 @@ import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.ImageView;
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.rhdigital.rhclient.R;
+import com.rhdigital.rhclient.common.ancestors.BaseViewHolder;
 import com.rhdigital.rhclient.common.interfaces.OnClickCallback;
 import com.rhdigital.rhclient.database.model.Program;
 
-public class ProgramsViewHolder extends RecyclerView.ViewHolder {
+public class ProgramsViewHolder extends BaseViewHolder {
   private ImageView imageView;
   private Button actionButton;
 
