@@ -5,8 +5,7 @@
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
   android:paddingBottom="20dp"
-  android:paddingTop="20dp"
-  android:background="@drawable/background">
+  android:paddingTop="20dp">
 
   <androidx.cardview.widget.CardView
     android:id="@+id/programs_card"
@@ -68,7 +67,7 @@
           android:textAlignment="textStart"
           android:textSize="10dp"
           android:textAllCaps="false"
-          android:drawableRight="@drawable/ic_arrow_right">
+          android:drawableRight="@drawable/ic_chevron_right">
         </Button>
 
       </RelativeLayout>

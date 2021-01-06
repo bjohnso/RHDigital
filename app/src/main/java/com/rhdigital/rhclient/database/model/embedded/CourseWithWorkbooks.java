@@ -4,11 +4,12 @@ import androidx.room.Embedded;
 import androidx.room.Relation;
 
 import com.rhdigital.rhclient.database.model.Course;
+import com.rhdigital.rhclient.database.model.Model;
 import com.rhdigital.rhclient.database.model.Workbook;
 
 import java.util.List;
 
-public class CourseWithWorkbooks {
+public class CourseWithWorkbooks extends Model {
 
   @Embedded
   private Course course;

@@ -16,7 +16,7 @@ import static androidx.room.ForeignKey.CASCADE;
     parentColumns = "id",
     childColumns = "program_id"
   ), indices = {@Index("program_id")})
-public class Report {
+public class Report extends Model {
   @ColumnInfo(name = "id")
   @NonNull
   @PrimaryKey

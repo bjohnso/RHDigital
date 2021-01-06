@@ -1,33 +1,48 @@
 package com.rhdigital.rhclient.activities.rhapp;
 
 import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.util.Log;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.rhdigital.rhclient.R;
+import com.rhdigital.rhclient.RHApplication;
+import com.rhdigital.rhclient.activities.rhapp.viewmodel.RHAppViewModel;
 import com.rhdigital.rhclient.common.services.NavigationService;
+import com.rhdigital.rhclient.databinding.ActivityRhappBinding;
 
 public class RHAppActivity extends AppCompatActivity {
 
   private Toolbar mToolbar;
   private BottomNavigationView mBottomNavigationView;
+  private ActivityRhappBinding binding;
 
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_rhapp);
+
+    // REGISTER ACTIVITY TO APPLICATION
+    ((RHApplication)getApplicationContext()).setCurrentActivity(this);
+
+    // VIEW BINDING
+    binding = ActivityRhappBinding.inflate(getLayoutInflater());
+    binding.setLifecycleOwner(this);
+    binding.setViewModel(
+            new ViewModelProvider(this).get(RHAppViewModel.class)
+    );
+    setContentView(binding.getRoot());
 
     // INITIALISE VIEW COMPONENTS
-    mToolbar = findViewById(R.id.topNavigationView);
+    mToolbar = binding.topNavigationView;
+
+    binding.btnBack.setOnClickListener(view -> {
+      NavigationService.getINSTANCE().navigateBack(getLocalClassName());
+    });
 
     // INITIALISE NAVIGATION COMPONENT && CALL NAVIGATION SERVICE
     NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
@@ -37,12 +52,6 @@ public class RHAppActivity extends AppCompatActivity {
       getLocalClassName(),
       navController,
       R.navigation.rhapp_nav_graph,
-      R.id.programsTabFragment);
-
-
-  }
-
-  public void setToolbarTitle(String title) {
-    mToolbar.setTitle(title);
+      R.id.programsFragment);
   }
 }

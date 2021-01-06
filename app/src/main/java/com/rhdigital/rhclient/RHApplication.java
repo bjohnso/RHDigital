@@ -1,11 +1,15 @@
 package com.rhdigital.rhclient;
 
+import android.app.Activity;
 import android.app.Application;
 import android.content.res.Configuration;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 public class RHApplication extends Application {
+
+  private AppCompatActivity currentActivity = null;
 
   @Override
   public void onCreate() {
@@ -22,7 +26,15 @@ public class RHApplication extends Application {
     super.onLowMemory();
   }
 
-//  public VideoPlayerService getVideoPlayerService() {
+  public void setCurrentActivity(AppCompatActivity activity) {
+    this.currentActivity = activity;
+  }
+
+  public Activity getCurrentActivity() {
+    return currentActivity;
+  }
+
+  //  public VideoPlayerService getVideoPlayerService() {
 //      return VideoPlayerService.getInstance();
 //    }
 }

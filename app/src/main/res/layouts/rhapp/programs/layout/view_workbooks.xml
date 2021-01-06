@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="visibility"
+            type="int"/>
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        tools:visibility="visible"
+        android:visibility="@{visibility, default=gone}"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/workbooksHeader"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:paddingStart="30dp"
+            android:paddingEnd="30dp"
+            android:background="@color/bar"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent=".9" />
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/workbooks_title"
+                app:layout_constraintBottom_toTopOf="@+id/guideline"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageButton
+                android:id="@+id/icExpand"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:background="@drawable/background_transparent"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_chevron_right"
+                app:layout_constraintBottom_toTopOf="@+id/guideline"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            app:layout_constraintTop_toBottomOf="@id/workbooksHeader"
+            android:layout_width="match_parent"
+            android:layout_height="0dp" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

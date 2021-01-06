@@ -10,6 +10,7 @@ import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.rhdigital.rhclient.database.DAO.CourseDAO;
+import com.rhdigital.rhclient.database.DAO.CourseDescriptionDAO;
 import com.rhdigital.rhclient.database.DAO.ProgramDAO;
 import com.rhdigital.rhclient.database.DAO.ReportDAO;
 import com.rhdigital.rhclient.database.DAO.VideoDAO;
@@ -17,6 +18,7 @@ import com.rhdigital.rhclient.database.DAO.UserDAO;
 import com.rhdigital.rhclient.database.DAO.WorkbookDAO;
 import com.rhdigital.rhclient.database.RHDatabase;
 import com.rhdigital.rhclient.database.model.Course;
+import com.rhdigital.rhclient.database.model.CourseDescription;
 import com.rhdigital.rhclient.database.model.Program;
 import com.rhdigital.rhclient.database.model.Report;
 import com.rhdigital.rhclient.database.model.User;
@@ -29,9 +31,12 @@ import static com.rhdigital.rhclient.database.constants.DatabaseConstants.DAOs;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -44,6 +49,7 @@ public class PopulateRoomAsync extends AsyncTask<LinkedHashMap<String, QuerySnap
   private UserDAO userDAO;
   private VideoDAO videoDAO;
   private WorkbookDAO workbookDAO;
+  private CourseDescriptionDAO courseDescriptionDAO;
   // FIREBASE
   private FirebaseChainBuilder firebaseChainBuilder = new FirebaseChainBuilder();
   private ExecutorService executorService = Executors.newSingleThreadExecutor();
@@ -99,6 +105,7 @@ public class PopulateRoomAsync extends AsyncTask<LinkedHashMap<String, QuerySnap
   public void deleteAllFromLocal() {
     for (String dao: DAOs) {
       try {
+        Log.d("DAO", dao);
         // USE REFLECTION
         Field field = (this.getClass().getDeclaredField(dao));
         field.setAccessible(true);
@@ -126,15 +133,27 @@ public class PopulateRoomAsync extends AsyncTask<LinkedHashMap<String, QuerySnap
       for (QueryDocumentSnapshot doc : pair.getValue()) {
         switch (pair.getKey()) {
           case "courses":
+            List<String> descriptions =
+                    doc.get("descriptions") == null ?
+                            Collections.emptyList() :
+                            (List<String>) doc.get("descriptions");
             pop.add(courseDAO.insert(
               new Course(
                 doc.getId(),
                 doc.getString("programId"),
                 doc.getString("title"),
-                doc.getString("author"),
-                doc.getString("description")
+                doc.getString("author")
               )
             ));
+            for(String description: descriptions) {
+              pop.add(courseDescriptionDAO.insert(
+                      new CourseDescription(
+                              UUID.randomUUID().toString(),
+                              doc.getId(),
+                              description
+                      )
+              ));
+            }
             break;
           case "programs":
             pop.add(programDAO.insert(

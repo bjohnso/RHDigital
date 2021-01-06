@@ -1,10 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/rhapp_nav_graph">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rhapp_nav_graph">
 
   <fragment
-    android:id="@+id/programsTabFragment"
-    android:name="com.rhdigital.rhclient.activities.rhapp.fragments.ProgramsTabFragment"
-    android:label="ProgramsTabFragment" >
+    android:id="@+id/programsFragment"
+    android:name="com.rhdigital.rhclient.activities.rhapp.fragments.ProgramsFragment"
+    android:label="ProgramsTabFragment">
+  </fragment>
+
+  <fragment
+      android:id="@+id/coursesFragment"
+      android:name="com.rhdigital.rhclient.activities.rhapp.fragments.CoursesFragment"
+      android:label="CoursesFragment">
   </fragment>
 </navigation>

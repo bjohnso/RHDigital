@@ -8,6 +8,8 @@ import androidx.room.Ignore;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
+import java.util.List;
+
 import static androidx.room.ForeignKey.CASCADE;
 
 @Entity(tableName = "courses",
@@ -16,7 +18,7 @@ import static androidx.room.ForeignKey.CASCADE;
     parentColumns = "id",
     childColumns = "program_id"
   ), indices = {@Index("program_id")})
-public class Course {
+public class Course extends Model {
     @ColumnInfo(name = "id")
     @NonNull
     @PrimaryKey
@@ -34,10 +36,6 @@ public class Course {
     @ColumnInfo(name = "author")
     private String author;
 
-    @NonNull
-    @ColumnInfo(name = "description")
-    private String description;
-
     @ColumnInfo(name = "is_authorised")
     private boolean isAuthorised = false;
 
@@ -45,14 +43,12 @@ public class Course {
     public Course() { }
 
     public Course(@NonNull String id, @NonNull String programId,
-                  @NonNull String title, @NonNull String author,
-                  @NonNull String description)
+                  @NonNull String title, @NonNull String author)
     {
       this.id = id;
       this.programId = programId;
       this.title = title;
       this.author = author;
-      this.description = description;
     }
 
   @NonNull
@@ -68,11 +64,6 @@ public class Course {
   @NonNull
   public String getAuthor() {
     return author;
-  }
-
-  @NonNull
-  public String getDescription() {
-    return description;
   }
 
   @NonNull
@@ -96,10 +87,6 @@ public class Course {
 
   public void setAuthor(@NonNull String author) {
     this.author = author;
-  }
-
-  public void setDescription(@NonNull String description) {
-    this.description = description;
   }
 
   public void setProgramId(@NonNull String programId) { this.programId = programId; }

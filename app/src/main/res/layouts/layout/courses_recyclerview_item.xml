@@ -107,7 +107,7 @@
                   android:textAlignment="textStart"
                   android:textSize="10dp"
                   android:textAllCaps="false"
-                  android:drawableRight="@drawable/ic_arrow_right">
+                  android:drawableRight="@drawable/ic_chevron_right">
                 </Button>
 
             </RelativeLayout>

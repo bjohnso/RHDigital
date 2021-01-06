@@ -14,6 +14,7 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.rhdigital.rhclient.common.dto.RemoteResourceDto;
 import com.rhdigital.rhclient.database.http.ApiClient;
 import com.rhdigital.rhclient.database.http.ApiInterface;
 import com.rhdigital.rhclient.database.model.Program;
@@ -32,12 +33,12 @@ public class RemoteResourceService {
 
   private HashMap<String, StorageReference> urlMap = new HashMap<>();
   private FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
-  private MutableLiveData<HashMap<String, Bitmap>> liveProgramPosterMap;
+  private MutableLiveData<HashMap<String, Bitmap>> liveImageMap;
   private MutableLiveData<HashMap<String, Uri>> liveVideoUriMap;
   private MutableLiveData<HashMap<String, Uri>> liveDocumentMap;
   private MutableLiveData<HashMap<String, HashMap<String, Uri>>> liveWorkbookMap;
   private MutableLiveData<Bitmap> liveProfilePhotoUri;
-  private HashMap<String, Bitmap> liveProgramPosterMapSurrogate = new HashMap<>();
+  private HashMap<String, Bitmap> liveImageMapSurrogate = new HashMap<>();
   private HashMap<String, Uri> liveVideoUriMapSurrogate = new HashMap<>();
   private HashMap<String, Uri> liveDocumentMapSurrogate = new HashMap<>();
   private HashMap<String, HashMap<String, Uri>> liveWorkbookMapSurrogate = new HashMap<>();
@@ -60,6 +61,47 @@ public class RemoteResourceService {
     urlMap.put("profile_photo", root.child("profile_photos"));
   }
 
+  public LiveData<HashMap<String, HashMap<String, Uri>>> getAllWorkbookURI(List<CourseWithWorkbooks> workbooks) {
+    if (liveWorkbookMap == null) {
+      liveWorkbookMap = new MutableLiveData<>();
+    }
+    loadWorkbookUri(workbooks);
+    return liveWorkbookMap;
+  }
+
+  public LiveData<HashMap<String, Bitmap>> getAllBitmap(Context context, List<RemoteResourceDto> data, int width, int height) {
+    if (liveImageMap == null) {
+      liveImageMap = new MutableLiveData<>();
+    }
+    for (RemoteResourceDto item : data) {
+      getImageResourceURL(
+              context,
+              item.getResourceUrl())
+              .getDownloadUrl()
+              .addOnFailureListener(error -> {
+                liveImageMapSurrogate = null;
+                liveImageMap.setValue(null);
+              })
+              .addOnSuccessListener(uri -> {
+                //Preload Images into Disk Cache
+                Glide.with(context)
+                        .load(uri)
+                        .asBitmap()
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .skipMemoryCache(false)
+                        .into(new SimpleTarget<Bitmap>(width, height) {
+                          @Override
+                          public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                            //Populate UriMapLiveData
+                            liveImageMapSurrogate.put(item.getResourceId(), resource);
+                            liveImageMap.setValue(liveImageMapSurrogate);
+                          }
+                        });
+              });
+    }
+    return liveImageMap;
+  }
+
   public LiveData<ResponseBody> downloadWorkbook(String downloadURL) {
     if (apiInterface == null) {
       apiInterface = ApiClient.getRetrofit().create(ApiInterface.class);
@@ -79,60 +121,6 @@ public class RemoteResourceService {
       }
     });
     return liveBinaryDownload;
-  }
-
-  private StorageReference getImageResourceURL(Context context, String endpoint) {
-    float density = context.getResources().getDisplayMetrics().density;
-    StorageReference ref = null;
-      if (density <= 0.75) {
-        ref = urlMap.get("l");
-      } else if (density <= 1.0) {
-        ref = urlMap.get("m");
-      } else if (density <= 1.5) {
-        ref = urlMap.get("h");
-      } else if (density <= 2.0) {
-        ref = urlMap.get("x");
-      } else if (density <= 3.0) {
-        ref = urlMap.get("xx");
-      } else if (density <= 4.0) {
-        ref = urlMap.get("xxx");
-      } else {
-        ref = urlMap.get("h");
-      }
-      return ref.child(endpoint.substring(1));
-  }
-
-  private StorageReference getProfileImageResourceURL(String id) {
-    return urlMap.get("profile_photo").child(id);
-  }
-
-  private StorageReference getVideoResourceURL(String endpoint) {
-    //TODO add screen density to check to determine best resolution to download
-    return urlMap.get("video").child(endpoint);
-  }
-
-  private StorageReference getDocumentResourceURL(String endpoint) {
-    return urlMap.get("doc").child(endpoint);
-  }
-
-  private StorageReference getWorkbookResourceURL(String endpoint) {
-    return urlMap.get("workbook").child(endpoint);
-  }
-
-  public LiveData<HashMap<String, HashMap<String, Uri>>> getAllWorkbookURI(List<CourseWithWorkbooks> workbooks) {
-    if (liveWorkbookMap == null) {
-      liveWorkbookMap = new MutableLiveData<>();
-    }
-    loadWorkbookUri(workbooks);
-    return liveWorkbookMap;
-  }
-
-  public LiveData<HashMap<String, Bitmap>> getAllBitmap(Context context, Object list, int width, int height) {
-    if (liveProgramPosterMap == null) {
-      liveProgramPosterMap = new MutableLiveData<>();
-    }
-    loadProgramPosterUri(context, (List<Program>) list, width, height);
-    return liveProgramPosterMap;
   }
 
 //  public LiveData<Bitmap> getProfilePhoto(Context context, String id, int width, int height) {
@@ -238,34 +226,34 @@ public class RemoteResourceService {
 //    }
 //  }
 
-  private void loadProgramPosterUri(Context context, List<Program> programs, int width, int height) {
-    for (Program program : programs) {
-      getImageResourceURL(
-          context,
-          program.getPosterUrl())
-        .getDownloadUrl()
-        .addOnFailureListener(error -> {
-          liveProgramPosterMapSurrogate = null;
-          liveProgramPosterMap.setValue(null);
-        })
-        .addOnSuccessListener(uri -> {
-          //Preload Images into Disk Cache
-          Glide.with(context)
-            .load(uri)
-            .asBitmap()
-            .diskCacheStrategy(DiskCacheStrategy.ALL)
-            .skipMemoryCache(false)
-            .into(new SimpleTarget<Bitmap>(width, height) {
-              @Override
-              public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                //Populate UriMapLiveData
-                liveProgramPosterMapSurrogate.put(program.getId(), resource);
-                liveProgramPosterMap.setValue(liveProgramPosterMapSurrogate);
-              }
-            });
-        });
-    }
-  }
+//  private void loadProgramPosterUri(Context context, List<Program> programs, int width, int height) {
+//    for (Program program : programs) {
+//      getImageResourceURL(
+//              context,
+//              program.getPosterUrl())
+//              .getDownloadUrl()
+//              .addOnFailureListener(error -> {
+//                liveProgramPosterMapSurrogate = null;
+//                liveProgramPosterMap.setValue(null);
+//              })
+//              .addOnSuccessListener(uri -> {
+//                //Preload Images into Disk Cache
+//                Glide.with(context)
+//                        .load(uri)
+//                        .asBitmap()
+//                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+//                        .skipMemoryCache(false)
+//                        .into(new SimpleTarget<Bitmap>(width, height) {
+//                          @Override
+//                          public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+//                            //Populate UriMapLiveData
+//                            liveProgramPosterMapSurrogate.put(program.getId(), resource);
+//                            liveProgramPosterMap.setValue(liveProgramPosterMapSurrogate);
+//                          }
+//                        });
+//              });
+//    }
+//  }
 
 //  private void loadWorkbookImageUri(Context context, List<CourseWithWorkbooks> workbooks, int width, int height) {
 //    for (CourseWithWorkbooks w : workbooks) {
@@ -295,4 +283,42 @@ public class RemoteResourceService {
 //        });
 //    }
 //  }
+
+  private StorageReference getImageResourceURL(Context context, String endpoint) {
+    float density = context.getResources().getDisplayMetrics().density;
+    StorageReference ref = null;
+    if (density <= 0.75) {
+      ref = urlMap.get("l");
+    } else if (density <= 1.0) {
+      ref = urlMap.get("m");
+    } else if (density <= 1.5) {
+      ref = urlMap.get("h");
+    } else if (density <= 2.0) {
+      ref = urlMap.get("x");
+    } else if (density <= 3.0) {
+      ref = urlMap.get("xx");
+    } else if (density <= 4.0) {
+      ref = urlMap.get("xxx");
+    } else {
+      ref = urlMap.get("h");
+    }
+    return ref.child(endpoint.substring(1));
+  }
+
+  private StorageReference getProfileImageResourceURL(String id) {
+    return urlMap.get("profile_photo").child(id);
+  }
+
+  private StorageReference getVideoResourceURL(String endpoint) {
+    //TODO add screen density to check to determine best resolution to download
+    return urlMap.get("video").child(endpoint);
+  }
+
+  private StorageReference getDocumentResourceURL(String endpoint) {
+    return urlMap.get("doc").child(endpoint);
+  }
+
+  private StorageReference getWorkbookResourceURL(String endpoint) {
+    return urlMap.get("workbook").child(endpoint);
+  }
 }

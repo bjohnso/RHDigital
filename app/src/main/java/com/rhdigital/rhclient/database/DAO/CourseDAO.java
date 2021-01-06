@@ -21,7 +21,7 @@ public abstract class CourseDAO extends BaseDAO<Course> {
 
     // GET
     @Query("SELECT * FROM courses WHERE program_id = :id")
-    abstract public LiveData<List<Course>> posterfindByPackageId(@NonNull String id);
+    abstract public LiveData<List<Course>> findByProgramId(@NonNull String id);
 
     @Query("SELECT * FROM courses WHERE id = :id")
     abstract public LiveData<Course> findById(@NonNull String id);

@@ -2,10 +2,12 @@ package com.rhdigital.rhclient.database.repository;
 
 import android.app.Application;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 
 import com.rhdigital.rhclient.database.DAO.BaseDAO;
 import com.rhdigital.rhclient.database.DAO.CourseDAO;
+import com.rhdigital.rhclient.database.DAO.CourseDescriptionDAO;
 import com.rhdigital.rhclient.database.DAO.ProgramDAO;
 import com.rhdigital.rhclient.database.DAO.ReportDAO;
 import com.rhdigital.rhclient.database.DAO.VideoDAO;
@@ -14,6 +16,7 @@ import com.rhdigital.rhclient.database.DAO.UserDAO;
 import com.rhdigital.rhclient.database.DAO.WorkbookDAO;
 import com.rhdigital.rhclient.database.RHDatabase;
 import com.rhdigital.rhclient.database.model.Course;
+import com.rhdigital.rhclient.database.model.CourseDescription;
 import com.rhdigital.rhclient.database.model.Report;
 import com.rhdigital.rhclient.database.model.Video;
 import com.rhdigital.rhclient.database.model.Program;
@@ -27,6 +30,7 @@ import java.util.concurrent.Executors;
 
 public class RHRepository {
     private CourseDAO courseDAO;
+    private CourseDescriptionDAO courseDescriptionDAO;
     private ProgramDAO programDAO;
     private ReportDAO reportDAO;
     private UserDAO userDAO;
@@ -38,6 +42,7 @@ public class RHRepository {
     public RHRepository(Application application) {
         RHDatabase db = RHDatabase.getDatabase(application);
         courseDAO = db.courseDAO();
+        courseDescriptionDAO = db.courseDescriptionDAO();
         programDAO = db.programDAO();
         reportDAO = db.reportDAO();
         userDAO = db.userDAO();
@@ -48,20 +53,27 @@ public class RHRepository {
     }
 
     // COURSES
-    public LiveData<List<Course>> getAllCourses() {
-    return courseDAO.getAll();
-  }
+    public LiveData<List<Course>> getAllCourses() { return courseDAO.getAll(); }
 
     public LiveData<List<Course>> getAllAuthorisedCourses() {return courseDAO.getAllAuthorised(); }
 
     public LiveData<List<Course>> getAllUndiscoveredCourses() { return courseDAO.getAllUnauthorised(); }
 
+    public LiveData<Course> getCourse(@NonNull String courseId) { return courseDAO.findById(courseId); }
+
+    public LiveData<List<Course>> getAllCoursesByProgramId(@NonNull String programId) { return courseDAO.findByProgramId(programId); }
+
+    // COURSE DESCRIPTIONS
+    public LiveData<List<CourseDescription>> getAllCourseDescriptionsByCourseId(@NonNull String courseId) { return courseDescriptionDAO.findByCourseId(courseId); }
+
     // PROGRAMS
     public LiveData<List<Program>> getAllPrograms() { return programDAO.getAll(); }
 
-    public LiveData<List<Program>> getAllAuthorisedPrograms() {return programDAO.getAllAuthorised(); }
+    public LiveData<List<Program>> getAllAuthorisedPrograms() { return programDAO.getAllAuthorised(); }
 
     public LiveData<List<Program>> getAllUndiscoveredPrograms() { return programDAO.getAllUnauthorised(); }
+
+    public LiveData<Program> getProgram(@NonNull String programId) { return programDAO.findById(programId); }
 
     // REPORTS
     public LiveData<List<Report>> getAllReports() { return reportDAO.getAll(); }
@@ -94,8 +106,10 @@ public class RHRepository {
 
     public LiveData<List<Workbook>> getAllUndiscoveredWorkbooks() { return workbookDAO.getAllUnauthorised(); }
 
+    public LiveData<List<Workbook>> getAllWorkbooksByCourseId(@NonNull String courseId) { return workbookDAO.findByCourseId(courseId); }
 
-    public void authoriseCourse(String id) {
+
+    public void authoriseCourse(@NonNull String id) {
       try {
         executorService.submit(new AuthCourseService(courseDAO, id, true)).get();
       } catch (Exception e) {
@@ -111,7 +125,7 @@ public class RHRepository {
       }
     }
 
-    public void update(Object o) {
+    public void update(@NonNull Object o) {
       try {
         if (o.getClass().getSimpleName().equalsIgnoreCase(User.class.getSimpleName())) {
           executorService.submit(new UpdateService(userDAO, o));
@@ -121,7 +135,7 @@ public class RHRepository {
       }
     }
 
-    public Long insert(Object o) {
+    public Long insert(@NonNull Object o) {
         try {
           if (o.getClass().getSimpleName().equalsIgnoreCase(Course.class.getSimpleName())) {
             return executorService.submit(new InsertService(courseDAO, o)).get();

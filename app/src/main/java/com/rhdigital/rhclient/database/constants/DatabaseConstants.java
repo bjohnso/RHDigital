@@ -14,6 +14,7 @@ public class DatabaseConstants {
   public static final String DAOs[] = {
     "programDAO",
     "courseDAO",
+          "courseDescriptionDAO",
     "reportDAO",
     "videoDAO",
     "workbookDAO",
