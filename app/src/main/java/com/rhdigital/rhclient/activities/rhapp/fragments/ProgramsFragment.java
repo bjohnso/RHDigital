@@ -19,6 +19,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.google.android.material.tabs.TabLayout;
 import com.rhdigital.rhclient.R;
 import com.rhdigital.rhclient.activities.rhapp.RHAppActivity;
 import com.rhdigital.rhclient.activities.rhapp.adapters.ProgramsRecyclerViewAdapter;
@@ -68,7 +69,6 @@ public class ProgramsFragment extends Fragment {
       programsViewModel.init();
       binding.setViewModel(programsViewModel);
 
-      initialiseLiveData();
       initialiseUI();
 
       return binding.getRoot();
@@ -76,20 +76,11 @@ public class ProgramsFragment extends Fragment {
 
     private void initialiseUI() {
         calculateImageDimensions();
+        initialiseTabLayout();
         initialiseRecyclerView();
     }
 
     private void initialiseLiveData() {
-        OnClickCallback callback = (program) -> {
-            Bundle bundle = new Bundle();
-            bundle.putString("programId", ((Program)program).getId());
-            NavigationService.getINSTANCE()
-                    .navigate(
-                            getActivity().getLocalClassName(),
-                            R.id.coursesFragment, bundle, null
-                    );
-        };
-        programsRecyclerViewAdapter = new ProgramsRecyclerViewAdapter(callback);
         programsPosterObserver = new Observer<HashMap<String, Bitmap>>() {
             @Override
             public void onChanged(HashMap<String, Bitmap> posterMap) {
@@ -116,17 +107,53 @@ public class ProgramsFragment extends Fragment {
             }
           };
 
-          programsObservable = programsViewModel.getAllUndiscoveredPrograms();
+          programsObservable = programsViewModel.getPrograms();
           programsObservable.observe(getViewLifecycleOwner(), programsObserver);
     }
 
+    private void initialiseTabLayout() {
+        binding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                if (tab.getPosition() == 0) {
+                    programsViewModel.isEnrolledState.setValue(false);
+                } else if (tab.getPosition() == 1) {
+                    programsViewModel.isEnrolledState.setValue(true);
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+        programsViewModel.isEnrolledState.observe(getViewLifecycleOwner(), isEnrolledState -> {
+            initialiseLiveData();
+        });
+    }
+
     private void initialiseRecyclerView() {
-      binding.programsRecycler.setHasFixedSize(true);
-      binding.programsRecycler.setItemViewCacheSize(10);
-      binding.programsRecycler.setDrawingCacheEnabled(true);
-      binding.programsRecycler.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_AUTO);
-      binding.programsRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
-      binding.programsRecycler.setAdapter(programsRecyclerViewAdapter);
+        OnClickCallback callback = (program) -> {
+            Bundle bundle = new Bundle();
+            bundle.putString("programId", ((Program)program).getId());
+            NavigationService.getINSTANCE()
+                    .navigate(
+                            getActivity().getLocalClassName(),
+                            R.id.coursesFragment, bundle, null
+                    );
+        };
+        programsRecyclerViewAdapter = new ProgramsRecyclerViewAdapter(callback);
+        binding.programsRecycler.setHasFixedSize(true);
+        binding.programsRecycler.setItemViewCacheSize(10);
+        binding.programsRecycler.setDrawingCacheEnabled(true);
+        binding.programsRecycler.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_AUTO);
+        binding.programsRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
+        binding.programsRecycler.setAdapter(programsRecyclerViewAdapter);
     }
 
     private void calculateImageDimensions() {

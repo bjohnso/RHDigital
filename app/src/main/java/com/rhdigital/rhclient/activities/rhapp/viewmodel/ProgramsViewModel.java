@@ -8,6 +8,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelStoreOwner;
 
@@ -26,6 +27,7 @@ import java.util.List;
 public class ProgramsViewModel extends AndroidViewModel {
 
   private RHRepository rhRepository;
+  public MutableLiveData<Boolean> isEnrolledState = new MutableLiveData(false);
 
   public ProgramsViewModel(@NonNull Application application) {
     super(application);
@@ -36,16 +38,23 @@ public class ProgramsViewModel extends AndroidViewModel {
     ViewModelStoreOwner viewModelStoreOwner =
             (ViewModelStoreOwner) ((RHApplication)getApplication()).getCurrentActivity();
     RHAppViewModel rhAppViewModel = new ViewModelProvider(viewModelStoreOwner).get(RHAppViewModel.class);
+    rhAppViewModel.isEnrollState.setValue(false);
     rhAppViewModel.isBackButtonActive.setValue(false);
     rhAppViewModel.isTitleCenter.setValue(false);
     rhAppViewModel.title.setValue(getApplication().getString(R.string.title_programs));
   }
 
-  public LiveData<List<Program>> getAllPrograms() { return rhRepository.getAllPrograms(); }
+  public LiveData<List<Program>> getPrograms() {
+    if (isEnrolledState.getValue()) {
+      return getAllAuthorisedPrograms();
+    } else {
+      return getAllUndiscoveredPrograms();
+    }
+  }
 
-  public LiveData<List<Program>> getAllAuthorisedPrograms() {return rhRepository.getAllAuthorisedPrograms(); }
+  private LiveData<List<Program>> getAllAuthorisedPrograms() {return rhRepository.getAllAuthorisedPrograms(); }
 
-  public LiveData<List<Program>> getAllUndiscoveredPrograms() {return rhRepository.getAllUndiscoveredPrograms(); }
+  private LiveData<List<Program>> getAllUndiscoveredPrograms() {return rhRepository.getAllUndiscoveredPrograms(); }
 
   public LiveData<HashMap<String, Bitmap>> getAllProgramPosters(Context context, List<Program> programs, int width, int height) {
     List<RemoteResourceDto> data = new ArrayList<>();
