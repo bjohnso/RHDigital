@@ -35,12 +35,12 @@ public class SplashActivity extends AppCompatActivity {
 
       rhAuthIntent = new Intent(this, RHAppActivity.class);
 
-      PopulateRoomAsync populateRoomAsync = new PopulateRoomAsync();
-      populateRoomAsync.getInserts().observe(this, (Observer<List<Long>>) inserts -> {
-        startAuthActivity();
-      });
-      populateRoomAsync.populateFromUpstream(RHDatabase.getDatabase(this));
-
+//      PopulateRoomAsync populateRoomAsync = new PopulateRoomAsync();
+//      populateRoomAsync.getInserts().observe(this, (Observer<List<Long>>) inserts -> {
+//        startAuthActivity();
+//      });
+//      populateRoomAsync.populateFromUpstream(RHDatabase.getDatabase(this));
+      startAuthActivity();
       startSplashAnimation();
     }
 

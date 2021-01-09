@@ -42,7 +42,6 @@ public class ProgramsFragment extends Fragment {
 
     // VIEW MODEL
     private ProgramsViewModel programsViewModel;
-    private RHAppViewModel rhAppViewModel;
 
     // ADAPTERS
     private ProgramsRecyclerViewAdapter programsRecyclerViewAdapter;

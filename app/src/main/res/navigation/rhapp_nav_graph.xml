@@ -15,4 +15,10 @@
       android:name="com.rhdigital.rhclient.activities.rhapp.fragments.CoursesFragment"
       android:label="CoursesFragment">
   </fragment>
+
+  <fragment
+      android:id="@+id/reportsFragment"
+      android:name="com.rhdigital.rhclient.activities.rhapp.fragments.ReportsFragment"
+      android:label="ReportsFragment">
+  </fragment>
 </navigation>

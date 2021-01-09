@@ -24,7 +24,7 @@ import com.rhdigital.rhclient.database.model.User;
 import com.rhdigital.rhclient.database.model.Video;
 import com.rhdigital.rhclient.database.model.Workbook;
 
-@Database(entities = {Course.class, CourseDescription.class, Program.class, Report.class, User.class, Video.class, Workbook.class}, version = 4, exportSchema = false)
+@Database(entities = {Course.class, CourseDescription.class, Program.class, Report.class, User.class, Video.class, Workbook.class}, version = 1, exportSchema = false)
 public abstract class RHDatabase extends RoomDatabase {
 
     private static volatile RHDatabase INSTANCE;
