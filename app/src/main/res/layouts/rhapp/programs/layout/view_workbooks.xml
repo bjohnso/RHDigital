@@ -2,9 +2,13 @@
 <layout xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <import type="android.view.View"/>
         <variable
             name="visibility"
             type="int"/>
+        <variable
+            name="workbooksCollapsed"
+            type="boolean" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -56,6 +60,7 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
+            android:visibility="@{workbooksCollapsed ? View.GONE : View.VISIBLE}"
             app:layout_constraintTop_toBottomOf="@id/workbooksHeader"
             android:layout_width="match_parent"
             android:layout_height="0dp" />

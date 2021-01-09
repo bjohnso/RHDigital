@@ -88,6 +88,11 @@ public class CoursesViewHolder extends BaseViewHolder {
 
         if (course.isAuthorised()) {
             recyclerView = binding.viewWorkbooks.recyclerView;
+            binding.viewWorkbooks.icExpand.setOnClickListener(view -> {
+                Boolean isWorkbooksCollapsed = binding.viewWorkbooks.getWorkbooksCollapsed();
+                binding.viewWorkbooks.setWorkbooksCollapsed(!isWorkbooksCollapsed);
+                binding.viewWorkbooks.notifyPropertyChanged(binding.viewWorkbooks.recyclerView.getId());
+            });
         } else {
             recyclerView = binding.viewCourseDescriptions.recyclerView;
         }
