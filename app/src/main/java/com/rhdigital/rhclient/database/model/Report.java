@@ -22,6 +22,10 @@ public class Report extends Model {
   @PrimaryKey
   private String id;
 
+  @ColumnInfo(name = "title")
+  @NonNull
+  private String title;
+
   @ColumnInfo(name = "program_id")
   @NonNull
   private String programId;
@@ -41,9 +45,11 @@ public class Report extends Model {
   public Report() {}
 
   public Report(@NonNull String id, @NonNull String programId,
-                @NonNull String month, @NonNull String url) {
+                @NonNull String title, @NonNull String month,
+                @NonNull String url) {
     this.id = id;
     this.programId = programId;
+    this.title = title;
     this.month = month;
     this.url = url;
   }
@@ -66,11 +72,16 @@ public class Report extends Model {
     return month;
   }
 
+  @NonNull
+  public String getTitle() { return title; }
+
   public boolean isAuthorised() {
     return isAuthorised;
   }
 
   public void setProgramId(@NonNull String programId) { this.programId = programId; }
+
+  public void setTitle(@NonNull String title) { this.title = title; }
 
   public void setId(@NonNull String id) {
     this.id = id;

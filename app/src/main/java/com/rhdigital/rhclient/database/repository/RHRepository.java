@@ -80,8 +80,6 @@ public class RHRepository {
 
     public LiveData<List<Report>> getAllAuthorisedReports() { return reportDAO.getAllAuthorised(); }
 
-    public LiveData<List<Report>> getAllUndiscoveredReports() { return reportDAO.getAllUnauthorised(); }
-
     // USER
     public LiveData<List<User>> getAllUsers() { return userDAO.getAll(); }
 

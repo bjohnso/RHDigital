@@ -1,7 +1,9 @@
 package com.rhdigital.rhclient.activities.rhapp;
 
 import android.os.Bundle;
+import android.view.MenuItem;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -12,14 +14,13 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.rhdigital.rhclient.R;
 import com.rhdigital.rhclient.RHApplication;
+import com.rhdigital.rhclient.activities.courses.CoursesActivity;
 import com.rhdigital.rhclient.activities.rhapp.viewmodel.RHAppViewModel;
 import com.rhdigital.rhclient.common.services.NavigationService;
 import com.rhdigital.rhclient.databinding.ActivityRhappBinding;
 
 public class RHAppActivity extends AppCompatActivity {
 
-  private Toolbar mToolbar;
-  private BottomNavigationView mBottomNavigationView;
   private ActivityRhappBinding binding;
 
   @Override
@@ -37,8 +38,17 @@ public class RHAppActivity extends AppCompatActivity {
     );
     setContentView(binding.getRoot());
 
-    // INITIALISE VIEW COMPONENTS
-    mToolbar = binding.topNavigationView;
+    binding.bottomNavigationView.setOnNavigationItemSelectedListener(item ->  {
+      switch (item.getItemId()){
+        case R.id.bottom_nav_programs:
+          NavigationService.getINSTANCE().navigate(getLocalClassName(), R.id.programsFragment, null, null);
+          return true;
+        case R.id.bottom_nav_reports:
+          NavigationService.getINSTANCE().navigate(getLocalClassName(), R.id.reportsFragment, null, null);
+          return true;
+      }
+      return false;
+    });
 
     binding.btnBack.setOnClickListener(view -> {
       NavigationService.getINSTANCE().navigateBack(getLocalClassName());

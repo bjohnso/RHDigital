@@ -2,6 +2,7 @@
   <string name="app_name">RH DIGITAL</string>
 
   <string name="title_programs">Programs</string>
+  <string name="title_reports">Reports</string>
 
   <string name="disclaimer">&lt;p&gt;By signing up you agree to the &lt;u&gt;Privacy Policy&lt;/u&gt; &amp; &lt;u&gt;Terms of use&lt;/u&gt;.&lt;/p&gt;</string>
   <string name="sign_in_disclaimer"><p>"Forgotten your login details?"</p></string>
@@ -14,6 +15,7 @@
   <string name="sign_up_email_verification_action"><p>Resend verification.</p></string>
 
   <string name="workbooks_title">Workbooks</string>
+  <string name="reports_title">Confidential Share Research Reports</string>
 
   <string name="courses_button_enroll">ENROLL NOW</string>
 
@@ -28,6 +30,7 @@
   //Content Error Messages
   <string name="server_error_programs">Error loading programs. Please try again later.</string>
   <string name="server_error_courses">Error loading courses. Please try again later.</string>
+  <string name="server_error_reports">Error loading reports. Please try again later.</string>
   <string name="server_error_workbooks">Error loading workbooks. Please try again later.</string>
   <string name="server_error_user_documents">Error loading user profile documents. Please try again later.</string>
   <string name="server_error_user">Error loading user profile. Please try again later.</string>

@@ -1,17 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-<!--    <item-->
-<!--        android:id="@+id/courses_bottom_nav_courses"-->
-<!--        android:icon="@drawable/ic_courses_inactive"-->
-<!--        android:title="Courses" />-->
+    <item
+        android:id="@+id/bottom_nav_programs"
+        android:icon="@drawable/ic_programs_inactive"
+        android:title="Programs" />
 
-<!--    <item-->
-<!--        android:id="@+id/courses_bottom_nav_workbooks"-->
-<!--        android:icon="@drawable/ic_workbooks_inactive"-->
-<!--        android:title="Workbooks"/>-->
-
-<!--    <item-->
-<!--        android:id="@+id/courses_bottom_nav_research"-->
-<!--        android:icon="@drawable/ic_research_inactive"-->
-<!--        android:title="Research"/>-->
+    <item
+        android:id="@+id/bottom_nav_reports"
+        android:icon="@drawable/ic_reports_inactive"
+        android:title="Workbooks"/>
 </menu>

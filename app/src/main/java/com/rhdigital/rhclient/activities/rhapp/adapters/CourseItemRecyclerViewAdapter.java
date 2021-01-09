@@ -1,6 +1,5 @@
 package com.rhdigital.rhclient.activities.rhapp.adapters;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 

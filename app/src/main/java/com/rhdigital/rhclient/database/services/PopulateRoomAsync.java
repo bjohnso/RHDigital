@@ -171,6 +171,7 @@ public class PopulateRoomAsync extends AsyncTask<LinkedHashMap<String, QuerySnap
               new Report(
                 doc.getId(),
                 doc.getString("programId"),
+                doc.getString("title"),
                 doc.getString("month"),
                 doc.getString("url")
               )
