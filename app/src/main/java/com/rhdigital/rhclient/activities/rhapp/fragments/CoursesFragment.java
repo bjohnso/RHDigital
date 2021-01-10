@@ -19,8 +19,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.rhdigital.rhclient.R;
 import com.rhdigital.rhclient.activities.rhapp.adapters.CoursesRecyclerViewAdapter;
+import com.rhdigital.rhclient.activities.rhapp.adapters.ProgramsRecyclerViewAdapter;
 import com.rhdigital.rhclient.activities.rhapp.viewmodel.CoursesViewModel;
+import com.rhdigital.rhclient.common.dto.VideoControlActionDto;
+import com.rhdigital.rhclient.common.interfaces.OnClickCallback;
+import com.rhdigital.rhclient.common.services.NavigationService;
+import com.rhdigital.rhclient.common.services.VideoPlayerService;
 import com.rhdigital.rhclient.database.model.Course;
+import com.rhdigital.rhclient.database.model.Program;
 import com.rhdigital.rhclient.databinding.FragmentCoursesBinding;
 
 import java.util.HashMap;
@@ -59,8 +65,8 @@ public class CoursesFragment extends Fragment {
         coursesViewModel.init(getArguments().getString("programId"))
                 .observe(getViewLifecycleOwner(), complete -> {
                     if (complete) {
-                        initialiseLiveData();
                         initialiseUI();
+                        initialiseLiveData();
                     }
                 });
         binding.setViewModel(coursesViewModel);
@@ -73,7 +79,6 @@ public class CoursesFragment extends Fragment {
     }
 
     private void initialiseLiveData() {
-        coursesRecyclerViewAdapter = new CoursesRecyclerViewAdapter(coursesViewModel.program.getValue());
         coursesPosterObserver = new Observer<HashMap<String, Bitmap>>() {
             @Override
             public void onChanged(HashMap<String, Bitmap> posterMap) {
@@ -105,6 +110,20 @@ public class CoursesFragment extends Fragment {
     }
 
     private void initialiseRecyclerView() {
+        OnClickCallback callback = (action) -> {
+            VideoControlActionDto videoControlAction = (VideoControlActionDto)action;
+            switch (videoControlAction.getActionType()) {
+                case VideoControlActionDto.MAXIMISE:
+                        Bundle bundle = new Bundle();
+                        bundle.putParcelable("videoData", videoControlAction.getVideo());
+                        NavigationService.getINSTANCE()
+                                .navigate(
+                                        getActivity().getLocalClassName(),
+                                        R.id.videosFragment, bundle, null
+                                );
+            }
+        };
+        coursesRecyclerViewAdapter = new CoursesRecyclerViewAdapter(coursesViewModel.program.getValue(), callback);
         binding.coursesRecycler.setHasFixedSize(true);
         binding.coursesRecycler.setItemViewCacheSize(10);
         binding.coursesRecycler.setDrawingCacheEnabled(true);
@@ -139,5 +158,12 @@ public class CoursesFragment extends Fragment {
 
     private void onUpdateProgramPosters(HashMap<String, Bitmap> posterMap) {
         coursesRecyclerViewAdapter.setPosterUriMap(posterMap);
+    }
+
+    @Override
+    public void onDestroyView() {
+        this.coursesRecyclerViewAdapter = null;
+        VideoPlayerService.getInstance().destroyAllVideoStreams(false);
+        super.onDestroyView();
     }
 }

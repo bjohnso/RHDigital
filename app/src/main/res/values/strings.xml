@@ -30,6 +30,7 @@
   //Content Error Messages
   <string name="server_error_programs">Error loading programs. Please try again later.</string>
   <string name="server_error_courses">Error loading courses. Please try again later.</string>
+  <string name="server_error_videos">Error loading videos. Please try again later.</string>
   <string name="server_error_reports">Error loading reports. Please try again later.</string>
   <string name="server_error_workbooks">Error loading workbooks. Please try again later.</string>
   <string name="server_error_user_documents">Error loading user profile documents. Please try again later.</string>

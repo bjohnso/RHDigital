@@ -20,6 +20,7 @@
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
         android:layout_height="60dp"
+        android:visibility="@{viewModel.isFullscreenMode ? View.GONE : View.VISIBLE}"
         app:layout_constraintTop_toTopOf="parent">
 
       <com.google.android.material.appbar.AppBarLayout
@@ -69,6 +70,7 @@
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:background="@color/bar"
+        android:visibility="@{viewModel.isFullscreenMode ? View.GONE : View.VISIBLE}"
         app:layout_constraintBottom_toBottomOf="parent">
 
       <Button

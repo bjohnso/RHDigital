@@ -1,5 +1,8 @@
 package com.rhdigital.rhclient.database.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
@@ -16,7 +19,7 @@ import static androidx.room.ForeignKey.CASCADE;
     parentColumns = "id",
     childColumns = "course_id"
   ), indices = {@Index("course_id")})
-public class Video extends Model {
+public class Video extends Model implements Parcelable {
   @ColumnInfo(name = "id")
   @NonNull
   @PrimaryKey
@@ -130,4 +133,45 @@ public class Video extends Model {
   public boolean isAuthorised() {
     return isAuthorised;
   }
+
+  protected Video(Parcel in) {
+    id = in.readString();
+    courseId = in.readString();
+    title = in.readString();
+    language = in.readString();
+    subtitle = in.readString();
+    videoUrl = in.readString();
+    thumbnailUrl = in.readString();
+    isAuthorised = in.readByte() != 0x00;
+  }
+
+  @Override
+  public int describeContents() {
+    return 0;
+  }
+
+  @Override
+  public void writeToParcel(Parcel parcel, int i) {
+    parcel.writeString(id);
+    parcel.writeString(courseId);
+    parcel.writeString(title);
+    parcel.writeString(language);
+    parcel.writeString(subtitle);
+    parcel.writeString(videoUrl);
+    parcel.writeString(thumbnailUrl);
+    parcel.writeByte((byte) (isAuthorised ? 0x01 : 0x00));
+  }
+
+  @SuppressWarnings("unused")
+  public static final Parcelable.Creator<Video> CREATOR = new Parcelable.Creator<Video>() {
+    @Override
+    public Video createFromParcel(Parcel in) {
+      return new Video(in);
+    }
+
+    @Override
+    public Video[] newArray(int size) {
+      return new Video[size];
+    }
+  };
 }

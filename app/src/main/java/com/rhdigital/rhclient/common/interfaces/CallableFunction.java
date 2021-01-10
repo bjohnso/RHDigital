@@ -1,4 +1,4 @@
-package com.rhdigital.rhclient.database.services;
+package com.rhdigital.rhclient.common.interfaces;
 
 import com.google.android.gms.tasks.Continuation;
 

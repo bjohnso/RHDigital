@@ -9,6 +9,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.rhdigital.rhclient.RHApplication;
 import com.rhdigital.rhclient.database.model.Course;
 import com.rhdigital.rhclient.database.model.CourseDescription;
+import com.rhdigital.rhclient.database.model.Video;
 import com.rhdigital.rhclient.database.model.Workbook;
 import com.rhdigital.rhclient.database.repository.RHRepository;
 import java.util.List;
@@ -48,5 +49,9 @@ public class CourseItemViewModel extends AndroidViewModel {
             return rhRepository.getAllCourseDescriptionsByCourseId(courseId);
         }
         return null;
+    }
+
+    public LiveData<Video> getVideo(String courseId) {
+        return rhRepository.getVideoByCourseId(courseId);
     }
 }

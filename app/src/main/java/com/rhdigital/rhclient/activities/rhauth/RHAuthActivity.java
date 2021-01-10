@@ -20,10 +20,8 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
-import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.rhdigital.rhclient.R;
@@ -36,7 +34,7 @@ import com.rhdigital.rhclient.common.services.NavigationService;
 import com.rhdigital.rhclient.common.services.PushNotificationHelperService;
 import com.rhdigital.rhclient.common.util.RHAPIResult;
 import com.rhdigital.rhclient.database.model.User;
-import com.rhdigital.rhclient.database.services.CallableFunction;
+import com.rhdigital.rhclient.common.interfaces.CallableFunction;
 import com.rhdigital.rhclient.database.viewmodel.UserViewModel;
 
 import java.util.HashMap;

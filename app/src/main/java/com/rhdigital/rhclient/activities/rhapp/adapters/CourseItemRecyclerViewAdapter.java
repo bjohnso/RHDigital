@@ -10,6 +10,7 @@ import com.rhdigital.rhclient.R;
 import com.rhdigital.rhclient.activities.rhapp.viewholder.CourseDescriptionsViewHolder;
 import com.rhdigital.rhclient.activities.rhapp.viewholder.WorkbooksViewHolder;
 import com.rhdigital.rhclient.common.ancestors.BaseViewHolder;
+import com.rhdigital.rhclient.common.interfaces.OnClickCallback;
 import com.rhdigital.rhclient.database.model.CourseDescription;
 import com.rhdigital.rhclient.database.model.Workbook;
 
@@ -21,6 +22,7 @@ public class CourseItemRecyclerViewAdapter extends RecyclerView.Adapter<BaseView
     public static final int DESCRIPTION = 1;
 
     private List<Workbook> workbooks;
+    private OnClickCallback callback;
     private List<CourseDescription> descriptions;
 
     @NonNull

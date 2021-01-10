@@ -19,8 +19,8 @@ public abstract class VideoDAO extends BaseDAO<Video> {
   abstract public int deleteById(int id);
 
   // GET
-  @Query("SELECT * FROM videos WHERE course_id = :id")
-  abstract public LiveData<List<Video>> findByCourseId(@NonNull String id);
+  @Query("SELECT * FROM videos WHERE course_id = :id LIMIT 1")
+  abstract public LiveData<Video> findByCourseId(@NonNull String id);
 
   @Query("SELECT * FROM videos WHERE id = :id")
   abstract public LiveData<Video> findById(@NonNull String id);
