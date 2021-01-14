@@ -5,6 +5,7 @@ import android.util.Log;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.rhdigital.rhclient.common.interfaces.CallableFunction;
 
 import java.util.LinkedHashMap;
 import java.util.concurrent.Semaphore;

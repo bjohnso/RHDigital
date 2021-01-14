@@ -93,6 +93,8 @@ public class RHRepository {
     // VIDEO
     public LiveData<List<Video>> getAllVideos() { return videoDAO.getAll(); }
 
+    public LiveData<Video> getVideoByCourseId(String courseId) { return videoDAO.findByCourseId(courseId); }
+
     public LiveData<List<Video>> getAllAuthorisedVideos() { return videoDAO.getAllAuthorised(); }
 
     public LiveData<List<Video>> getAllUndiscoveredVideos() { return videoDAO.getAllUnauthorised(); }

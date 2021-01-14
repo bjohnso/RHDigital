@@ -9,6 +9,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.rhdigital.rhclient.common.interfaces.CallableFunction;
 import com.rhdigital.rhclient.database.DAO.CourseDAO;
 import com.rhdigital.rhclient.database.DAO.CourseDescriptionDAO;
 import com.rhdigital.rhclient.database.DAO.ProgramDAO;
@@ -133,89 +134,22 @@ public class PopulateRoomAsync extends AsyncTask<LinkedHashMap<String, QuerySnap
       for (QueryDocumentSnapshot doc : pair.getValue()) {
         switch (pair.getKey()) {
           case "courses":
-            List<String> descriptions =
-                    doc.get("descriptions") == null ?
-                            Collections.emptyList() :
-                            (List<String>) doc.get("descriptions");
-            pop.add(courseDAO.insert(
-              new Course(
-                doc.getId(),
-                doc.getString("programId"),
-                doc.getString("title"),
-                doc.getString("author")
-              )
-            ));
-            for(String description: descriptions) {
-              pop.add(courseDescriptionDAO.insert(
-                      new CourseDescription(
-                              UUID.randomUUID().toString(),
-                              doc.getId(),
-                              description
-                      )
-              ));
-            }
+            insertCourse(doc, pop);
             break;
           case "programs":
-            pop.add(programDAO.insert(
-              new Program(
-                doc.getId(),
-                doc.getString("title"),
-                doc.getString("type"),
-                doc.getDouble("price"),
-                doc.getString("posterUrl")
-              )
-            ));
+            insertProgram(doc, pop);
             break;
           case "reports":
-            pop.add(reportDAO.insert(
-              new Report(
-                doc.getId(),
-                doc.getString("programId"),
-                doc.getString("title"),
-                doc.getString("month"),
-                doc.getString("url")
-              )
-            ));
+            insertReport(doc, pop);
             break;
           case "users":
-            pop.add(userDAO.insert(
-              new User(
-                doc.getId(),
-                doc.getString("email"),
-                doc.getString("cell"),
-                doc.getString("name"),
-                doc.getString("surname"),
-                doc.getString("title"),
-                doc.getString("city"),
-                doc.getString("country"),
-                doc.getString("industry"),
-                doc.getString("about")
-              )
-            ));
+            insertUser(doc, pop);
             break;
           case "videos":
-            pop.add(videoDAO.insert(
-              new Video(
-                doc.getId(),
-                doc.getString("courseId"),
-                doc.getString("title"),
-                doc.getString("language"),
-                doc.getString("subtitle"),
-                doc.getString("videoUrl"),
-                doc.getString("thumbnailUrl")
-              )
-            ));
+            insertVideo(doc, pop);
             break;
           case "workbooks":
-            pop.add(workbookDAO.insert(
-              new Workbook(
-                doc.getId(),
-                doc.getString("courseId"),
-                doc.getString("title"),
-                doc.getString("language"),
-                doc.getString("url")
-              )
-            ));
+            insertWorkbook(doc, pop);
             break;
         }
       }
@@ -224,5 +158,106 @@ public class PopulateRoomAsync extends AsyncTask<LinkedHashMap<String, QuerySnap
     // NOTIFY POPULATION EVENT HAS OCCURRED
     this.inserts.postValue(pop);
     return null;
+  }
+
+  private void insertProgram(QueryDocumentSnapshot doc, ArrayList<Long> pop) {
+    Program program = new Program(
+            doc.getId(),
+            doc.getString("title"),
+            doc.getString("type"),
+            doc.getDouble("price"),
+            doc.getString("posterUrl")
+    );
+    program.setAuthorised(true);
+    pop.add(programDAO.insert(
+            program
+    ));
+  }
+
+  private void insertCourse(QueryDocumentSnapshot doc, ArrayList<Long> pop) {
+    Course course = new Course(
+            doc.getId(),
+            doc.getString("programId"),
+            doc.getString("title"),
+            doc.getString("author")
+    );
+    course.setAuthorised(true);
+    List<String> descriptions =
+            doc.get("descriptions") == null ?
+                    Collections.emptyList() :
+                    (List<String>) doc.get("descriptions");
+    pop.add(courseDAO.insert(
+            course
+    ));
+    for(String description: descriptions) {
+      pop.add(courseDescriptionDAO.insert(
+              new CourseDescription(
+                      UUID.randomUUID().toString(),
+                      doc.getId(),
+                      description
+              )
+      ));
+    }
+  }
+
+  private void insertWorkbook(QueryDocumentSnapshot doc, ArrayList<Long> pop) {
+    Workbook workbook = new Workbook(
+            doc.getId(),
+            doc.getString("courseId"),
+            doc.getString("title"),
+            doc.getString("language"),
+            doc.getString("url")
+    );
+    workbook.setAuthorised(true);
+    pop.add(workbookDAO.insert(
+            workbook
+    ));
+  }
+
+  private void insertVideo(QueryDocumentSnapshot doc, ArrayList<Long> pop) {
+    Video video = new Video(
+            doc.getId(),
+            doc.getString("courseId"),
+            doc.getString("title"),
+            doc.getString("language"),
+            doc.getString("subtitle"),
+            doc.getString("videoUrl"),
+            doc.getString("thumbnailUrl")
+    );
+    video.setAuthorised(true);
+    pop.add(videoDAO.insert(
+            video
+    ));
+  }
+
+  private void insertReport(QueryDocumentSnapshot doc, ArrayList<Long> pop) {
+    Report report = new Report(
+            doc.getId(),
+            doc.getString("programId"),
+            doc.getString("title"),
+            doc.getString("month"),
+            doc.getString("url")
+    );
+    report.setAuthorised(true);
+    pop.add(reportDAO.insert(
+            report
+    ));
+  }
+
+  private void insertUser(QueryDocumentSnapshot doc, ArrayList<Long> pop) {
+    pop.add(userDAO.insert(
+            new User(
+                    doc.getId(),
+                    doc.getString("email"),
+                    doc.getString("cell"),
+                    doc.getString("name"),
+                    doc.getString("surname"),
+                    doc.getString("title"),
+                    doc.getString("city"),
+                    doc.getString("country"),
+                    doc.getString("industry"),
+                    doc.getString("about")
+            )
+    ));
   }
 }

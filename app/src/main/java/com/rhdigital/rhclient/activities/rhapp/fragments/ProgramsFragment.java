@@ -138,13 +138,15 @@ public class ProgramsFragment extends Fragment {
 
     private void initialiseRecyclerView() {
         OnClickCallback callback = (program) -> {
-            Bundle bundle = new Bundle();
-            bundle.putString("programId", ((Program)program).getId());
-            NavigationService.getINSTANCE()
-                    .navigate(
-                            getActivity().getLocalClassName(),
-                            R.id.coursesFragment, bundle, null
-                    );
+            if (program != null) {
+                Bundle bundle = new Bundle();
+                bundle.putString("programId", ((Program)program).getId());
+                NavigationService.getINSTANCE()
+                        .navigate(
+                                getActivity().getLocalClassName(),
+                                R.id.coursesFragment, bundle, null
+                        );
+            }
         };
         programsRecyclerViewAdapter = new ProgramsRecyclerViewAdapter(callback);
         binding.programsRecycler.setHasFixedSize(true);

@@ -5,7 +5,7 @@ import android.util.Pair;
 import android.util.Patterns;
 
 import com.rhdigital.rhclient.common.util.RHAPIResult;
-import com.rhdigital.rhclient.database.services.CallableFunction;
+import com.rhdigital.rhclient.common.interfaces.CallableFunction;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

@@ -12,10 +12,6 @@
         android:orientation="horizontal"
         xmlns:android="http://schemas.android.com/apk/res/android">
 
-        <ImageButton android:id="@+id/exo_exit"
-            android:src="@drawable/ic_arrow_back_black"
-            style="@style/video_player_button" />
-
         <TextView
           android:id="@+id/exo_title"
           android:layout_width="match_parent"

@@ -3,17 +3,12 @@ package com.rhdigital.rhclient.activities.rhauth.services;
 import android.util.Log;
 import android.util.Pair;
 
-import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.EmailAuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.functions.FirebaseFunctions;
 import com.google.firebase.functions.FirebaseFunctionsException;
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.stream.JsonReader;
 import com.rhdigital.rhclient.common.util.RHAPIResult;
-import com.rhdigital.rhclient.database.services.CallableFunction;
+import com.rhdigital.rhclient.common.interfaces.CallableFunction;
 
 import org.json.JSONException;
 import org.json.JSONObject;

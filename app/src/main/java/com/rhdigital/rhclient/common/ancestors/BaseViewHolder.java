@@ -6,6 +6,7 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.rhdigital.rhclient.common.interfaces.OnClickCallback;
 import com.rhdigital.rhclient.database.model.Course;
 import com.rhdigital.rhclient.database.model.CourseDescription;
 import com.rhdigital.rhclient.database.model.Program;
@@ -22,7 +23,7 @@ public class BaseViewHolder extends RecyclerView.ViewHolder {
 
     public void bind(Program program, Bitmap bitmap) {}
 
-    public void bind(Program program, Course course, Bitmap bitmap) {}
+    public void bind(Program program, Course course, Bitmap bitmap, OnClickCallback videoCallback) {}
 
     public void bind(Course course) {}
 

@@ -34,7 +34,4 @@ public class RHApplication extends Application {
     return currentActivity;
   }
 
-  //  public VideoPlayerService getVideoPlayerService() {
-//      return VideoPlayerService.getInstance();
-//    }
 }

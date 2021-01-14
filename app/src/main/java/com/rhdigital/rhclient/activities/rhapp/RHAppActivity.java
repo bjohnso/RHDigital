@@ -1,22 +1,20 @@
 package com.rhdigital.rhclient.activities.rhapp;
 
-import android.os.Bundle;
-import android.view.MenuItem;
 
-import androidx.annotation.NonNull;
+import android.content.pm.ActivityInfo;
+import android.os.Bundle;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.rhdigital.rhclient.R;
 import com.rhdigital.rhclient.RHApplication;
-import com.rhdigital.rhclient.activities.courses.CoursesActivity;
 import com.rhdigital.rhclient.activities.rhapp.viewmodel.RHAppViewModel;
 import com.rhdigital.rhclient.common.services.NavigationService;
+import com.rhdigital.rhclient.common.services.VideoPlayerService;
 import com.rhdigital.rhclient.databinding.ActivityRhappBinding;
 
 public class RHAppActivity extends AppCompatActivity {
@@ -50,7 +48,12 @@ public class RHAppActivity extends AppCompatActivity {
       return false;
     });
 
+    binding.getViewModel().isFullscreenMode.observe(this, isFullscreenMode -> {
+      configureScreenOrientation(isFullscreenMode);
+    });
+
     binding.btnBack.setOnClickListener(view -> {
+      VideoPlayerService.getInstance().destroyAllVideoStreams(true);
       NavigationService.getINSTANCE().navigateBack(getLocalClassName());
     });
 
@@ -63,5 +66,19 @@ public class RHAppActivity extends AppCompatActivity {
       navController,
       R.navigation.rhapp_nav_graph,
       R.id.programsFragment);
+  }
+
+  public void configureScreenOrientation(boolean isLandscape) {
+    // Forced Orientation Landscape
+    if (isLandscape) {
+      ((RHApplication) getApplication())
+              .getCurrentActivity()
+              .setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+    }
+    else {
+      ((RHApplication) getApplication())
+              .getCurrentActivity()
+              .setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+    }
   }
 }

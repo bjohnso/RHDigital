@@ -7,9 +7,9 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
-import com.rhdigital.rhclient.R;
 import com.rhdigital.rhclient.activities.rhapp.viewholder.CoursesViewHolder;
-import com.rhdigital.rhclient.common.ancestors.BaseViewHolder;
+import com.rhdigital.rhclient.common.ancestors.PlayerViewHolder;
+import com.rhdigital.rhclient.common.interfaces.OnClickCallback;
 import com.rhdigital.rhclient.database.model.Course;
 import com.rhdigital.rhclient.database.model.Program;
 import com.rhdigital.rhclient.databinding.ItemCoursesBinding;
@@ -17,14 +17,16 @@ import com.rhdigital.rhclient.databinding.ItemCoursesBinding;
 import java.util.HashMap;
 import java.util.List;
 
-public class CoursesRecyclerViewAdapter extends RecyclerView.Adapter<BaseViewHolder> {
+public class CoursesRecyclerViewAdapter extends RecyclerView.Adapter<PlayerViewHolder> {
 
     private Program program;
     private List<Course> courses;
+    private OnClickCallback videoCallback;
     private HashMap<String, Bitmap> imageBitMap;
 
-    public CoursesRecyclerViewAdapter(Program program) {
+    public CoursesRecyclerViewAdapter(Program program, OnClickCallback videoCallback) {
         this.program = program;
+        this.videoCallback = videoCallback;
     }
 
     @NonNull
@@ -38,15 +40,22 @@ public class CoursesRecyclerViewAdapter extends RecyclerView.Adapter<BaseViewHol
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
-    public void onBindViewHolder(@NonNull BaseViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull PlayerViewHolder holder, int position) {
         if (courses != null && imageBitMap != null) {
             Course course = courses.get(position);
             holder.bind(
                     program,
                     course,
-                    imageBitMap.get(course.getId())
+                    imageBitMap.get(course.getId()),
+                    videoCallback
             );
         }
+    }
+
+    @Override
+    public void onViewDetachedFromWindow(@NonNull PlayerViewHolder holder) {
+        holder.destroy();
+        super.onViewDetachedFromWindow(holder);
     }
 
     public void setProgram(Program program) {
