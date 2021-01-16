@@ -3,6 +3,7 @@
 
   <string name="title_programs">Programs</string>
   <string name="title_reports">Reports</string>
+  <string name="title_profile">Profile</string>
 
   <string name="disclaimer">&lt;p&gt;By signing up you agree to the &lt;u&gt;Privacy Policy&lt;/u&gt; &amp; &lt;u&gt;Terms of use&lt;/u&gt;.&lt;/p&gt;</string>
   <string name="sign_in_disclaimer"><p>"Forgotten your login details?"</p></string>

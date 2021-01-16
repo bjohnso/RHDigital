@@ -29,15 +29,15 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class RHRepository {
-    private CourseDAO courseDAO;
-    private CourseDescriptionDAO courseDescriptionDAO;
-    private ProgramDAO programDAO;
-    private ReportDAO reportDAO;
-    private UserDAO userDAO;
-    private VideoDAO videoDAO;
-    private WorkbookDAO workbookDAO;
-    private CourseWithWorkbooksDAO courseWithWorkbooksDAO;
-    private ExecutorService executorService;
+    protected CourseDAO courseDAO;
+    protected CourseDescriptionDAO courseDescriptionDAO;
+    protected ProgramDAO programDAO;
+    protected ReportDAO reportDAO;
+    protected UserDAO userDAO;
+    protected VideoDAO videoDAO;
+    protected WorkbookDAO workbookDAO;
+    protected CourseWithWorkbooksDAO courseWithWorkbooksDAO;
+    protected ExecutorService executorService;
 
     public RHRepository(Application application) {
         RHDatabase db = RHDatabase.getDatabase(application);
@@ -108,10 +108,10 @@ public class RHRepository {
 
     public LiveData<List<Workbook>> getAllWorkbooksByCourseId(@NonNull String courseId) { return workbookDAO.findByCourseId(courseId); }
 
-
-    public void authoriseCourse(@NonNull String id) {
+    // PREMIUM
+    public void authoriseProgram(@NonNull String id) {
       try {
-        executorService.submit(new AuthCourseService(courseDAO, id, true)).get();
+        executorService.submit(new AuthProgramService(id, true)).get();
       } catch (Exception e) {
         e.printStackTrace();
       }
@@ -119,7 +119,7 @@ public class RHRepository {
 
     public void unauthoriseAllCourses() {
       try {
-        executorService.submit(new AuthCourseService(courseDAO, null, false)).get();
+        executorService.submit(new AuthProgramService(null, false)).get();
       } catch (Exception e) {
         e.printStackTrace();
       }
@@ -194,22 +194,28 @@ public class RHRepository {
     }
   }
 
-  private class AuthCourseService implements Callable<Integer> {
-    private CourseDAO courseDAO;
+  private class AuthProgramService implements Callable<Void> {
     private String id;
     private boolean authorise;
-    public AuthCourseService(CourseDAO courseDAO, String id, boolean authorise) {
-      this.courseDAO = courseDAO;
+    public AuthProgramService(String id, boolean authorise) {
       this.id = id;
       this.authorise = authorise;
     }
 
     @Override
-    public Integer call() throws Exception {
-      if (authorise)
-        return this.courseDAO.authorise(id);
-      this.courseDAO.deauthorise();
-      return -1;
+    public Void call() throws Exception {
+      if (authorise) {
+          programDAO.authorise(id);
+          courseDAO.authorise(id);
+          videoDAO.authorise(id);
+          workbookDAO.authorise(id);
+      } else {
+          programDAO.deauthorise(id);
+          courseDAO.deauthorise(id);
+          videoDAO.deauthorise(id);
+          workbookDAO.deauthorise(id);
+      }
+      return null;
     }
   }
 }

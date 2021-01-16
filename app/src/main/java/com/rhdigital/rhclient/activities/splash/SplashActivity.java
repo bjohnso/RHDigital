@@ -13,6 +13,7 @@ import com.rhdigital.rhclient.R;
 import com.rhdigital.rhclient.activities.rhapp.RHAppActivity;
 import com.rhdigital.rhclient.database.RHDatabase;
 
+import com.rhdigital.rhclient.database.repository.RHRepository;
 import com.rhdigital.rhclient.database.services.PopulateRoomAsync;
 
 import java.util.List;
@@ -37,10 +38,13 @@ public class SplashActivity extends AppCompatActivity {
 
       PopulateRoomAsync populateRoomAsync = new PopulateRoomAsync();
       populateRoomAsync.getInserts().observe(this, (Observer<List<Long>>) inserts -> {
+//        RHRepository rhRepository = new RHRepository(getApplication());
+//        rhRepository.authoriseProgram("37Bd1Esq57d7iT48URfE");
+//        rhRepository.authoriseProgram("IoRq8vxEEtCxsNg9BdPP");
+//        rhRepository.authoriseProgram("eMIDmA1Dr3F0EaWJvsVC");
         startAuthActivity();
       });
       populateRoomAsync.populateFromUpstream(RHDatabase.getDatabase(this));
-//      startAuthActivity();
       startSplashAnimation();
     }
 

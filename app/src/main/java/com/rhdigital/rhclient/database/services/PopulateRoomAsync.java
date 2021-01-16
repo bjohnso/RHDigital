@@ -168,7 +168,6 @@ public class PopulateRoomAsync extends AsyncTask<LinkedHashMap<String, QuerySnap
             doc.getDouble("price"),
             doc.getString("posterUrl")
     );
-    program.setAuthorised(true);
     pop.add(programDAO.insert(
             program
     ));
@@ -181,7 +180,6 @@ public class PopulateRoomAsync extends AsyncTask<LinkedHashMap<String, QuerySnap
             doc.getString("title"),
             doc.getString("author")
     );
-    course.setAuthorised(true);
     List<String> descriptions =
             doc.get("descriptions") == null ?
                     Collections.emptyList() :
@@ -203,12 +201,12 @@ public class PopulateRoomAsync extends AsyncTask<LinkedHashMap<String, QuerySnap
   private void insertWorkbook(QueryDocumentSnapshot doc, ArrayList<Long> pop) {
     Workbook workbook = new Workbook(
             doc.getId(),
+            doc.getString("programId"),
             doc.getString("courseId"),
             doc.getString("title"),
             doc.getString("language"),
             doc.getString("url")
     );
-    workbook.setAuthorised(true);
     pop.add(workbookDAO.insert(
             workbook
     ));
@@ -217,6 +215,7 @@ public class PopulateRoomAsync extends AsyncTask<LinkedHashMap<String, QuerySnap
   private void insertVideo(QueryDocumentSnapshot doc, ArrayList<Long> pop) {
     Video video = new Video(
             doc.getId(),
+            doc.getString("programId"),
             doc.getString("courseId"),
             doc.getString("title"),
             doc.getString("language"),
@@ -224,7 +223,6 @@ public class PopulateRoomAsync extends AsyncTask<LinkedHashMap<String, QuerySnap
             doc.getString("videoUrl"),
             doc.getString("thumbnailUrl")
     );
-    video.setAuthorised(true);
     pop.add(videoDAO.insert(
             video
     ));
@@ -238,7 +236,6 @@ public class PopulateRoomAsync extends AsyncTask<LinkedHashMap<String, QuerySnap
             doc.getString("month"),
             doc.getString("url")
     );
-    report.setAuthorised(true);
     pop.add(reportDAO.insert(
             report
     ));

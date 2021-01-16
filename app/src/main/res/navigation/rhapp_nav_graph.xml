@@ -17,14 +17,20 @@
   </fragment>
 
   <fragment
+      android:id="@+id/videosFragment"
+      android:name="com.rhdigital.rhclient.activities.rhapp.fragments.VideosFragment"
+      android:label="VideosFragment">
+  </fragment>
+
+  <fragment
       android:id="@+id/reportsFragment"
       android:name="com.rhdigital.rhclient.activities.rhapp.fragments.ReportsFragment"
       android:label="ReportsFragment">
   </fragment>
 
   <fragment
-      android:id="@+id/videosFragment"
-      android:name="com.rhdigital.rhclient.activities.rhapp.fragments.VideosFragment"
-      android:label="VideosFragment">
+      android:id="@+id/profileFragment"
+      android:name="com.rhdigital.rhclient.activities.rhapp.fragments.ProfileFragment"
+      android:label="ProfileFragment">
   </fragment>
 </navigation>

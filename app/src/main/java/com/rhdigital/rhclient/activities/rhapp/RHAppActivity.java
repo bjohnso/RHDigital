@@ -1,6 +1,7 @@
 package com.rhdigital.rhclient.activities.rhapp;
 
 
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 
@@ -10,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.rhdigital.rhclient.R;
 import com.rhdigital.rhclient.RHApplication;
 import com.rhdigital.rhclient.activities.rhapp.viewmodel.RHAppViewModel;
@@ -20,10 +22,23 @@ import com.rhdigital.rhclient.databinding.ActivityRhappBinding;
 public class RHAppActivity extends AppCompatActivity {
 
   private ActivityRhappBinding binding;
+  private String userId;
+  private Intent rhAuthIntent;
 
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+
+    rhAuthIntent = new Intent(this, RHAppActivity.class);
+    Bundle bundle = new Bundle();
+
+    if ((userId = FirebaseAuth.getInstance().getUid()) != null) {
+      bundle.putString("userId", userId);
+    }
+
+//    else {
+//      startAuthActivity();
+//    }
 
     // REGISTER ACTIVITY TO APPLICATION
     ((RHApplication)getApplicationContext()).setCurrentActivity(this);
@@ -43,6 +58,9 @@ public class RHAppActivity extends AppCompatActivity {
           return true;
         case R.id.bottom_nav_reports:
           NavigationService.getINSTANCE().navigate(getLocalClassName(), R.id.reportsFragment, null, null);
+          return true;
+        case R.id.bottom_nav_profile:
+          NavigationService.getINSTANCE().navigate(getLocalClassName(), R.id.profileFragment, bundle, null);
           return true;
       }
       return false;
@@ -81,4 +99,6 @@ public class RHAppActivity extends AppCompatActivity {
               .setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
   }
+
+  private void startAuthActivity() { startActivity(rhAuthIntent); }
 }

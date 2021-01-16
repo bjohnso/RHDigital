@@ -36,9 +36,9 @@ public abstract class CourseDAO extends BaseDAO<Course> {
     abstract public LiveData<List<Course>> getAllUnauthorised();
 
     // AUTH
-    @Query("UPDATE courses SET is_authorised = 1 WHERE id = :id")
-    abstract public int authorise(@NonNull String id);
+    @Query("UPDATE courses SET is_authorised = 1 WHERE program_id = :programId")
+    abstract public int authorise(@NonNull String programId);
 
-    @Query("UPDATE courses SET is_authorised = 0")
-    abstract public void deauthorise();
+    @Query("UPDATE courses SET is_authorised = 0 WHERE program_id = :programId")
+    abstract public void deauthorise(String programId);
 }

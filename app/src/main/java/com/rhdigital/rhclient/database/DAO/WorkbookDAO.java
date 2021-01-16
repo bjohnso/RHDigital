@@ -33,9 +33,9 @@ public abstract class WorkbookDAO extends BaseDAO<Workbook> {
     @Query("SELECT * FROM workbooks WHERE is_authorised = 0;")
     abstract public LiveData<List<Workbook>> getAllUnauthorised();
 
-    @Query("UPDATE workbooks SET is_authorised = 1 WHERE id = :id")
-    abstract public int authorise(String id);
+    @Query("UPDATE workbooks SET is_authorised = 1 WHERE program_id = :programId")
+    abstract public int authorise(String programId);
 
-    @Query("UPDATE workbooks SET is_authorised = 0")
-    abstract public void deauthorise();
+    @Query("UPDATE workbooks SET is_authorised = 0 WHERE program_id = :programId")
+    abstract public void deauthorise(String programId);
 }

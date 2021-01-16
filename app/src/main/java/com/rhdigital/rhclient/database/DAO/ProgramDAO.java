@@ -35,7 +35,7 @@ public abstract class ProgramDAO extends BaseDAO<Program> {
   @Query("UPDATE programs SET is_authorised = 1 WHERE id = :id")
   abstract public int authorise(String id);
 
-  @Query("UPDATE programs SET is_authorised = 0")
-  abstract public void deauthorise();
+  @Query("UPDATE programs SET is_authorised = 0 WHERE id = :id")
+  abstract public void deauthorise(String id);
 
 }

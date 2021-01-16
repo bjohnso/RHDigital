@@ -22,6 +22,9 @@ public class Workbook extends Model {
     @PrimaryKey
     private String id;
 
+    @ColumnInfo(name = "program_id")
+    private String programId;
+
     @ColumnInfo(name = "course_id")
     private String courseId;
 
@@ -43,8 +46,11 @@ public class Workbook extends Model {
     @Ignore
     public Workbook() {}
 
-    public Workbook(@NonNull String id, @NonNull String courseId, @NonNull String title, @NonNull String language, @NonNull String url) {
+    public Workbook(@NonNull String id, @NonNull String programId,
+                    @NonNull String courseId, @NonNull String title,
+                    @NonNull String language, @NonNull String url) {
       this.id = id;
+      this.programId = programId;
       this.courseId = courseId;
       this.title = title;
       this.language = language;
@@ -74,6 +80,10 @@ public class Workbook extends Model {
   public String getUrl() {
     return url;
   }
+
+  public String getProgramId() { return programId; }
+
+  public void setProgramId(String programId) { this.programId = programId; }
 
   public boolean isAuthorised() {
     return isAuthorised;

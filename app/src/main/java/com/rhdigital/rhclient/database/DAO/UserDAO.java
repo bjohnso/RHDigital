@@ -23,7 +23,7 @@ public abstract class UserDAO extends BaseDAO<User> {
   @Query("SELECT * FROM users WHERE id = :id")
   abstract public LiveData<User> findById(@NonNull String id);
 
-  @Query("SELECT * FROM users WHERE id = :id")
+  @Query("SELECT * FROM users WHERE id = :id LIMIT 1")
   abstract public LiveData<User> getAuthenticatedUser(String id);
 
   @Query("SELECT * FROM users")

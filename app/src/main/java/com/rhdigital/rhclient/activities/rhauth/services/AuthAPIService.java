@@ -31,7 +31,7 @@ public class AuthAPIService implements CallableFunction<Object, RHAPIResult> {
     try {
       data.put("email", email);
       FirebaseFunctions.getInstance()
-      .getHttpsCallable("fetchUserByEmail")
+      .getHttpsCallable("auth-fetchUserByEmail")
       .call(data)
       .addOnSuccessListener(apiResult -> {
         Log.d(TAG, apiResult.getData().toString());
@@ -69,7 +69,7 @@ public class AuthAPIService implements CallableFunction<Object, RHAPIResult> {
     try {
       JSONObject signUpData = new JSONObject(data);
       FirebaseFunctions.getInstance()
-        .getHttpsCallable("signUpNewUser")
+        .getHttpsCallable("auth-signUpNewUser")
         .call(signUpData)
         .addOnSuccessListener(apiResult -> {
           Log.d(TAG, apiResult.getData().toString());
