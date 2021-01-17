@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.rhdigital.rhclient.R;
 import com.rhdigital.rhclient.activities.rhapp.RHAppActivity;
+import com.rhdigital.rhclient.activities.rhauth.RHAuthActivity;
 import com.rhdigital.rhclient.database.RHDatabase;
 
 import com.rhdigital.rhclient.database.repository.RHRepository;
@@ -34,7 +35,7 @@ public class SplashActivity extends AppCompatActivity {
 
       FirebaseAuth.getInstance().signOut();
 
-      rhAuthIntent = new Intent(this, RHAppActivity.class);
+      rhAuthIntent = new Intent(this, RHAuthActivity.class);
 
       PopulateRoomAsync populateRoomAsync = new PopulateRoomAsync();
       populateRoomAsync.getInserts().observe(this, (Observer<List<Long>>) inserts -> {

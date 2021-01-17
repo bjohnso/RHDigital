@@ -33,4 +33,10 @@
       android:name="com.rhdigital.rhclient.activities.rhapp.fragments.ProfileFragment"
       android:label="ProfileFragment">
   </fragment>
+
+  <fragment
+      android:id="@+id/editProfileFragment"
+      android:name="com.rhdigital.rhclient.activities.rhapp.fragments.EditProfileFragment"
+      android:label="EditProfileFragment">
+  </fragment>
 </navigation>

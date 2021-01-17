@@ -41,6 +41,7 @@
               android:visibility="@{viewModel.isBackButtonActive ? View.VISIBLE : View.GONE}"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
+              android:layout_marginEnd="15dp"
               android:background="@drawable/background_transparent"
               android:src="@drawable/ic_arrow_back_black" />
 
@@ -52,6 +53,18 @@
               android:textSize="20sp"
               android:text="@{viewModel.title}"
               />
+
+          <Button
+              android:id="@+id/buttonAction"
+              android:text="Save"
+              android:textColor="@color/save"
+              android:textAllCaps="false"
+              android:textSize="18sp"
+              android:layout_alignParentEnd="true"
+              style="@style/Widget.AppCompat.Button.Borderless"
+              android:visibility="@{viewModel.isActionButtonActive ? View.VISIBLE : View.GONE}"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"/>
         </androidx.appcompat.widget.Toolbar>
       </com.google.android.material.appbar.AppBarLayout>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

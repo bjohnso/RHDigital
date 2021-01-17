@@ -6,7 +6,7 @@ android {
     buildToolsVersion "29.0.3"
     defaultConfig {
         applicationId "com.rhdigital.rhclient"
-        minSdkVersion 22
+        minSdkVersion 23
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
@@ -33,6 +33,7 @@ android {
             'src/main/res/layouts/rhapp',
             'src/main/res/layouts/rhapp/programs',
             'src/main/res/layouts/rhapp/reports',
+            'src/main/res/layouts/rhapp/profile',
             'src/main/res/layouts/rhauth',
             'src/main/res/layouts/rhsplash',
             'src/main/res/layouts/rhloader',

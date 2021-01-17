@@ -1,23 +1,21 @@
 package com.rhdigital.rhclient.activities.rhauth.fragments;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.rhdigital.rhclient.R;
-import com.rhdigital.rhclient.activities.rhapp.RHAppActivity;
 import com.rhdigital.rhclient.activities.rhauth.RHAuthActivity;
 import com.rhdigital.rhclient.common.services.NavigationService;
+import com.rhdigital.rhclient.common.util.RHAPIResult;
 
 public class SignUpEmailVerificationFragment extends Fragment {
 
@@ -52,8 +50,8 @@ public class SignUpEmailVerificationFragment extends Fragment {
   public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
     View view = inflater.inflate(R.layout.fragment_sign_up_verification, container, false);
 
-    verificationResendRedirect = (LinearLayout) view.findViewById(R.id.verification_resend_redirect_redirect);
-    changeEmailRedirect = (LinearLayout) view.findViewById(R.id.change_email_redirect);
+    verificationResendRedirect = view.findViewById(R.id.verification_resend_redirect_redirect);
+    changeEmailRedirect = view.findViewById(R.id.change_email_redirect);
 
     return view;
   }
@@ -93,6 +91,13 @@ public class SignUpEmailVerificationFragment extends Fragment {
 
     @Override
     public void onClick(View view) {
+      rhAuthActivity.sendEmailVerification().observe(rhAuthActivity, result -> {
+        if (result != null) {
+          Toast.makeText(rhAuthActivity, result.getMessage(), Toast.LENGTH_LONG).show();
+        } else {
+          Toast.makeText(rhAuthActivity, RHAPIResult.AUTH_FAILURE_RESEND_EMAIL_VERIFICATION, Toast.LENGTH_LONG).show();
+        }
+      });
     }
   }
 }

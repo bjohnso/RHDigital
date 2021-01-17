@@ -37,7 +37,6 @@ public class ReportsRecyclerViewAdapter extends RecyclerView.Adapter<BaseViewHol
     public BaseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View view = null;
-        Log.d("AHOOOGAH", viewType + "");
         switch (viewType) {
             case REPORTS:
                return new ReportsViewHolder(inflater.inflate(R.layout.item_reports, parent, false));
@@ -87,7 +86,6 @@ public class ReportsRecyclerViewAdapter extends RecyclerView.Adapter<BaseViewHol
         if (reports != null) {
             return reports.size();
         } else if (reportMap != null) {
-            Log.d("AHOOOGAH", reportMap.keySet().size() + "");
             return reportMap.keySet().size();
         }
         return 0;

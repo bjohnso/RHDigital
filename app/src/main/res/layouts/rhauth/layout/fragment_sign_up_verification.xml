@@ -11,7 +11,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginBottom="128dp"
-    android:alpha="0.15"
+    android:alpha="0.25"
     android:scaleType="centerCrop"
     android:src="@drawable/rh_welcome_poster"
     app:layout_constraintBottom_toTopOf="@+id/line"

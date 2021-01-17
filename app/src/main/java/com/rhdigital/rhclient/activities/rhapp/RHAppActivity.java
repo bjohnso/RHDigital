@@ -15,6 +15,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.rhdigital.rhclient.R;
 import com.rhdigital.rhclient.RHApplication;
 import com.rhdigital.rhclient.activities.rhapp.viewmodel.RHAppViewModel;
+import com.rhdigital.rhclient.activities.rhauth.RHAuthActivity;
 import com.rhdigital.rhclient.common.services.NavigationService;
 import com.rhdigital.rhclient.common.services.VideoPlayerService;
 import com.rhdigital.rhclient.databinding.ActivityRhappBinding;
@@ -22,23 +23,20 @@ import com.rhdigital.rhclient.databinding.ActivityRhappBinding;
 public class RHAppActivity extends AppCompatActivity {
 
   private ActivityRhappBinding binding;
-  private String userId;
   private Intent rhAuthIntent;
+
+  @Override
+  protected void onStart() {
+    super.onStart();
+    rhAuthIntent = new Intent(this, RHAuthActivity.class);
+    if (FirebaseAuth.getInstance().getCurrentUser() == null) {
+      startAuthActivity();
+    }
+  }
 
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-
-    rhAuthIntent = new Intent(this, RHAppActivity.class);
-    Bundle bundle = new Bundle();
-
-    if ((userId = FirebaseAuth.getInstance().getUid()) != null) {
-      bundle.putString("userId", userId);
-    }
-
-//    else {
-//      startAuthActivity();
-//    }
 
     // REGISTER ACTIVITY TO APPLICATION
     ((RHApplication)getApplicationContext()).setCurrentActivity(this);
@@ -60,7 +58,7 @@ public class RHAppActivity extends AppCompatActivity {
           NavigationService.getINSTANCE().navigate(getLocalClassName(), R.id.reportsFragment, null, null);
           return true;
         case R.id.bottom_nav_profile:
-          NavigationService.getINSTANCE().navigate(getLocalClassName(), R.id.profileFragment, bundle, null);
+          NavigationService.getINSTANCE().navigate(getLocalClassName(), R.id.profileFragment, null, null);
           return true;
       }
       return false;

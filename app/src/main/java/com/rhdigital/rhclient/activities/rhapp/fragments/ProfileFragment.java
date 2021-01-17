@@ -16,9 +16,12 @@ import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.rhdigital.rhclient.R;
 import com.rhdigital.rhclient.activities.rhapp.viewmodel.ProfileViewModel;
+import com.rhdigital.rhclient.common.services.NavigationService;
 import com.rhdigital.rhclient.database.model.User;
 import com.rhdigital.rhclient.databinding.FragmentProfileBinding;
 
@@ -32,8 +35,6 @@ public class ProfileFragment extends Fragment {
 
     // VIEW MODEL
     private ProfileViewModel profileViewModel;
-
-    private User user;
 
     // OBSERVABLES
     private LiveData<User> userObservable;
@@ -49,12 +50,14 @@ public class ProfileFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentProfileBinding.inflate(getLayoutInflater());
 
-        profileViewModel = new ProfileViewModel(getActivity().getApplication());
+        profileViewModel = new ViewModelProvider(getActivity()).get(ProfileViewModel.class);
         profileViewModel.init();
         binding.setViewModel(profileViewModel);
+        binding.setLifecycleOwner(getViewLifecycleOwner());
 
         initialiseLiveData();
         initialiseUI();
+        initialiseClickListeners();
 
         return binding.getRoot();
     }
@@ -70,15 +73,25 @@ public class ProfileFragment extends Fragment {
             public void onChanged(User u) {
                 if (u != null) {
                     userObservable.removeObserver(this);
-                    user = u;
+                    profileViewModel.user.setValue(u);
                 } else {
                     Toast.makeText(getContext(), R.string.server_error_user, Toast.LENGTH_LONG).show();
                 }
             }
         };
 
-        userObservable = profileViewModel.getUser("");
+        userObservable = profileViewModel.getUser(FirebaseAuth.getInstance().getUid());
         userObservable.observe(getViewLifecycleOwner(), userObserver);
+    }
+
+    private void initialiseClickListeners() {
+        binding.buttonEditProfile.setOnClickListener(view -> {
+            NavigationService.getINSTANCE()
+                    .navigate(
+                            getActivity().getLocalClassName(),
+                            R.id.editProfileFragment, null, null
+                    );
+        });
     }
 
     private void calculateImageDimensions() {

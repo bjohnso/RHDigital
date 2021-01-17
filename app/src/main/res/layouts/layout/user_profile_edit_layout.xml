@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-  android:layout_width="match_parent"
-  android:layout_height="match_parent"
-  xmlns:app="http://schemas.android.com/apk/res-auto"
-  android:background="@drawable/background_alt">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@drawable/background_alt">
 
   <RelativeLayout
     android:id="@+id/button_header"
@@ -19,16 +20,16 @@
       android:id="@+id/user_profile_edit_back_button"
       android:layout_width="50dp"
       android:layout_height="match_parent"
-      android:layout_marginLeft="10dp"
+      android:layout_marginStart="10dp"
       android:scaleType="fitXY"
       android:src="@drawable/ic_arrow_back_black"
       style="@style/Widget.AppCompat.Button.Borderless"/>
 
     <TextView
-      android:layout_toRightOf="@id/user_profile_edit_back_button"
+      android:layout_toEndOf="@id/user_profile_edit_back_button"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_marginLeft="20dp"
+      android:layout_marginStart="20dp"
       android:textSize="20sp"
       android:text="Edit Profile"
       android:layout_centerVertical="true"/>
@@ -41,8 +42,8 @@
       android:textColor="@color/save"
       android:textAllCaps="false"
       android:textSize="18sp"
-      android:layout_alignParentRight="true"
-      android:layout_marginRight="10dp"
+      android:layout_alignParentEnd="true"
+      android:layout_marginEnd="10dp"
       android:src="@drawable/ic_arrow_back_black"
       style="@style/Widget.AppCompat.Button.Borderless"/>
 
@@ -59,9 +60,9 @@
 
   <LinearLayout
     android:paddingTop="20dp"
-    android:paddingBottom="40dp"
+    android:paddingBottom="20dp"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical">
 
     <TextView
@@ -69,7 +70,7 @@
       android:layout_height="wrap_content"
       android:text="Your Basic Information"
       android:textColor="@color/link_text_highlight"
-      android:layout_marginLeft="10dp"
+      android:layout_marginStart="10dp"
       android:textSize="14sp"/>
 
     <LinearLayout
@@ -87,7 +88,7 @@
       android:text="First Name"
       android:textAllCaps="false"
       android:textAlignment="textStart"
-      android:drawableRight="@drawable/ic_chevron_right"
+      android:drawableEnd="@drawable/ic_chevron_right"
       android:textSize="18sp"/>
     <TextView
       android:visibility="gone"
@@ -113,7 +114,7 @@
         android:text="Last Name"
         android:textAllCaps="false"
         android:textAlignment="textStart"
-        android:drawableRight="@drawable/ic_chevron_right"
+        android:drawableEnd="@drawable/ic_chevron_right"
         android:textSize="18sp"/>
       <TextView
         android:visibility="gone"
@@ -131,7 +132,8 @@
       android:layout_height="wrap_content"
       android:orientation="vertical"
       android:id="@+id/user_profile_edit_title_button"
-      style="@style/Widget.AppCompat.Button.Borderless">
+      style="@style/Widget.AppCompat.Button.Borderless"
+        android:focusable="true">
     <TextView
       android:clickable="false"
       android:layout_width="match_parent"
@@ -139,7 +141,7 @@
       android:text="Title"
       android:textAllCaps="false"
       android:textAlignment="textStart"
-      android:drawableRight="@drawable/ic_chevron_right"
+      android:drawableEnd="@drawable/ic_chevron_right"
       android:textSize="18sp"/>
     <TextView
       android:visibility="gone"
@@ -157,7 +159,8 @@
       android:layout_height="wrap_content"
       android:orientation="vertical"
       android:id="@+id/user_profile_edit_city_button"
-      style="@style/Widget.AppCompat.Button.Borderless">
+      style="@style/Widget.AppCompat.Button.Borderless"
+        android:focusable="true">
     <TextView
       android:clickable="false"
       android:layout_width="match_parent"
@@ -165,8 +168,8 @@
       android:text="City"
       android:textAllCaps="false"
       android:textAlignment="textStart"
-      android:drawableRight="@drawable/ic_chevron_right"
-      android:textSize="18sp"/>
+        android:textSize="18sp"
+        app:drawableEndCompat="@drawable/ic_chevron_right" />
     <TextView
       android:visibility="gone"
       android:clickable="false"
@@ -183,7 +186,8 @@
       android:layout_height="wrap_content"
       android:orientation="vertical"
       android:id="@+id/user_profile_edit_country_button"
-      style="@style/Widget.AppCompat.Button.Borderless">
+      style="@style/Widget.AppCompat.Button.Borderless"
+        android:focusable="true">
     <TextView
       android:clickable="false"
       android:layout_width="match_parent"
@@ -191,8 +195,8 @@
       android:text="Country"
       android:textAllCaps="false"
       android:textAlignment="textStart"
-      android:drawableRight="@drawable/ic_chevron_right"
-      android:textSize="18sp"/>
+        android:textSize="18sp"
+        app:drawableEndCompat="@drawable/ic_chevron_right" />
     <TextView
       android:visibility="gone"
       android:clickable="false"
@@ -209,7 +213,8 @@
       android:layout_height="wrap_content"
       android:orientation="vertical"
       android:id="@+id/user_profile_edit_about_button"
-      style="@style/Widget.AppCompat.Button.Borderless">
+      style="@style/Widget.AppCompat.Button.Borderless"
+        android:focusable="true">
     <TextView
       android:clickable="false"
       android:layout_width="match_parent"
@@ -217,8 +222,8 @@
       android:text="About"
       android:textAllCaps="false"
       android:textAlignment="textStart"
-      android:drawableRight="@drawable/ic_chevron_right"
-      android:textSize="18sp"/>
+        android:textSize="18sp"
+        app:drawableEndCompat="@drawable/ic_chevron_right" />
     <TextView
       android:visibility="gone"
       android:clickable="false"
@@ -235,7 +240,8 @@
       android:layout_height="wrap_content"
       android:orientation="vertical"
       android:id="@+id/user_profile_edit_industry_button"
-      style="@style/Widget.AppCompat.Button.Borderless">
+      style="@style/Widget.AppCompat.Button.Borderless"
+        android:focusable="true">
       <TextView
         android:clickable="false"
         android:layout_width="match_parent"
@@ -243,8 +249,8 @@
         android:text="Industry"
         android:textAllCaps="false"
         android:textAlignment="textStart"
-        android:drawableRight="@drawable/ic_chevron_right"
-        android:textSize="18sp"/>
+          android:textSize="18sp"
+          app:drawableEndCompat="@drawable/ic_chevron_right" />
     <TextView
       android:clickable="false"
       android:id="@+id/user_edit_industry_value"
@@ -254,44 +260,44 @@
       android:textColor="@color/link_text_faded"/>
     </LinearLayout>
 
-<!--    <TextView-->
-<!--      android:layout_marginTop="30dp"-->
-<!--      android:layout_width="match_parent"-->
-<!--      android:layout_height="wrap_content"-->
-<!--      android:text="NEVER SHARED ANYWHERE"-->
-<!--      android:layout_marginLeft="12dp"-->
-<!--      android:textColor="@color/link_text_highlight"-->
-<!--      android:textSize="14sp"/>-->
+    <TextView
+      android:layout_marginTop="30dp"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text="NEVER SHARED ANYWHERE"
+      android:layout_marginStart="12dp"
+      android:textColor="@color/link_text_highlight"
+      android:textSize="14sp"/>
 
-<!--    <LinearLayout-->
-<!--      android:clickable="true"-->
-<!--      android:layout_marginTop="10dp"-->
-<!--      android:layout_width="match_parent"-->
-<!--      android:layout_height="wrap_content"-->
-<!--      android:orientation="vertical"-->
-<!--      style="@style/Widget.AppCompat.Button.Borderless"-->
-<!--      android:id="@+id/user_profile_edit_birthday_button">-->
-<!--    <TextView-->
-<!--      android:clickable="false"-->
-<!--      android:layout_width="match_parent"-->
-<!--      android:layout_height="40dp"-->
-<!--      android:text="Date of Birth"-->
-<!--      android:textAllCaps="false"-->
-<!--      android:textAlignment="textStart"-->
-<!--      android:drawableRight="@drawable/ic_arrow_right"-->
-<!--      android:textSize="18sp"/>-->
+    <LinearLayout
+      android:clickable="true"
+      android:layout_marginTop="10dp"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      style="@style/Widget.AppCompat.Button.Borderless"
+      android:id="@+id/user_profile_edit_birthday_button"
+        android:focusable="true">
+    <TextView
+      android:clickable="false"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text="Date of Birth"
+      android:textAllCaps="false"
+      android:textAlignment="textStart"
+        android:textSize="18sp"
+        app:drawableEndCompat="@drawable/ic_chevron_right" />
 
-<!--    <TextView-->
-<!--      android:clickable="false"-->
-<!--      android:id="@+id/user_edit_birthday_value"-->
-<!--      android:layout_width="match_parent"-->
-<!--      android:layout_height="wrap_content"-->
-<!--      android:visibility="gone"-->
-<!--      android:textColor="@color/link_text_faded"/>-->
-<!--    </LinearLayout>-->
-
+    <TextView
+      android:clickable="false"
+      android:id="@+id/user_edit_birthday_value"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+        android:textSize="16sp"
+        tools:text="text"
+      android:textColor="@color/link_text_faded"/>
+    </LinearLayout>
   </LinearLayout>
-
   </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

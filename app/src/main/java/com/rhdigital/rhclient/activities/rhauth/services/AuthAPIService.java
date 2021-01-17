@@ -34,14 +34,11 @@ public class AuthAPIService implements CallableFunction<Object, RHAPIResult> {
       .getHttpsCallable("auth-fetchUserByEmail")
       .call(data)
       .addOnSuccessListener(apiResult -> {
-        Log.d(TAG, apiResult.getData().toString());
         taskResult.set(new RHAPIResult(RHAPIResult.AUTH_ERROR_EXISTING_EMAIL, apiResult.getData(), true));
         semaphore.release();
       })
       .addOnFailureListener(error -> {
         FirebaseFunctionsException exception = (FirebaseFunctionsException) error;
-        Log.d(TAG, exception.toString());
-
         if (exception.getCode() == FirebaseFunctionsException.Code.NOT_FOUND) {
           taskResult.set(new RHAPIResult(RHAPIResult.VALIDATION_SUCCESS, exception.getDetails(), false));
         } else {
@@ -56,10 +53,6 @@ public class AuthAPIService implements CallableFunction<Object, RHAPIResult> {
     return taskResult.get();
   }
 
-//  public RHAPIResult getEmailVerificationStatus() {
-//
-//  }
-
   public RHAPIResult signUpNewUser(Object arg) {
     HashMap<String, String> authFieldsMap = (HashMap<String, String>) arg;
     Gson gson = new Gson();
@@ -72,7 +65,6 @@ public class AuthAPIService implements CallableFunction<Object, RHAPIResult> {
         .getHttpsCallable("auth-signUpNewUser")
         .call(signUpData)
         .addOnSuccessListener(apiResult -> {
-          Log.d(TAG, apiResult.getData().toString());
           taskResult.set(new RHAPIResult(
             RHAPIResult.AUTH_SUCCESS_SIGN_UP,
             EmailAuthProvider.getCredential(authFieldsMap.get("email"),
@@ -82,8 +74,6 @@ public class AuthAPIService implements CallableFunction<Object, RHAPIResult> {
         })
         .addOnFailureListener(error -> {
           FirebaseFunctionsException exception = (FirebaseFunctionsException) error;
-          Log.d(TAG, exception.toString());
-
           if (exception.getCode() == FirebaseFunctionsException.Code.INVALID_ARGUMENT) {
             taskResult.set(new RHAPIResult(RHAPIResult.AUTH_ERROR_INVALID_SIGN_UP, exception.getDetails(), false));
           } else {
@@ -91,6 +81,36 @@ public class AuthAPIService implements CallableFunction<Object, RHAPIResult> {
           }
           semaphore.release();
         });
+      semaphore.acquire();
+    } catch (InterruptedException | JSONException e) {
+      e.printStackTrace();
+    }
+    return taskResult.get();
+  }
+
+  public RHAPIResult sendEmailVerification(Object arg) {
+    HashMap<String, String> authFieldsMap = (HashMap<String, String>) arg;
+    Gson gson = new Gson();
+    String data = gson.toJson(authFieldsMap);
+    Semaphore semaphore = new Semaphore(0);
+    AtomicReference<RHAPIResult> taskResult = new AtomicReference<>(null);
+    try {
+      JSONObject verificationData = new JSONObject(data);
+      FirebaseFunctions.getInstance()
+              .getHttpsCallable("auth-sendEmailVerification")
+              .call(verificationData)
+              .addOnSuccessListener(apiResult -> {
+                taskResult.set(new RHAPIResult(
+                        RHAPIResult.AUTH_SUCCESS_RESEND_EMAIL_VERIFICATION,
+                        null, true)
+                );
+                semaphore.release();
+              })
+              .addOnFailureListener(error -> {
+                FirebaseFunctionsException exception = (FirebaseFunctionsException) error;
+                  taskResult.set(new RHAPIResult(RHAPIResult.INTERNAL_ERROR_SERVER_ERROR, exception.getDetails(), false));
+                semaphore.release();
+              });
       semaphore.acquire();
     } catch (InterruptedException | JSONException e) {
       e.printStackTrace();

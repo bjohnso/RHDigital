@@ -16,6 +16,7 @@ public class RHAppViewModel extends AndroidViewModel {
     public MutableLiveData<String> title = new MutableLiveData("");
     public MutableLiveData<Boolean> isTitleCenter = new MutableLiveData(false);
     public MutableLiveData<Boolean> isBackButtonActive = new MutableLiveData(false);
+    public MutableLiveData<Boolean> isActionButtonActive = new MutableLiveData(false);
     public MutableLiveData<Boolean> isEnrollState = new MutableLiveData(false);
     public MutableLiveData<Boolean> isFullscreenMode = new MutableLiveData(false);
 

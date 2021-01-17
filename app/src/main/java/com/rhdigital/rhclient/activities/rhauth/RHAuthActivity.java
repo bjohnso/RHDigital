@@ -106,12 +106,7 @@ public class RHAuthActivity extends AppCompatActivity {
   @Override
   protected void onStart() {
     super.onStart();
-
-    if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-      if (FirebaseAuth.getInstance().getCurrentUser().isEmailVerified()) {
-        initRHApp();
-      }
-    }
+    initRHApp();
     registerBroadcastReceiver();
     PushNotificationHelperService.getINSTANCE().setContext(this);
     PushNotificationHelperService.getINSTANCE().generateNotificationChannel();
@@ -137,14 +132,12 @@ public class RHAuthActivity extends AppCompatActivity {
   private void stopLoader() {
     ViewGroup rootView = (ViewGroup) getWindow().getDecorView().getRootView();
     rootView.removeView(loader);
-    Log.d("AUTH", "STOP LOADER");
   }
 
   public void updateAuthField(String key, String value) { this.authFieldsMap.put(key, value); }
 
   public HashMap<String, String> getAuthFieldsMap() { return this.authFieldsMap; }
 
-  // TODO : VALIDATE EMAIL STRATEGY BEFORE CALLING THIS!!!
   public LiveData<RHAPIResult> signUp() {
     startLoader();
     MutableLiveData<RHAPIResult> signUpResultData = new MutableLiveData<>();
@@ -177,13 +170,26 @@ public class RHAuthActivity extends AppCompatActivity {
     return signInResultData;
   }
 
-  public LiveData<String> subscribeToEmailVerification() {
-    return this.emailVerificationResult;
+  public LiveData<RHAPIResult> sendEmailVerification() {
+    startLoader();
+    HashMap<String, String> dataMap = new HashMap();
+    dataMap.put("fcmToken", authFieldsMap.get("fcmToken"));
+    dataMap.put("uid", FirebaseAuth.getInstance().getUid());
+    MutableLiveData<RHAPIResult> resultData = new MutableLiveData<>();
+    Tasks.call(executorService, CallableFunction.callable(this.authAPIService, new Pair<>("sendEmailVerification", dataMap)))
+            .addOnSuccessListener(data -> {
+              stopLoader();
+              resultData.postValue(data);
+            })
+            .addOnFailureListener(error -> {
+              resultData.postValue(null);
+              stopLoader();
+            });
+    return resultData;
   }
 
-  public void initRHApp() {
-    Intent intent = new Intent(this, RHAppActivity.class);
-    startActivity(intent);
+  public LiveData<String> subscribeToEmailVerification() {
+    return this.emailVerificationResult;
   }
 
   //TODO: HANDLE MULTIPLE STRATEGIES
@@ -206,6 +212,17 @@ public class RHAuthActivity extends AppCompatActivity {
 
   public UserViewModel getUserViewModel() {
     return userViewModel;
+  }
+
+  public void initRHApp() {
+    if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+      if (FirebaseAuth.getInstance().getCurrentUser().isEmailVerified()) {
+        Intent intent = new Intent(this, RHAppActivity.class);
+        startActivity(intent);
+      } else {
+        NavigationService.getINSTANCE().navigate(getLocalClassName(), R.id.signUpEmailVerificationFragment, null, null);
+      }
+    }
   }
 
 }
