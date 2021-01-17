@@ -115,7 +115,7 @@
                 android:textSize="16sp"/>
 
             <Button
-                android:id="@+id/user_profile_logout_button"
+                android:id="@+id/buttonLogout"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:text="Logout"

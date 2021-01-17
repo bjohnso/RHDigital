@@ -63,7 +63,9 @@ public class EditProfileFragment extends Fragment {
     private void initialiseRecyclerViews() {
         User user = profileViewModel.user.getValue();
 
-        OnClickCallback callback = (action) -> { };
+        OnClickCallback callback = (object) -> {
+            UserFieldDto userField = (UserFieldDto) object;
+        };
 
         List<UserFieldDto> basicFields = Arrays.asList(
                 new UserFieldDto("First Name", user.getName()),

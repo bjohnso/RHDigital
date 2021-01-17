@@ -25,5 +25,8 @@ public class EditProfileViewHolder extends BaseViewHolder {
     public void bind(UserFieldDto userField, OnClickCallback callback) {
         tvField.setText(userField.getField());
         tvValue.setText(userField.getValue());
+        itemView.setOnClickListener(view -> {
+            callback.invoke(userField);
+        });
     }
 }

@@ -20,6 +20,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.rhdigital.rhclient.R;
+import com.rhdigital.rhclient.activities.rhapp.RHAppActivity;
 import com.rhdigital.rhclient.activities.rhapp.viewmodel.ProfileViewModel;
 import com.rhdigital.rhclient.common.services.NavigationService;
 import com.rhdigital.rhclient.database.model.User;
@@ -91,6 +92,10 @@ public class ProfileFragment extends Fragment {
                             getActivity().getLocalClassName(),
                             R.id.editProfileFragment, null, null
                     );
+        });
+        binding.buttonLogout.setOnClickListener(view -> {
+            RHAppActivity activity = (RHAppActivity) getActivity();
+            activity.logout();
         });
     }
 

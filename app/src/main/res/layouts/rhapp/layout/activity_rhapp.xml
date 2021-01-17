@@ -60,7 +60,7 @@
               android:textColor="@color/save"
               android:textAllCaps="false"
               android:textSize="18sp"
-              android:layout_alignParentEnd="true"
+              android:layout_gravity="end"
               style="@style/Widget.AppCompat.Button.Borderless"
               android:visibility="@{viewModel.isActionButtonActive ? View.VISIBLE : View.GONE}"
               android:layout_width="wrap_content"
