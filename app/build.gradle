@@ -35,6 +35,7 @@ android {
             'src/main/res/layouts/rhapp/reports',
             'src/main/res/layouts/rhapp/profile',
             'src/main/res/layouts/rhauth',
+            'src/main/res/layouts/rhpayment',
             'src/main/res/layouts/rhsplash',
             'src/main/res/layouts/rhloader',
             'src/main/res/layouts',

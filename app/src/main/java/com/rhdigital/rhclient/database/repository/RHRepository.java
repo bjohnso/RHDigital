@@ -5,6 +5,7 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 
+import com.rhdigital.rhclient.database.DAO.AuthorisedProgramDAO;
 import com.rhdigital.rhclient.database.DAO.BaseDAO;
 import com.rhdigital.rhclient.database.DAO.CourseDAO;
 import com.rhdigital.rhclient.database.DAO.CourseDescriptionDAO;
@@ -15,6 +16,7 @@ import com.rhdigital.rhclient.database.DAO.embedded.CourseWithWorkbooksDAO;
 import com.rhdigital.rhclient.database.DAO.UserDAO;
 import com.rhdigital.rhclient.database.DAO.WorkbookDAO;
 import com.rhdigital.rhclient.database.RHDatabase;
+import com.rhdigital.rhclient.database.model.AuthorisedProgram;
 import com.rhdigital.rhclient.database.model.Course;
 import com.rhdigital.rhclient.database.model.CourseDescription;
 import com.rhdigital.rhclient.database.model.Report;
@@ -31,6 +33,7 @@ import java.util.concurrent.Executors;
 public class RHRepository {
     protected CourseDAO courseDAO;
     protected CourseDescriptionDAO courseDescriptionDAO;
+    protected AuthorisedProgramDAO authorisedProgramDAO;
     protected ProgramDAO programDAO;
     protected ReportDAO reportDAO;
     protected UserDAO userDAO;
@@ -109,20 +112,18 @@ public class RHRepository {
     public LiveData<List<Workbook>> getAllWorkbooksByCourseId(@NonNull String courseId) { return workbookDAO.findByCourseId(courseId); }
 
     // PREMIUM
-    public void authoriseProgram(@NonNull String id) {
-      try {
-        executorService.submit(new AuthProgramService(id, true)).get();
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
+    public LiveData<List<AuthorisedProgram>> getAuthorisedPrograms() {
+        return authorisedProgramDAO.getAll();
     }
 
-    public void unauthoriseAllCourses() {
-      try {
-        executorService.submit(new AuthProgramService(null, false)).get();
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
+    public void authorisePrograms(@NonNull List<AuthorisedProgram> authorisedPrograms) {
+        try {
+            executorService.submit(
+                    new AuthProgramService(authorisedPrograms)
+            ).get();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void update(@NonNull Object o) {
@@ -195,26 +196,23 @@ public class RHRepository {
   }
 
   private class AuthProgramService implements Callable<Void> {
-    private String id;
-    private boolean authorise;
-    public AuthProgramService(String id, boolean authorise) {
-      this.id = id;
-      this.authorise = authorise;
+    private List<AuthorisedProgram> authorisedPrograms;
+    public AuthProgramService(List<AuthorisedProgram> authorisedPrograms) {
+      this.authorisedPrograms = authorisedPrograms;
     }
 
     @Override
     public Void call() throws Exception {
-      if (authorise) {
-          programDAO.authorise(id);
-          courseDAO.authorise(id);
-          videoDAO.authorise(id);
-          workbookDAO.authorise(id);
-      } else {
-          programDAO.deauthorise(id);
-          courseDAO.deauthorise(id);
-          videoDAO.deauthorise(id);
-          workbookDAO.deauthorise(id);
-      }
+        programDAO.deauthoriseAll();
+        courseDAO.deauthoriseAll();
+        videoDAO.deauthoriseAll();
+        workbookDAO.deauthoriseAll();
+        for (AuthorisedProgram authorisedProgram: authorisedPrograms) {
+            programDAO.authorise(authorisedProgram.getProgramId());
+            courseDAO.authorise(authorisedProgram.getProgramId());
+            videoDAO.authorise(authorisedProgram.getProgramId());
+            workbookDAO.authorise(authorisedProgram.getProgramId());
+        }
       return null;
     }
   }

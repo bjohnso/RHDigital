@@ -41,4 +41,7 @@ public abstract class CourseDAO extends BaseDAO<Course> {
 
     @Query("UPDATE courses SET is_authorised = 0 WHERE program_id = :programId")
     abstract public void deauthorise(String programId);
+
+    @Query("UPDATE courses SET is_authorised = 0 WHERE is_authorised != 0")
+    abstract public void deauthoriseAll();
 }

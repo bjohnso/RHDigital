@@ -98,6 +98,9 @@ public class RHAppActivity extends AppCompatActivity {
     }
   }
 
+  public void launchPaymentActivity() {
+  }
+
   public void logout() {
     FirebaseAuth.getInstance().signOut();
     startAuthActivity();
