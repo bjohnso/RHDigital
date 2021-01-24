@@ -29,11 +29,11 @@ public class SignUpEmailVerificationFragment extends Fragment {
     super.onStart();
     if (FirebaseAuth.getInstance().getCurrentUser() != null) {
       if (FirebaseAuth.getInstance().getCurrentUser().isEmailVerified()) {
-        ((RHAuthActivity)getActivity()).initRHApp();
+        ((RHAuthActivity)getActivity()).initRHRoom();
       } else {
         ((RHAuthActivity)getActivity()).subscribeToEmailVerification()
           .observe(getViewLifecycleOwner(), result -> {
-            ((RHAuthActivity)getActivity()).initRHApp();
+            ((RHAuthActivity)getActivity()).initRHRoom();
           });
       }
     } else {

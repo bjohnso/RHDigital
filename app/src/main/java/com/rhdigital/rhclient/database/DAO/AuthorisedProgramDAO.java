@@ -2,6 +2,7 @@ package com.rhdigital.rhclient.database.DAO;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
+import androidx.room.Dao;
 import androidx.room.Query;
 
 import com.rhdigital.rhclient.database.model.AuthorisedProgram;
@@ -9,6 +10,7 @@ import com.rhdigital.rhclient.database.model.Program;
 
 import java.util.List;
 
+@Dao
 public abstract class AuthorisedProgramDAO extends BaseDAO<AuthorisedProgram> {
 
     // DELETE
@@ -16,7 +18,7 @@ public abstract class AuthorisedProgramDAO extends BaseDAO<AuthorisedProgram> {
     abstract public void deleteAll();
 
     // GET
-    @Query("SELECT * FROM authorised_programs WHERE programId = :id")
+    @Query("SELECT * FROM authorised_programs WHERE id = :id")
     abstract public LiveData<AuthorisedProgram> findById(@NonNull String id);
 
     @Query("SELECT * FROM authorised_programs")

@@ -160,7 +160,7 @@ public class SignInFragment extends Fragment {
               rhAuthActivity.signIn(EmailAuthProvider.getCredential(fragment.getEmailText(), fragment.getPasswordText()))
                 .observe(fragment.getViewLifecycleOwner(), result -> {
                   if (result.getSuccess()) {
-                    rhAuthActivity.initRHApp();
+                    rhAuthActivity.initRHRoom();
                   } else {
                     Toast.makeText(fragment.getContext(), result.getMessage(), Toast.LENGTH_LONG).show();
                   }

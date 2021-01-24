@@ -9,8 +9,11 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.rhdigital.rhclient.RHApplication;
+import com.rhdigital.rhclient.common.dto.PopulateRoomDto;
+import com.rhdigital.rhclient.database.RHDatabase;
 import com.rhdigital.rhclient.database.model.AuthorisedProgram;
 import com.rhdigital.rhclient.database.model.Program;
+import com.rhdigital.rhclient.database.model.User;
 import com.rhdigital.rhclient.database.repository.RHRepository;
 
 import java.util.List;
@@ -39,5 +42,21 @@ public class PaymentViewHolder extends AndroidViewModel {
                     }
                 });
         return authorisedPrograms;
+    }
+
+    public LiveData<User> fetchRemoteUser(String userId) {
+        MutableLiveData<User> user = new MutableLiveData();
+        LifecycleOwner lifecycleOwner = (LifecycleOwner) ((RHApplication)getApplication()).getCurrentActivity();
+        rhRepository.syncWithRemote(
+                RHDatabase.getDatabase(getApplication()),
+                new PopulateRoomDto(PopulateRoomDto.USER)
+        ).observe(lifecycleOwner, inserts -> {
+            rhRepository.getAuthenticatedUser(
+                    userId
+            ).observe(
+                    lifecycleOwner, u -> user.postValue(u)
+            );
+        });
+        return user;
     }
 }

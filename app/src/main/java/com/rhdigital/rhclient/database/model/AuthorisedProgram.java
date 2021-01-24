@@ -11,22 +11,22 @@ public class AuthorisedProgram {
 
     @PrimaryKey
     @NonNull
-    @ColumnInfo(name = "programId")
-    String programId;
+    @ColumnInfo(name = "id")
+    String id;
 
     @Ignore
     public AuthorisedProgram() { }
 
-    public AuthorisedProgram(@NonNull String programId) {
-        this.programId = programId;
+    public AuthorisedProgram(@NonNull String id) {
+        this.id = id;
     }
 
     @NonNull
-    public String getProgramId() {
-        return programId;
+    public String getId() {
+        return id;
     }
 
-    public void setProgramId(@NonNull String programId) {
-        this.programId = programId;
+    public void setId(@NonNull String id) {
+        this.id = id;
     }
 }

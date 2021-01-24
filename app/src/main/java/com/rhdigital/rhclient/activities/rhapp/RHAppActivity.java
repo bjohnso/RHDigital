@@ -31,6 +31,7 @@ public class RHAppActivity extends AppCompatActivity {
     rhAuthIntent = new Intent(this, RHAuthActivity.class);
     if (FirebaseAuth.getInstance().getCurrentUser() == null) {
       startAuthActivity();
+      return;
     }
   }
 
@@ -73,15 +74,16 @@ public class RHAppActivity extends AppCompatActivity {
       NavigationService.getINSTANCE().navigateBack(getLocalClassName());
     });
 
-    // INITIALISE NAVIGATION COMPONENT && CALL NAVIGATION SERVICE
-    NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
-      .findFragmentById(R.id.nav_host_rhapp);
-    NavController navController = navHostFragment.getNavController();
-    NavigationService.getINSTANCE().initNav(
-      getLocalClassName(),
-      navController,
-      R.navigation.rhapp_nav_graph,
-      R.id.programsFragment);
+    binding.getViewModel().authorisePrograms().observe(this, authorisedPrograms -> {
+      NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
+              .findFragmentById(R.id.nav_host_rhapp);
+      NavController navController = navHostFragment.getNavController();
+      NavigationService.getINSTANCE().initNav(
+              getLocalClassName(),
+              navController,
+              R.navigation.rhapp_nav_graph,
+              R.id.programsFragment);
+    });
   }
 
   public void configureScreenOrientation(boolean isLandscape) {
@@ -99,6 +101,7 @@ public class RHAppActivity extends AppCompatActivity {
   }
 
   public void launchPaymentActivity() {
+    //TODO: LAUNCH PAYMENTS ACTIVITY
   }
 
   public void logout() {

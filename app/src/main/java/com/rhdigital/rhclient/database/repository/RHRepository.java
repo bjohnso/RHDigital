@@ -4,7 +4,9 @@ import android.app.Application;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 
+import com.rhdigital.rhclient.common.dto.PopulateRoomDto;
 import com.rhdigital.rhclient.database.DAO.AuthorisedProgramDAO;
 import com.rhdigital.rhclient.database.DAO.BaseDAO;
 import com.rhdigital.rhclient.database.DAO.CourseDAO;
@@ -24,7 +26,9 @@ import com.rhdigital.rhclient.database.model.Video;
 import com.rhdigital.rhclient.database.model.Program;
 import com.rhdigital.rhclient.database.model.User;
 import com.rhdigital.rhclient.database.model.Workbook;
+import com.rhdigital.rhclient.database.services.FirebaseRoomService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -52,7 +56,17 @@ public class RHRepository {
         videoDAO = db.videoDAO();
         workbookDAO = db.workbookDAO();
         courseWithWorkbooksDAO = db.courseWithWorkbooksDAO();
+        authorisedProgramDAO = db.authorisedProgramDAO();
+
         executorService = Executors.newCachedThreadPool();
+    }
+
+    // REMOTE ROOM SERVICE
+    public LiveData<ArrayList<Long>> syncWithRemote(RHDatabase instance, PopulateRoomDto populateRoom) {
+        FirebaseRoomService firebaseRoomService = new FirebaseRoomService();
+        return firebaseRoomService.populateFromUpstream(
+                instance, populateRoom
+        );
     }
 
     // COURSES
@@ -84,6 +98,7 @@ public class RHRepository {
     public LiveData<List<Report>> getAllAuthorisedReports() { return reportDAO.getAllAuthorised(); }
 
     // USER
+
     public LiveData<List<User>> getAllUsers() { return userDAO.getAll(); }
 
     public LiveData<User> getAuthenticatedUser(String id) { return userDAO.getAuthenticatedUser(id); }
@@ -208,10 +223,10 @@ public class RHRepository {
         videoDAO.deauthoriseAll();
         workbookDAO.deauthoriseAll();
         for (AuthorisedProgram authorisedProgram: authorisedPrograms) {
-            programDAO.authorise(authorisedProgram.getProgramId());
-            courseDAO.authorise(authorisedProgram.getProgramId());
-            videoDAO.authorise(authorisedProgram.getProgramId());
-            workbookDAO.authorise(authorisedProgram.getProgramId());
+            programDAO.authorise(authorisedProgram.getId());
+            courseDAO.authorise(authorisedProgram.getId());
+            videoDAO.authorise(authorisedProgram.getId());
+            workbookDAO.authorise(authorisedProgram.getId());
         }
       return null;
     }
