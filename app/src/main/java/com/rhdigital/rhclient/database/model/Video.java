@@ -25,6 +25,9 @@ public class Video extends Model implements Parcelable {
   @PrimaryKey
   private String id;
 
+  @ColumnInfo(name = "program_id")
+  private String programId;
+
   @ColumnInfo(name = "course_id")
   private String courseId;
 
@@ -53,11 +56,12 @@ public class Video extends Model implements Parcelable {
   @Ignore
   public Video() {}
 
-  public Video(@NonNull String id, @NonNull String courseId,
-               @NonNull String title, @NonNull String language,
-               String subtitle, @NonNull String videoUrl,
-               String thumbnailUrl) {
+  public Video(@NonNull String id, @NonNull String programId,
+               @NonNull String courseId, @NonNull String title,
+               @NonNull String language, String subtitle,
+               @NonNull String videoUrl, String thumbnailUrl) {
     this.id = id;
+    this.programId = programId;
     this.courseId = courseId;
     this.title = title;
     this.language = language;
@@ -95,6 +99,10 @@ public class Video extends Model implements Parcelable {
   public void setSubtitle(@NonNull String subtitle) {
     this.subtitle = subtitle;
   }
+
+  public String getProgramId() { return programId; }
+
+  public void setProgramId(String programId) { this.programId = programId; }
 
   @NonNull
   public String getVideoUrl() {

@@ -7,7 +7,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <application
-      android:usesCleartextTraffic="true"
+        android:usesCleartextTraffic="true"
         android:name=".RHApplication"
         android:allowBackup="true"
         android:icon="@drawable/ic_rh_logo"
@@ -15,29 +15,24 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.NoActionBar">
 
-        <activity android:name="com.rhdigital.rhclient.activities.splash.SplashActivity"
+        <activity android:name="com.rhdigital.rhclient.activities.rhroom.RHRoomActivity"
           android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity">
+        </activity>
+
+        <activity android:name="com.rhdigital.rhclient.activities.rhauth.RHAuthActivity"
+            android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-      <activity android:name="com.rhdigital.rhclient.activities.rhauth.RHAuthActivity"
-          android:screenOrientation="portrait"
-            tools:ignore="LockedOrientationActivity" />
 
         <activity android:name="com.rhdigital.rhclient.activities.rhapp.RHAppActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
-
-<!--      <activity android:name="com.rhdigital.rhclient.activities.user.UserActivity"-->
-<!--        android:configChanges="keyboardHidden|orientation|screenSize"-->
-<!--        android:screenOrientation="portrait"-->
-<!--        tools:ignore="LockedOrientationActivity" />-->
 
       <service android:name=".common.services.FirebasePushNotificationService"
         android:exported="false">
@@ -61,5 +56,4 @@
 <!--      </provider>-->
 
     </application>
-
 </manifest>

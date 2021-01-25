@@ -4,7 +4,10 @@ import android.app.Application;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 
+import com.rhdigital.rhclient.common.dto.PopulateRoomDto;
+import com.rhdigital.rhclient.database.DAO.AuthorisedProgramDAO;
 import com.rhdigital.rhclient.database.DAO.BaseDAO;
 import com.rhdigital.rhclient.database.DAO.CourseDAO;
 import com.rhdigital.rhclient.database.DAO.CourseDescriptionDAO;
@@ -15,6 +18,7 @@ import com.rhdigital.rhclient.database.DAO.embedded.CourseWithWorkbooksDAO;
 import com.rhdigital.rhclient.database.DAO.UserDAO;
 import com.rhdigital.rhclient.database.DAO.WorkbookDAO;
 import com.rhdigital.rhclient.database.RHDatabase;
+import com.rhdigital.rhclient.database.model.AuthorisedProgram;
 import com.rhdigital.rhclient.database.model.Course;
 import com.rhdigital.rhclient.database.model.CourseDescription;
 import com.rhdigital.rhclient.database.model.Report;
@@ -22,22 +26,25 @@ import com.rhdigital.rhclient.database.model.Video;
 import com.rhdigital.rhclient.database.model.Program;
 import com.rhdigital.rhclient.database.model.User;
 import com.rhdigital.rhclient.database.model.Workbook;
+import com.rhdigital.rhclient.database.services.FirebaseRoomService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class RHRepository {
-    private CourseDAO courseDAO;
-    private CourseDescriptionDAO courseDescriptionDAO;
-    private ProgramDAO programDAO;
-    private ReportDAO reportDAO;
-    private UserDAO userDAO;
-    private VideoDAO videoDAO;
-    private WorkbookDAO workbookDAO;
-    private CourseWithWorkbooksDAO courseWithWorkbooksDAO;
-    private ExecutorService executorService;
+    protected CourseDAO courseDAO;
+    protected CourseDescriptionDAO courseDescriptionDAO;
+    protected AuthorisedProgramDAO authorisedProgramDAO;
+    protected ProgramDAO programDAO;
+    protected ReportDAO reportDAO;
+    protected UserDAO userDAO;
+    protected VideoDAO videoDAO;
+    protected WorkbookDAO workbookDAO;
+    protected CourseWithWorkbooksDAO courseWithWorkbooksDAO;
+    protected ExecutorService executorService;
 
     public RHRepository(Application application) {
         RHDatabase db = RHDatabase.getDatabase(application);
@@ -49,7 +56,17 @@ public class RHRepository {
         videoDAO = db.videoDAO();
         workbookDAO = db.workbookDAO();
         courseWithWorkbooksDAO = db.courseWithWorkbooksDAO();
+        authorisedProgramDAO = db.authorisedProgramDAO();
+
         executorService = Executors.newCachedThreadPool();
+    }
+
+    // REMOTE ROOM SERVICE
+    public LiveData<ArrayList<Long>> syncWithRemote(RHDatabase instance, PopulateRoomDto populateRoom) {
+        FirebaseRoomService firebaseRoomService = new FirebaseRoomService();
+        return firebaseRoomService.populateFromUpstream(
+                instance, populateRoom
+        );
     }
 
     // COURSES
@@ -81,6 +98,7 @@ public class RHRepository {
     public LiveData<List<Report>> getAllAuthorisedReports() { return reportDAO.getAllAuthorised(); }
 
     // USER
+
     public LiveData<List<User>> getAllUsers() { return userDAO.getAll(); }
 
     public LiveData<User> getAuthenticatedUser(String id) { return userDAO.getAuthenticatedUser(id); }
@@ -108,21 +126,19 @@ public class RHRepository {
 
     public LiveData<List<Workbook>> getAllWorkbooksByCourseId(@NonNull String courseId) { return workbookDAO.findByCourseId(courseId); }
 
-
-    public void authoriseCourse(@NonNull String id) {
-      try {
-        executorService.submit(new AuthCourseService(courseDAO, id, true)).get();
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
+    // PREMIUM
+    public LiveData<List<AuthorisedProgram>> getAuthorisedPrograms() {
+        return authorisedProgramDAO.getAll();
     }
 
-    public void unauthoriseAllCourses() {
-      try {
-        executorService.submit(new AuthCourseService(courseDAO, null, false)).get();
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
+    public void authorisePrograms(@NonNull List<AuthorisedProgram> authorisedPrograms) {
+        try {
+            executorService.submit(
+                    new AuthProgramService(authorisedPrograms)
+            ).get();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void update(@NonNull Object o) {
@@ -194,22 +210,25 @@ public class RHRepository {
     }
   }
 
-  private class AuthCourseService implements Callable<Integer> {
-    private CourseDAO courseDAO;
-    private String id;
-    private boolean authorise;
-    public AuthCourseService(CourseDAO courseDAO, String id, boolean authorise) {
-      this.courseDAO = courseDAO;
-      this.id = id;
-      this.authorise = authorise;
+  private class AuthProgramService implements Callable<Void> {
+    private List<AuthorisedProgram> authorisedPrograms;
+    public AuthProgramService(List<AuthorisedProgram> authorisedPrograms) {
+      this.authorisedPrograms = authorisedPrograms;
     }
 
     @Override
-    public Integer call() throws Exception {
-      if (authorise)
-        return this.courseDAO.authorise(id);
-      this.courseDAO.deauthorise();
-      return -1;
+    public Void call() throws Exception {
+        programDAO.deauthoriseAll();
+        courseDAO.deauthoriseAll();
+        videoDAO.deauthoriseAll();
+        workbookDAO.deauthoriseAll();
+        for (AuthorisedProgram authorisedProgram: authorisedPrograms) {
+            programDAO.authorise(authorisedProgram.getId());
+            courseDAO.authorise(authorisedProgram.getId());
+            videoDAO.authorise(authorisedProgram.getId());
+            workbookDAO.authorise(authorisedProgram.getId());
+        }
+      return null;
     }
   }
 }

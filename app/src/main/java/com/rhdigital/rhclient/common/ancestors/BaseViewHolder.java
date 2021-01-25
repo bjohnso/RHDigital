@@ -6,6 +6,7 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.rhdigital.rhclient.common.dto.UserFieldDto;
 import com.rhdigital.rhclient.common.interfaces.OnClickCallback;
 import com.rhdigital.rhclient.database.model.Course;
 import com.rhdigital.rhclient.database.model.CourseDescription;
@@ -34,4 +35,6 @@ public class BaseViewHolder extends RecyclerView.ViewHolder {
     public void bind(Report report) {}
 
     public void bind(String reportGroup, List<Report> reports) {}
+
+    public void bind(UserFieldDto userField, OnClickCallback callback) {}
 }

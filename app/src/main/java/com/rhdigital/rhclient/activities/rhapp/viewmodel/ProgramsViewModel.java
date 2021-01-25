@@ -39,6 +39,7 @@ public class ProgramsViewModel extends AndroidViewModel {
             (ViewModelStoreOwner) ((RHApplication)getApplication()).getCurrentActivity();
     RHAppViewModel rhAppViewModel = new ViewModelProvider(viewModelStoreOwner).get(RHAppViewModel.class);
     rhAppViewModel.isEnrollState.setValue(false);
+    rhAppViewModel.isActionButtonActive.setValue(false);
     rhAppViewModel.isBackButtonActive.setValue(false);
     rhAppViewModel.isTitleCenter.setValue(false);
     rhAppViewModel.title.setValue(getApplication().getString(R.string.title_programs));

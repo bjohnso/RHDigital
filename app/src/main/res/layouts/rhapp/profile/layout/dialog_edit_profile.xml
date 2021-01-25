@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:paddingStart="15dp"
+    android:paddingTop="40dp"
+    android:paddingEnd="15dp"
+    android:paddingBottom="40dp">
+
+    <TextView
+        android:id="@+id/tvField"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorBlack"
+        android:textSize="26sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Title" />
+
+    <EditText
+        android:id="@+id/etProperty"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_centerInParent="true"
+        android:layout_centerVertical="true"
+        android:background="@drawable/background_edit_text_selector"
+        android:textColor="@color/colorBlack"
+        android:textColorHighlight="@color/active"
+        android:textColorLink="@color/bar"
+        android:textSize="22sp"
+        app:layout_constraintTop_toBottomOf="@+id/tvField" />
+
+    <Button
+        android:id="@+id/buttonOk"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_marginRight="20dp"
+        android:text="ok"
+        android:textColor="@color/colorBlack"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/buttonCancel"
+        app:layout_constraintTop_toBottomOf="@+id/etProperty" />
+
+    <Button
+        android:id="@+id/buttonCancel"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:text="Cancel"
+        android:textColor="@color/colorBlack"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etProperty" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

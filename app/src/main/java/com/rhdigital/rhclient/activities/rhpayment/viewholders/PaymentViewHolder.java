@@ -1,13 +1,8 @@
-package com.rhdigital.rhclient.activities.rhapp.viewmodel;
+package com.rhdigital.rhclient.activities.rhpayment.viewholders;
 
 import android.app.Application;
-import android.view.Gravity;
-import android.view.View;
-import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.widget.Toolbar;
-import androidx.databinding.BindingAdapter;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
@@ -17,26 +12,23 @@ import com.rhdigital.rhclient.RHApplication;
 import com.rhdigital.rhclient.common.dto.PopulateRoomDto;
 import com.rhdigital.rhclient.database.RHDatabase;
 import com.rhdigital.rhclient.database.model.AuthorisedProgram;
+import com.rhdigital.rhclient.database.model.Program;
 import com.rhdigital.rhclient.database.model.User;
 import com.rhdigital.rhclient.database.repository.RHRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class RHAppViewModel extends AndroidViewModel {
-
-    public MutableLiveData<String> title = new MutableLiveData("");
-    public MutableLiveData<Boolean> isTitleCenter = new MutableLiveData(false);
-    public MutableLiveData<Boolean> isBackButtonActive = new MutableLiveData(false);
-    public MutableLiveData<Boolean> isActionButtonActive = new MutableLiveData(false);
-    public MutableLiveData<Boolean> isEnrollState = new MutableLiveData(false);
-    public MutableLiveData<Boolean> isFullscreenMode = new MutableLiveData(false);
+public class PaymentViewHolder extends AndroidViewModel {
 
     private RHRepository rhRepository;
 
-    public RHAppViewModel(@NonNull Application application) {
+    public PaymentViewHolder(@NonNull Application application) {
         super(application);
         this.rhRepository = new RHRepository(application);
+    }
+
+    public LiveData<Program> getProgram(String programId) {
+        return rhRepository.getProgram(programId);
     }
 
     public LiveData<List<AuthorisedProgram>> authorisePrograms() {
@@ -66,13 +58,5 @@ public class RHAppViewModel extends AndroidViewModel {
             );
         });
         return user;
-    }
-
-    @BindingAdapter("app:center")
-    public static void setCenter(View view, Boolean isCenter) {
-        Toolbar.LayoutParams params =
-                new Toolbar.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        params.gravity = isCenter ? Gravity.CENTER : Gravity.START;
-        view.setLayoutParams(params);
     }
 }
