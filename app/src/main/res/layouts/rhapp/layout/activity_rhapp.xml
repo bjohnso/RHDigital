@@ -37,7 +37,7 @@
             android:background="@color/bar">
 
           <ImageButton
-              android:id="@+id/btnBack"
+              android:id="@+id/buttonBack"
               android:visibility="@{viewModel.isBackButtonActive ? View.VISIBLE : View.GONE}"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"

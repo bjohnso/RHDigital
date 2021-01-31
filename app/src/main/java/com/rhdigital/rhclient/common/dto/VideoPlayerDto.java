@@ -1,9 +1,8 @@
 package com.rhdigital.rhclient.common.dto;
 
 import com.google.android.exoplayer2.SimpleExoPlayer;
-import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.ui.PlayerView;
-import com.rhdigital.rhclient.database.model.Video;
+import com.rhdigital.rhclient.room.model.Video;
 
 public class VideoPlayerDto {
     private PlayerView playerView;

@@ -7,7 +7,7 @@ import androidx.annotation.NonNull;
 
 import com.rhdigital.rhclient.R;
 import com.rhdigital.rhclient.common.ancestors.BaseViewHolder;
-import com.rhdigital.rhclient.database.model.Report;
+import com.rhdigital.rhclient.room.model.Report;
 
 public class ReportsViewHolder extends BaseViewHolder {
 

@@ -1,6 +1,7 @@
 package com.rhdigital.rhclient.common.services;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -57,11 +58,6 @@ public class NavigationService {
     navController.getGraph().setStartDestination(destinationId);
     navController.navigate(destinationId, data, navOptions);
     controllerMap.put(className, navController);
-//    if (!VideoPlayerService.getInstance().isFullScreen()
-//      && VideoPlayerService.getInstance().isVideoEnabled()
-//      && destinationId != R.id.coursesVideoPlayerFullscreenFragment) {
-//      VideoPlayerService.getInstance().destroyVideo();
-//    }
   }
 
   public void navigateBack(String className) {

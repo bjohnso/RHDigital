@@ -3,7 +3,6 @@ package com.rhdigital.rhclient.activities.rhapp.fragments;
 import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.ArrayMap;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -17,12 +16,14 @@ import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.rhdigital.rhclient.R;
 import com.rhdigital.rhclient.activities.rhapp.adapters.ReportsRecyclerViewAdapter;
+import com.rhdigital.rhclient.activities.rhapp.viewmodel.RHAppViewModel;
 import com.rhdigital.rhclient.activities.rhapp.viewmodel.ReportsViewModel;
-import com.rhdigital.rhclient.database.model.Report;
+import com.rhdigital.rhclient.room.model.Report;
 import com.rhdigital.rhclient.databinding.FragmentReportsBinding;
 
 import java.util.ArrayList;
@@ -38,6 +39,7 @@ public class ReportsFragment extends Fragment {
 
     // VIEW MODEL
     private ReportsViewModel reportsViewModel;
+    private RHAppViewModel rhAppViewModel;
 
     // ADAPTERS
     private ReportsRecyclerViewAdapter reportsRecyclerViewAdapter;
@@ -56,6 +58,7 @@ public class ReportsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentReportsBinding.inflate(getLayoutInflater());
 
+        rhAppViewModel = new ViewModelProvider(getActivity()).get(RHAppViewModel.class);
         reportsViewModel = new ReportsViewModel(getActivity().getApplication());
         reportsViewModel.init();
         binding.setViewModel(reportsViewModel);

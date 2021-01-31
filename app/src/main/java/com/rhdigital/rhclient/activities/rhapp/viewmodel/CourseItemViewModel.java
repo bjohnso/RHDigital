@@ -7,11 +7,11 @@ import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import com.rhdigital.rhclient.RHApplication;
-import com.rhdigital.rhclient.database.model.Course;
-import com.rhdigital.rhclient.database.model.CourseDescription;
-import com.rhdigital.rhclient.database.model.Video;
-import com.rhdigital.rhclient.database.model.Workbook;
-import com.rhdigital.rhclient.database.repository.RHRepository;
+import com.rhdigital.rhclient.room.model.Course;
+import com.rhdigital.rhclient.room.model.CourseDescription;
+import com.rhdigital.rhclient.room.model.Video;
+import com.rhdigital.rhclient.room.model.Workbook;
+import com.rhdigital.rhclient.room.repository.RHRepository;
 import java.util.List;
 
 public class CourseItemViewModel extends AndroidViewModel {

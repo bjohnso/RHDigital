@@ -8,7 +8,7 @@
     <item
         android:id="@+id/bottom_nav_reports"
         android:icon="@drawable/ic_reports_inactive"
-        android:title="Workbooks"/>
+        android:title="Research"/>
 
     <item
         android:id="@+id/bottom_nav_profile"

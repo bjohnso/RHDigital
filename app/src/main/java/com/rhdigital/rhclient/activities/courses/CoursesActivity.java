@@ -2,15 +2,12 @@ package com.rhdigital.rhclient.activities.courses;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
@@ -18,25 +15,17 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Observer;
-import androidx.navigation.NavController;
 
-import androidx.navigation.fragment.NavHostFragment;
-
-import com.google.firebase.auth.FirebaseAuth;
 import com.rhdigital.rhclient.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.rhdigital.rhclient.database.model.Course;
-import com.rhdigital.rhclient.database.model.embedded.CourseWithWorkbooks;
-import com.rhdigital.rhclient.database.viewmodel.CourseViewModel;
-import com.rhdigital.rhclient.database.viewmodel.UserViewModel;
-import com.rhdigital.rhclient.database.viewmodel.WorkbookViewModel;
+import com.rhdigital.rhclient.room.model.Course;
+import com.rhdigital.rhclient.room.model.embedded.CourseWithWorkbooks;
+import com.rhdigital.rhclient.room.viewmodel.CourseViewModel;
+import com.rhdigital.rhclient.room.viewmodel.UserViewModel;
+import com.rhdigital.rhclient.room.viewmodel.WorkbookViewModel;
 
 import java.util.List;
-
-import static com.rhdigital.rhclient.R.menu.courses_menu_top;
 
 public class CoursesActivity extends AppCompatActivity {
 

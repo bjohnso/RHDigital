@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
 import com.rhdigital.rhclient.R;
 import com.rhdigital.rhclient.common.ancestors.BaseViewHolder;
 import com.rhdigital.rhclient.common.interfaces.OnClickCallback;
-import com.rhdigital.rhclient.database.model.Program;
+import com.rhdigital.rhclient.room.model.Program;
 
 public class ProgramsViewHolder extends BaseViewHolder {
   private ImageView imageView;

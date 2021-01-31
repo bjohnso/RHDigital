@@ -10,8 +10,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.rhdigital.rhclient.activities.rhapp.viewholder.CoursesViewHolder;
 import com.rhdigital.rhclient.common.ancestors.PlayerViewHolder;
 import com.rhdigital.rhclient.common.interfaces.OnClickCallback;
-import com.rhdigital.rhclient.database.model.Course;
-import com.rhdigital.rhclient.database.model.Program;
+import com.rhdigital.rhclient.room.model.Course;
+import com.rhdigital.rhclient.room.model.Program;
 import com.rhdigital.rhclient.databinding.ItemCoursesBinding;
 
 import java.util.HashMap;

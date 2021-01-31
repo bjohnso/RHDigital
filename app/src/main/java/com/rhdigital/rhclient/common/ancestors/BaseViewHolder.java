@@ -8,11 +8,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.rhdigital.rhclient.common.dto.UserFieldDto;
 import com.rhdigital.rhclient.common.interfaces.OnClickCallback;
-import com.rhdigital.rhclient.database.model.Course;
-import com.rhdigital.rhclient.database.model.CourseDescription;
-import com.rhdigital.rhclient.database.model.Program;
-import com.rhdigital.rhclient.database.model.Report;
-import com.rhdigital.rhclient.database.model.Workbook;
+import com.rhdigital.rhclient.room.model.Course;
+import com.rhdigital.rhclient.room.model.CourseDescription;
+import com.rhdigital.rhclient.room.model.Program;
+import com.rhdigital.rhclient.room.model.Report;
+import com.rhdigital.rhclient.room.model.Workbook;
 
 import java.util.List;
 

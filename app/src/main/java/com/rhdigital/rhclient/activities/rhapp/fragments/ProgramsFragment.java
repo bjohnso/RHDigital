@@ -4,7 +4,6 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,12 +20,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.google.android.material.tabs.TabLayout;
 import com.rhdigital.rhclient.R;
-import com.rhdigital.rhclient.activities.rhapp.RHAppActivity;
 import com.rhdigital.rhclient.activities.rhapp.adapters.ProgramsRecyclerViewAdapter;
 import com.rhdigital.rhclient.activities.rhapp.viewmodel.RHAppViewModel;
 import com.rhdigital.rhclient.common.interfaces.OnClickCallback;
 import com.rhdigital.rhclient.common.services.NavigationService;
-import com.rhdigital.rhclient.database.model.Program;
+import com.rhdigital.rhclient.room.model.Program;
 import com.rhdigital.rhclient.databinding.FragmentProgramsBinding;
 import com.rhdigital.rhclient.activities.rhapp.viewmodel.ProgramsViewModel;
 
@@ -42,6 +40,7 @@ public class ProgramsFragment extends Fragment {
 
     // VIEW MODEL
     private ProgramsViewModel programsViewModel;
+    private RHAppViewModel rhAppViewModel;
 
     // ADAPTERS
     private ProgramsRecyclerViewAdapter programsRecyclerViewAdapter;
@@ -64,6 +63,7 @@ public class ProgramsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
       binding = FragmentProgramsBinding.inflate(getLayoutInflater());
 
+      rhAppViewModel = new ViewModelProvider(getActivity()).get(RHAppViewModel.class);
       programsViewModel = new ProgramsViewModel(getActivity().getApplication());
       programsViewModel.init();
       binding.setViewModel(programsViewModel);

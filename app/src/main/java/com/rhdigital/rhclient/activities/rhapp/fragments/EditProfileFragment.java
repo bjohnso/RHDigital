@@ -3,30 +3,44 @@ package com.rhdigital.rhclient.activities.rhapp.fragments;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.rhdigital.rhclient.R;
+import com.rhdigital.rhclient.RHApplication;
+import com.rhdigital.rhclient.activities.rhapp.RHAppActivity;
 import com.rhdigital.rhclient.activities.rhapp.adapters.EditProfileRecyclerViewAdapter;
+import com.rhdigital.rhclient.activities.rhapp.delegates.EditProfileDialogDelegate;
+import com.rhdigital.rhclient.activities.rhapp.dialogs.EditProfileConfirmDialog;
+import com.rhdigital.rhclient.activities.rhapp.dialogs.EditProfileDialog;
 import com.rhdigital.rhclient.activities.rhapp.viewmodel.ProfileViewModel;
 import com.rhdigital.rhclient.common.dto.UserFieldDto;
 import com.rhdigital.rhclient.common.interfaces.OnClickCallback;
-import com.rhdigital.rhclient.database.model.User;
+import com.rhdigital.rhclient.common.services.NavigationService;
 import com.rhdigital.rhclient.databinding.FragmentEditProfileBinding;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
-public class EditProfileFragment extends Fragment {
+public class EditProfileFragment extends RHAppFragment {
 
-    private final String TAG = "USER_FRAGMENT";
+    private final String TAG = "EDIT_USER_FRAGMENT";
+
+    private RHAppActivity activity;
 
     // VIEW
     private FragmentEditProfileBinding binding;
@@ -35,7 +49,6 @@ public class EditProfileFragment extends Fragment {
     private ProfileViewModel profileViewModel;
 
     private EditProfileRecyclerViewAdapter basicAdapter;
-    private EditProfileRecyclerViewAdapter sensitiveAdapter;
 
     private int width = 0;
     private int height = 0;
@@ -56,30 +69,74 @@ public class EditProfileFragment extends Fragment {
         return binding.getRoot();
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        this.activity = (RHAppActivity) getActivity();
+        ((RHApplication)activity.getApplication()).setCurrentFragment(this);
+    }
+
     private void initialiseUI() {
         calculateImageDimensions();
     }
 
-    private void initialiseRecyclerViews() {
-        User user = profileViewModel.user.getValue();
+    private void saveUserDetails() {
+        profileViewModel.updateRemoteUser()
+                .addOnCompleteListener(result -> {
+                    if (result.isSuccessful()) {
+                        Toast.makeText(
+                                getActivity(),
+                                getResources().getString(R.string.user_update),
+                                Toast.LENGTH_LONG
+                        ).show();
+                        profileViewModel.fetchRemoteUser().observe(getViewLifecycleOwner(), inserts -> navigateBack());
+                    } else {
+                        Toast.makeText(
+                                getActivity(),
+                                getResources().getString(R.string.server_error_user_update),
+                                Toast.LENGTH_LONG
+                        ).show();
+                    }
+                });
+    }
 
-        OnClickCallback callback = (object) -> {
-            UserFieldDto userField = (UserFieldDto) object;
+    private void presentConfirmationDialog() {
+        EditProfileDialogDelegate delegate = new EditProfileDialogDelegate() {
+            @Override
+            public void onComplete(UserFieldDto userField) { }
+
+            @Override
+            public void onComplete(Boolean shouldSave) {
+                if (shouldSave) {
+                    saveUserDetails();
+                } else {
+                    navigateBack();
+                }
+            }
         };
 
-        List<UserFieldDto> basicFields = Arrays.asList(
-                new UserFieldDto("First Name", user.getName()),
-                new UserFieldDto("Last Name", user.getSurname()),
-                new UserFieldDto("Title", user.getTitle()),
-                new UserFieldDto("City", user.getCity()),
-                new UserFieldDto("Country", user.getCountry()),
-                new UserFieldDto("About", user.getAbout()),
-                new UserFieldDto("Industry", user.getIndustry())
-        );
+        EditProfileConfirmDialog dialog = new EditProfileConfirmDialog(delegate);
+        dialog.show(getParentFragmentManager(), "edit_profile_confirm");
+    }
 
-        List<UserFieldDto> sensitiveFields = Arrays.asList(
-                new UserFieldDto("Data of Birth", "")
-        );
+    private void initialiseRecyclerViews() {
+        OnClickCallback callback = (object) -> {
+
+            EditProfileDialogDelegate delegate = new EditProfileDialogDelegate() {
+                @Override
+                public void onComplete(UserFieldDto userField) {
+                    profileViewModel.updateUserFieldMap(userField);
+                    basicAdapter.updateData(profileViewModel.userFieldMap);
+                }
+
+                @Override
+                public void onComplete(Boolean shouldSave) { }
+            };
+
+            UserFieldDto userField = (UserFieldDto) object;
+            EditProfileDialog dialog = new EditProfileDialog(delegate, userField);
+            dialog.show(getParentFragmentManager(), "edit_profile_dialog");
+        };
 
         basicAdapter = new EditProfileRecyclerViewAdapter();
         binding.recyclerViewBasic.setHasFixedSize(true);
@@ -89,16 +146,16 @@ public class EditProfileFragment extends Fragment {
         binding.recyclerViewBasic.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.recyclerViewBasic.setAdapter(basicAdapter);
 
-        sensitiveAdapter = new EditProfileRecyclerViewAdapter();
-        binding.recyclerViewSensitive.setHasFixedSize(true);
-        binding.recyclerViewSensitive.setItemViewCacheSize(10);
-        binding.recyclerViewSensitive.setDrawingCacheEnabled(true);
-        binding.recyclerViewSensitive.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_AUTO);
-        binding.recyclerViewSensitive.setLayoutManager(new LinearLayoutManager(getContext()));
-        binding.recyclerViewSensitive.setAdapter(sensitiveAdapter);
+        basicAdapter.updateData(profileViewModel.userFieldMap);
+        basicAdapter.updateCallback(callback);
+    }
 
-        basicAdapter.updateData(basicFields, callback);
-        sensitiveAdapter.updateData(sensitiveFields, callback);
+    private void navigateBack() {
+        NavigationService.getINSTANCE()
+                .navigate(
+                        getActivity().getLocalClassName(),
+                        R.id.profileFragment, null, null
+                );
     }
 
     private void calculateImageDimensions() {
@@ -114,5 +171,25 @@ public class EditProfileFragment extends Fragment {
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         width = displayMetrics.widthPixels;
         height = Math.round(px);
+    }
+
+    @Override
+    public void onAction() {
+        saveUserDetails();
+    }
+
+    @Override
+    public void onBack() {
+        if (profileViewModel.hasChanges) {
+            presentConfirmationDialog();
+        } else {
+            navigateBack();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        ((RHApplication)getActivity().getApplication()).setCurrentFragment(null);
+        super.onDestroy();
     }
 }

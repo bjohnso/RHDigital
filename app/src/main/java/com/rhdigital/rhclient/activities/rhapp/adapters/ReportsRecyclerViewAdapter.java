@@ -1,8 +1,6 @@
 package com.rhdigital.rhclient.activities.rhapp.adapters;
 
 import android.os.Build;
-import android.util.ArrayMap;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +13,7 @@ import com.rhdigital.rhclient.R;
 import com.rhdigital.rhclient.activities.rhapp.viewholder.ReportsGroupViewHolder;
 import com.rhdigital.rhclient.activities.rhapp.viewholder.ReportsViewHolder;
 import com.rhdigital.rhclient.common.ancestors.BaseViewHolder;
-import com.rhdigital.rhclient.database.model.Report;
+import com.rhdigital.rhclient.room.model.Report;
 import com.rhdigital.rhclient.databinding.ItemReportsGroupBinding;
 
 import java.util.LinkedHashMap;

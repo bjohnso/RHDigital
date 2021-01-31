@@ -12,9 +12,8 @@ import android.widget.ImageView;
 import com.rhdigital.rhclient.R;
 import com.rhdigital.rhclient.activities.rhapp.RHAppActivity;
 import com.rhdigital.rhclient.common.dto.PopulateRoomDto;
-import com.rhdigital.rhclient.database.RHDatabase;
-import com.rhdigital.rhclient.database.repository.RHRepository;
-import com.rhdigital.rhclient.database.services.FirebaseRoomService;
+import com.rhdigital.rhclient.room.RHDatabase;
+import com.rhdigital.rhclient.room.repository.RHRepository;
 
 import java.util.List;
 

@@ -8,7 +8,7 @@
             type="boolean"/>
         <variable
             name="course"
-            type="com.rhdigital.rhclient.database.model.Course"/>
+            type="com.rhdigital.rhclient.room.model.Course"/>
     </data>
 
     <androidx.cardview.widget.CardView

@@ -10,8 +10,8 @@ import androidx.lifecycle.ViewModelStoreOwner;
 
 import com.rhdigital.rhclient.R;
 import com.rhdigital.rhclient.RHApplication;
-import com.rhdigital.rhclient.database.model.Report;
-import com.rhdigital.rhclient.database.repository.RHRepository;
+import com.rhdigital.rhclient.room.model.Report;
+import com.rhdigital.rhclient.room.repository.RHRepository;
 
 import java.util.List;
 
