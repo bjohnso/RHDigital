@@ -23,12 +23,12 @@ public class FirebaseChainBuilder implements CallableFunction<Object, Object> {
     collectionKey = (String) args[0];
     FirebaseFirestore firestore = FirebaseFirestore.getInstance();
     firestore.collection(collectionKey)
-      .get()
-      .addOnCompleteListener(task -> {
-        querySnapshotMap.put(collectionKey, task.getResult());
-        querySnapshotTask.set(task);
-        semaphore.release();
-      });
+            .get()
+            .addOnCompleteListener(task -> {
+              querySnapshotMap.put(collectionKey, task.getResult());
+              querySnapshotTask.set(task);
+              semaphore.release();
+            });
     semaphore.acquire();
     return querySnapshotTask.get();
   }

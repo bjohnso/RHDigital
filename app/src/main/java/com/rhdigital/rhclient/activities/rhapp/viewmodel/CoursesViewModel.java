@@ -65,7 +65,11 @@ public class CoursesViewModel extends AndroidViewModel {
         for (Course course: courses) {
             // TODO: USE VIDEO THUMBNAILS
             data.add(
-                    new RemoteResourceDto(course.getId(), program.getValue().getPosterUrl())
+                    new RemoteResourceDto(
+                            course.getId(),
+                            program.getValue().getPosterUrl(),
+                            RemoteResourceDto.PROGRAM_POSTER
+                    )
             );
         }
         return new RemoteResourceService().getAllBitmap(context, data, width, height);

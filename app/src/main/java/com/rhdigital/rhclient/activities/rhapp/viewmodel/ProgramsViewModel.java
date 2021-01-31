@@ -60,7 +60,12 @@ public class ProgramsViewModel extends AndroidViewModel {
     for (Program program: programs) {
       // TODO: USE VIDEO THUMBNAILS
       data.add(
-              new RemoteResourceDto(program.getId(), program.getPosterUrl())
+              new RemoteResourceDto(
+                      program.getId(),
+                      program.getPosterUrl(),
+                      RemoteResourceDto.PROGRAM_POSTER
+
+              )
       );
     }
     return new RemoteResourceService().getAllBitmap(context, data, width, height);

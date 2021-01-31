@@ -35,11 +35,13 @@ public class DatabaseConstants {
     "workbookDAO",
     "userDAO",
           "authorisedProgramDAO",
+          "authorisedReportDAO"
   };
 
   public static final String DAOsUser[] = {
           "userDAO",
           "authorisedProgramDAO",
+          "authorisedReportDAO"
   };
 
   public static final String DAOsReports[] = {

@@ -1,6 +1,7 @@
 package com.rhdigital.rhclient.common.ancestors;
 
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -14,6 +15,7 @@ import com.rhdigital.rhclient.room.model.Program;
 import com.rhdigital.rhclient.room.model.Report;
 import com.rhdigital.rhclient.room.model.Workbook;
 
+import java.util.HashMap;
 import java.util.List;
 
 public class BaseViewHolder extends RecyclerView.ViewHolder {
@@ -32,9 +34,9 @@ public class BaseViewHolder extends RecyclerView.ViewHolder {
 
     public void bind(Workbook workbook) {}
 
-    public void bind(Report report) {}
+    public void bind(Report report, Uri uri, OnClickCallback onClickCallback) {}
 
-    public void bind(String reportGroup, List<Report> reports) {}
+    public void bind(String reportGroup, List<Report> reports, HashMap<String, Uri> uriMap, OnClickCallback onClickCallback) {}
 
     public void bind(UserFieldDto userField, OnClickCallback callback) {}
 }

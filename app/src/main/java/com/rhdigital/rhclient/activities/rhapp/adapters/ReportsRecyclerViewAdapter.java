@@ -1,5 +1,6 @@
 package com.rhdigital.rhclient.activities.rhapp.adapters;
 
+import android.net.Uri;
 import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,9 +14,11 @@ import com.rhdigital.rhclient.R;
 import com.rhdigital.rhclient.activities.rhapp.viewholder.ReportsGroupViewHolder;
 import com.rhdigital.rhclient.activities.rhapp.viewholder.ReportsViewHolder;
 import com.rhdigital.rhclient.common.ancestors.BaseViewHolder;
+import com.rhdigital.rhclient.common.interfaces.OnClickCallback;
 import com.rhdigital.rhclient.room.model.Report;
 import com.rhdigital.rhclient.databinding.ItemReportsGroupBinding;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -26,6 +29,8 @@ public class ReportsRecyclerViewAdapter extends RecyclerView.Adapter<BaseViewHol
 
     private List<Report> reports;
     private LinkedHashMap<String, List<Report>> reportMap;
+    private HashMap<String, Uri> uriMap;
+    private OnClickCallback onClickCallback;
 
     public ReportsRecyclerViewAdapter() {
     }
@@ -49,22 +54,28 @@ public class ReportsRecyclerViewAdapter extends RecyclerView.Adapter<BaseViewHol
     @Override
     public void onBindViewHolder(@NonNull BaseViewHolder holder, int position) {
         if (reports != null) {
-            holder.bind(reports.get(position));
+            Report report = reports.get(position);
+            Uri uri = uriMap.get(report.getId());
+            holder.bind(reports.get(position), uri, onClickCallback);
         } else if (reportMap != null) {
             String key = (String) reportMap.keySet().toArray()[position];
             List<Report> value = (List<Report>) reportMap.values().toArray()[position];
-            holder.bind(key, value);
+            holder.bind(key, value, uriMap, onClickCallback);
         }
     }
 
-    public void setReports(List<Report> reports) {
+    public void setReports(List<Report> reports, HashMap<String, Uri> uriMap, OnClickCallback onClickCallback) {
         this.reports = reports;
+        this.uriMap = uriMap;
+        this.onClickCallback = onClickCallback;
         this.reportMap = null;
         notifyDataSetChanged();
     }
 
-    public void setReportGroups(LinkedHashMap<String, List<Report>> reportMap) {
+    public void setReportGroups(LinkedHashMap<String, List<Report>> reportMap, HashMap<String, Uri> uriMap, OnClickCallback onClickCallback) {
         this.reportMap = reportMap;
+        this.uriMap = uriMap;
+        this.onClickCallback = onClickCallback;
         this.reports = null;
         notifyDataSetChanged();
     }

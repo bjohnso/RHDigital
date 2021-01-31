@@ -1,6 +1,8 @@
 package com.rhdigital.rhclient.activities.rhapp.fragments;
 
+import android.content.Intent;
 import android.content.res.Resources;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -20,19 +22,26 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.rhdigital.rhclient.R;
+import com.rhdigital.rhclient.activities.rhapp.RHAppActivity;
 import com.rhdigital.rhclient.activities.rhapp.adapters.ReportsRecyclerViewAdapter;
 import com.rhdigital.rhclient.activities.rhapp.viewmodel.RHAppViewModel;
 import com.rhdigital.rhclient.activities.rhapp.viewmodel.ReportsViewModel;
+import com.rhdigital.rhclient.common.dto.VideoControlActionDto;
+import com.rhdigital.rhclient.common.interfaces.OnClickCallback;
+import com.rhdigital.rhclient.common.services.NavigationService;
 import com.rhdigital.rhclient.room.model.Report;
 import com.rhdigital.rhclient.databinding.FragmentReportsBinding;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
 public class ReportsFragment extends Fragment {
 
     private final String TAG = "REPORTS_FRAGMENT";
+
+    private RHAppActivity activity;
 
     // VIEW
     private FragmentReportsBinding binding;
@@ -46,9 +55,11 @@ public class ReportsFragment extends Fragment {
 
     // OBSERVABLES
     private LiveData<List<Report>> reportsObservable;
+    private LiveData<HashMap<String, Uri>> reportsUriObservable;
 
     // OBSERVERS
     private Observer<List<Report>> reportsObserver;
+    private Observer<HashMap<String, Uri>> reportsUriObserver;
 
     private int width = 0;
     private int height = 0;
@@ -69,6 +80,12 @@ public class ReportsFragment extends Fragment {
         return binding.getRoot();
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        activity = (RHAppActivity) getActivity();
+    }
+
     private void initialiseUI() {
         calculateImageDimensions();
         initialiseRecyclerView();
@@ -82,7 +99,17 @@ public class ReportsFragment extends Fragment {
             public void onChanged(List<Report> reports) {
                 if (reports != null) {
                     reportsObservable.removeObserver(this);
-                    onUpdateReports(reports);
+                    reportsUriObserver = new Observer<HashMap<String, Uri>>() {
+                        @Override
+                        public void onChanged(HashMap<String, Uri> uriMap) {
+                            if (uriMap != null) {
+                                reportsUriObservable.removeObserver(this);
+                                onUpdateReports(reports, uriMap);
+                            }
+                        }
+                    };
+                    reportsUriObservable = reportsViewModel.getReportUri(reports);
+                    reportsUriObservable.observe(getViewLifecycleOwner(), reportsUriObserver);
                 } else {
                     Toast.makeText(getContext(), R.string.server_error_reports, Toast.LENGTH_LONG).show();
                 }
@@ -118,13 +145,26 @@ public class ReportsFragment extends Fragment {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    private void onUpdateReports(List<Report> reports) {
+    private void onUpdateReports(List<Report> reports, HashMap<String, Uri> uriMap) {
+        OnClickCallback callback = (args) -> {
+            String url = ((Uri)args[1]).toString();
+            reportsViewModel.downloadWorkbook(url)
+                    .observe(getViewLifecycleOwner(), res -> {
+                        if (res != null) {
+                            Report report = (Report)args[0];
+                            activity.writeFileToDisk(report.getTitle(), res);
+                        } else{
+                            Toast.makeText(getContext(), "Download Failed", Toast.LENGTH_LONG).show();
+                        }
+                    });
+        };
+
         LinkedHashMap<String, List<Report>> reportGroupings = new LinkedHashMap<>();
         for (Report report: reports) {
             ArrayList<Report> grouping = (ArrayList<Report>) reportGroupings.getOrDefault(report.getMonth(), new ArrayList<>());
             grouping.add(report);
             reportGroupings.put(report.getMonth(), grouping);
         }
-        reportsRecyclerViewAdapter.setReportGroups(reportGroupings);
+        reportsRecyclerViewAdapter.setReportGroups(reportGroupings, uriMap, callback);
     }
 }

@@ -22,6 +22,7 @@ import com.rhdigital.rhclient.R;
 import com.rhdigital.rhclient.RHApplication;
 import com.rhdigital.rhclient.activities.rhapp.RHAppActivity;
 import com.rhdigital.rhclient.common.dto.PopulateRoomDto;
+import com.rhdigital.rhclient.common.dto.RemoteResourceDto;
 import com.rhdigital.rhclient.common.dto.UserFieldDto;
 import com.rhdigital.rhclient.common.services.RemoteResourceService;
 import com.rhdigital.rhclient.room.RHDatabase;
@@ -29,6 +30,8 @@ import com.rhdigital.rhclient.room.model.User;
 import com.rhdigital.rhclient.room.repository.RHRepository;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -70,8 +73,16 @@ public class ProfileViewModel extends AndroidViewModel {
         return rhRepository.getAuthenticatedUser(userId);
     }
 
-    public LiveData<Bitmap> getProfilePhoto(Context context, String userId, int width, int height) {
-        return new RemoteResourceService().getProfilePhoto(context, userId, width, height);
+    public LiveData<HashMap<String, Bitmap>> getProfilePhoto(Context context, String userId, int width, int height) {
+        ArrayList<RemoteResourceDto> list = new ArrayList<>();
+        list.add(
+                new RemoteResourceDto(userId, userId, RemoteResourceDto.PROFILE_PHOTO)
+        );
+        return new RemoteResourceService().getAllBitmap(context,
+                list,
+                width,
+                height
+        );
     }
 
     public void initUserFieldMap(User user) {

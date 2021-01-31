@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData;
 
 import com.rhdigital.rhclient.common.dto.PopulateRoomDto;
 import com.rhdigital.rhclient.room.DAO.AuthorisedProgramDAO;
+import com.rhdigital.rhclient.room.DAO.AuthorisedReportDAO;
 import com.rhdigital.rhclient.room.DAO.BaseDAO;
 import com.rhdigital.rhclient.room.DAO.CourseDAO;
 import com.rhdigital.rhclient.room.DAO.CourseDescriptionDAO;
@@ -18,6 +19,7 @@ import com.rhdigital.rhclient.room.DAO.UserDAO;
 import com.rhdigital.rhclient.room.DAO.WorkbookDAO;
 import com.rhdigital.rhclient.room.RHDatabase;
 import com.rhdigital.rhclient.room.model.AuthorisedProgram;
+import com.rhdigital.rhclient.room.model.AuthorisedReport;
 import com.rhdigital.rhclient.room.model.Course;
 import com.rhdigital.rhclient.room.model.CourseDescription;
 import com.rhdigital.rhclient.room.model.Report;
@@ -37,6 +39,7 @@ public class RHRepository {
     protected CourseDAO courseDAO;
     protected CourseDescriptionDAO courseDescriptionDAO;
     protected AuthorisedProgramDAO authorisedProgramDAO;
+    protected AuthorisedReportDAO authorisedReportDAO;
     protected ProgramDAO programDAO;
     protected ReportDAO reportDAO;
     protected UserDAO userDAO;
@@ -56,7 +59,7 @@ public class RHRepository {
         workbookDAO = db.workbookDAO();
         courseWithWorkbooksDAO = db.courseWithWorkbooksDAO();
         authorisedProgramDAO = db.authorisedProgramDAO();
-
+        authorisedReportDAO = db.authorisedReportDAO();
         executorService = Executors.newCachedThreadPool();
     }
 
@@ -130,10 +133,24 @@ public class RHRepository {
         return authorisedProgramDAO.getAll();
     }
 
+    public LiveData<List<AuthorisedReport>> getAuthorisedReports() {
+        return authorisedReportDAO.getAll();
+    }
+
     public void authorisePrograms(@NonNull List<AuthorisedProgram> authorisedPrograms) {
         try {
             executorService.submit(
                     new AuthProgramService(authorisedPrograms)
+            ).get();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void authoriseReports(@NonNull List<AuthorisedReport> authorisedReports) {
+        try {
+            executorService.submit(
+                    new AuthReportService(authorisedReports)
             ).get();
         } catch (Exception e) {
             e.printStackTrace();
@@ -230,4 +247,20 @@ public class RHRepository {
       return null;
     }
   }
+
+    private class AuthReportService implements Callable<Void> {
+        private List<AuthorisedReport> authorisedReports;
+        public AuthReportService(List<AuthorisedReport> authorisedReports) {
+            this.authorisedReports = authorisedReports;
+        }
+
+        @Override
+        public Void call() throws Exception {
+            reportDAO.deauthoriseAll();
+            for (AuthorisedReport authorisedReport: authorisedReports) {
+                reportDAO.authorise(authorisedReport.getId());
+            }
+            return null;
+        }
+    }
 }

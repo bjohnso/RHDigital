@@ -6,7 +6,6 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
-import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
@@ -85,7 +84,6 @@ public class PushNotificationHelperService {
 
   public void sendNotificationToLifeCycleOwner(String title, String body) {
     if (context != null) {
-      Log.d(TAG, "SENDING NOTIFICATION TO CONTEXT : "  + context.getPackageName());
       Intent intent = new Intent(EMAIL_VERIFICATION);
       intent.putExtra(title, body);
       localBroadcastManager.sendBroadcast(intent);
@@ -94,7 +92,6 @@ public class PushNotificationHelperService {
 
   public void displayNotification(String title, String body) {
     if (context != null) {
-      Log.d(TAG, "DISPLAY NOTIFICATION");
 
       NotificationCompat.Builder builder =
         new NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)

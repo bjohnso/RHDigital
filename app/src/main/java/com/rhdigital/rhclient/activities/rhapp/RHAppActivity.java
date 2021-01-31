@@ -3,15 +3,17 @@ package com.rhdigital.rhclient.activities.rhapp;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.ParcelFileDescriptor;
+import android.os.StrictMode;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -29,8 +31,10 @@ import com.rhdigital.rhclient.RHApplication;
 import com.rhdigital.rhclient.activities.rhapp.fragments.RHAppFragment;
 import com.rhdigital.rhclient.activities.rhapp.viewmodel.RHAppViewModel;
 import com.rhdigital.rhclient.activities.rhauth.RHAuthActivity;
+import com.rhdigital.rhclient.common.providers.CustomFileProvider;
 import com.rhdigital.rhclient.common.services.FirebaseUploadService;
 import com.rhdigital.rhclient.common.services.NavigationService;
+import com.rhdigital.rhclient.common.services.PushNotificationHelperService;
 import com.rhdigital.rhclient.common.services.VideoPlayerService;
 import com.rhdigital.rhclient.common.util.ImageProcessor;
 import com.rhdigital.rhclient.databinding.ActivityRhappBinding;
@@ -39,26 +43,38 @@ import org.apache.commons.io.IOUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.List;
+import java.io.InputStream;
+import java.io.OutputStream;
+
+import okhttp3.ResponseBody;
 
 public class RHAppActivity extends AppCompatActivity {
 
   public static final int IMAGE_PICKER_CODE = 100;
+  public static final int DOWNLOAD_PDF = 101;
   private Intent imageUploadData = null;
+  private String fileName = null;
+  private ResponseBody fileResponseBody = null;
   private ActivityRhappBinding binding;
   private Intent rhAuthIntent;
 
   @Override
   protected void onStart() {
     super.onStart();
+
+    StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+    StrictMode.setThreadPolicy(policy);
+
     rhAuthIntent = new Intent(this, RHAuthActivity.class);
     if (FirebaseAuth.getInstance().getCurrentUser() == null) {
       startAuthActivity();
       return;
     }
+    PushNotificationHelperService.getINSTANCE().setContext(this);
+    PushNotificationHelperService.getINSTANCE().generateNotificationChannel();
+    PushNotificationHelperService.getINSTANCE().saveTokenRemote();
   }
 
   @Override
@@ -111,16 +127,20 @@ public class RHAppActivity extends AppCompatActivity {
 
     binding.getViewModel().isFullscreenMode.observe(this, isFullscreenMode -> configureScreenOrientation(isFullscreenMode));
 
-    binding.getViewModel().authorisePrograms().observe(this, authorisedPrograms -> {
-      NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
-              .findFragmentById(R.id.nav_host_rhapp);
-      NavController navController = navHostFragment.getNavController();
-      NavigationService.getINSTANCE().initNav(
-              getLocalClassName(),
-              navController,
-              R.navigation.rhapp_nav_graph,
-              R.id.programsFragment);
-    });
+    binding.getViewModel().authorisePrograms().observe(this, authorisedPrograms ->
+            binding.getViewModel().authoriseReports().observe(this, authorisedReports ->
+                    initNavGraph()));
+  }
+
+  private void initNavGraph() {
+    NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
+            .findFragmentById(R.id.nav_host_rhapp);
+    NavController navController = navHostFragment.getNavController();
+    NavigationService.getINSTANCE().initNav(
+            getLocalClassName(),
+            navController,
+            R.navigation.rhapp_nav_graph,
+            R.id.programsFragment);
   }
 
   public void navigateBack() {
@@ -149,7 +169,7 @@ public class RHAppActivity extends AppCompatActivity {
       if (requestCode == IMAGE_PICKER_CODE) {
         //Request Permissions
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-          ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
+          ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
           imageUploadData = data;
         } else {
           handleImageUpload(data);
@@ -169,8 +189,56 @@ public class RHAppActivity extends AppCompatActivity {
           Toast.makeText(this, getResources().getString(R.string.server_error_image_upload), Toast.LENGTH_LONG).show();
         }
       }
+    } else if (requestCode == 1) {
+      //Request Permissions
+      if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+        writeFileToDisk(fileName, fileResponseBody);
+      }
     }
   }
+
+  // FILE DOWNLOAD
+
+  public void writeFileToDisk(String fileName, ResponseBody responseBody) {
+    File file = new File(
+            getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS),
+            fileName);
+
+    //Request Permissions
+    if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+      ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+      this.fileName = fileName;
+      this.fileResponseBody = responseBody;
+    } else {
+      try {
+        InputStream in = responseBody.byteStream();
+        OutputStream out = new FileOutputStream(file);
+        IOUtils.copy(in, out);
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+      Uri uri = CustomFileProvider
+              .getUriForFile(this,
+                      getApplicationContext().getPackageName() + ".provider",
+                      file);
+      sendNotification(uri, "New PDF Download", fileName);
+      Toast.makeText(this, "Download Complete", Toast.LENGTH_LONG).show();
+    }
+  }
+
+  public void sendNotification(Uri fileOnDisk, String title, String body) {
+    Intent intent = new Intent(Intent.ACTION_VIEW);
+    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+    intent.setDataAndType(fileOnDisk, "application/pdf");
+    intent.putExtra("NAME", title);
+    intent.putExtra("BODY", body);
+    PushNotificationHelperService.getINSTANCE().initialisePendingIntent(intent);
+    PushNotificationHelperService.getINSTANCE().displayNotification(
+            intent.getStringExtra("NAME"),
+            intent.getStringExtra("BODY"));
+  }
+
+  // IMAGE UPLOAD
 
   public void handleImageUpload(Intent data) {
     if (data.getType() != null) {
