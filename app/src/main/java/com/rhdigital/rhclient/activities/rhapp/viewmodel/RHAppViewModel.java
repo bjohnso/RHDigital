@@ -15,12 +15,11 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.rhdigital.rhclient.RHApplication;
 import com.rhdigital.rhclient.common.dto.PopulateRoomDto;
-import com.rhdigital.rhclient.database.RHDatabase;
-import com.rhdigital.rhclient.database.model.AuthorisedProgram;
-import com.rhdigital.rhclient.database.model.User;
-import com.rhdigital.rhclient.database.repository.RHRepository;
+import com.rhdigital.rhclient.room.RHDatabase;
+import com.rhdigital.rhclient.room.model.AuthorisedProgram;
+import com.rhdigital.rhclient.room.model.User;
+import com.rhdigital.rhclient.room.repository.RHRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class RHAppViewModel extends AndroidViewModel {
@@ -58,13 +57,11 @@ public class RHAppViewModel extends AndroidViewModel {
         rhRepository.syncWithRemote(
                 RHDatabase.getDatabase(getApplication()),
                 new PopulateRoomDto(PopulateRoomDto.USER)
-        ).observe(lifecycleOwner, inserts -> {
-            rhRepository.getAuthenticatedUser(
-                    userId
-            ).observe(
-                    lifecycleOwner, u -> user.postValue(u)
-            );
-        });
+        ).observe(lifecycleOwner, inserts -> rhRepository.getAuthenticatedUser(
+                userId
+        ).observe(
+                lifecycleOwner, u -> user.postValue(u)
+        ));
         return user;
     }
 

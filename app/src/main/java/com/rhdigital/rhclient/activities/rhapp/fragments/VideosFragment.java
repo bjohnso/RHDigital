@@ -18,13 +18,15 @@ import com.rhdigital.rhclient.R;
 import com.rhdigital.rhclient.activities.rhapp.viewmodel.RHAppViewModel;
 import com.rhdigital.rhclient.common.services.NavigationService;
 import com.rhdigital.rhclient.common.services.VideoPlayerService;
-import com.rhdigital.rhclient.database.model.Video;
+import com.rhdigital.rhclient.room.model.Video;
 import com.rhdigital.rhclient.databinding.FragmentVideosBinding;
 
 
 public class VideosFragment extends Fragment {
 
     private final String TAG = "VIDEO_FRAGMENT";
+
+    private RHAppViewModel rhAppViewModel;
 
     // VIDEO CONTROLS
     private ImageButton minimiseButton;
@@ -42,6 +44,7 @@ public class VideosFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         binding = FragmentVideosBinding.inflate(getLayoutInflater());
+        rhAppViewModel = new ViewModelProvider(getActivity()).get(RHAppViewModel.class);
         initialiseUI();
         if (getArguments() != null && getArguments().getParcelable("videoData") != null) {
             this.video = getArguments().getParcelable("videoData");
@@ -54,7 +57,6 @@ public class VideosFragment extends Fragment {
     }
 
     private void initialiseUI() {
-        RHAppViewModel rhAppViewModel = new ViewModelProvider(getActivity()).get(RHAppViewModel.class);
         rhAppViewModel.isFullscreenMode.postValue(true);
         calculateImageDimensions();
     }

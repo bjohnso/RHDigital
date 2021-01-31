@@ -11,15 +11,19 @@ import com.rhdigital.rhclient.activities.rhapp.viewholder.EditProfileViewHolder;
 import com.rhdigital.rhclient.common.dto.UserFieldDto;
 import com.rhdigital.rhclient.common.interfaces.OnClickCallback;
 
-import java.util.List;
+import java.util.LinkedHashMap;
 
 public class EditProfileRecyclerViewAdapter extends RecyclerView.Adapter<EditProfileViewHolder>{
 
-    private List<UserFieldDto> fields;
+    private LinkedHashMap<String, UserFieldDto> fields;
     private OnClickCallback callback;
 
-    public void updateData(List<UserFieldDto> fields, OnClickCallback callback) {
+    public void updateData(LinkedHashMap<String, UserFieldDto> fields) {
         this.fields = fields;
+        notifyDataSetChanged();
+    }
+
+    public void updateCallback(OnClickCallback callback) {
         this.callback = callback;
         notifyDataSetChanged();
     }
@@ -33,7 +37,7 @@ public class EditProfileRecyclerViewAdapter extends RecyclerView.Adapter<EditPro
 
     @Override
     public void onBindViewHolder(@NonNull EditProfileViewHolder holder, int position) {
-        holder.bind(fields.get(position), callback);
+        holder.bind((UserFieldDto) fields.values().toArray()[position], callback);
     }
 
     @Override

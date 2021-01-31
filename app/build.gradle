@@ -38,6 +38,7 @@ android {
             'src/main/res/layouts/rhpayment',
             'src/main/res/layouts/rhsplash',
             'src/main/res/layouts/rhloader',
+            'src/main/res/layouts/rhcommon',
             'src/main/res/layouts',
             'src/main/res'
          ]

@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.rhdigital.rhclient.R;
 import com.rhdigital.rhclient.activities.rhapp.viewholder.ProgramsViewHolder;
 import com.rhdigital.rhclient.common.interfaces.OnClickCallback;
-import com.rhdigital.rhclient.database.model.Program;
+import com.rhdigital.rhclient.room.model.Program;
 
 import java.util.HashMap;
 import java.util.List;

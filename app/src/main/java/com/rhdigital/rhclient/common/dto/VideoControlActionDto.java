@@ -1,6 +1,6 @@
 package com.rhdigital.rhclient.common.dto;
 
-import com.rhdigital.rhclient.database.model.Video;
+import com.rhdigital.rhclient.room.model.Video;
 
 public class VideoControlActionDto {
     public static final int BACK_NAV = 0;

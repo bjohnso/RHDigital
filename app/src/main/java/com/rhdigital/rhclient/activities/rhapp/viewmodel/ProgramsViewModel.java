@@ -3,7 +3,6 @@ package com.rhdigital.rhclient.activities.rhapp.viewmodel;
 import android.app.Application;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -16,9 +15,8 @@ import com.rhdigital.rhclient.R;
 import com.rhdigital.rhclient.RHApplication;
 import com.rhdigital.rhclient.common.dto.RemoteResourceDto;
 import com.rhdigital.rhclient.common.services.RemoteResourceService;
-import com.rhdigital.rhclient.database.model.Course;
-import com.rhdigital.rhclient.database.model.Program;
-import com.rhdigital.rhclient.database.repository.RHRepository;
+import com.rhdigital.rhclient.room.model.Program;
+import com.rhdigital.rhclient.room.repository.RHRepository;
 
 import java.util.ArrayList;
 import java.util.HashMap;

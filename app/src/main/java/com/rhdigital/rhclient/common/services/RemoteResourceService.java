@@ -18,10 +18,10 @@ import com.bumptech.glide.request.transition.Transition;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.rhdigital.rhclient.common.dto.RemoteResourceDto;
-import com.rhdigital.rhclient.database.http.ApiClient;
-import com.rhdigital.rhclient.database.http.ApiInterface;
-import com.rhdigital.rhclient.database.model.embedded.CourseWithWorkbooks;
-import com.rhdigital.rhclient.database.model.Workbook;
+import com.rhdigital.rhclient.room.http.ApiClient;
+import com.rhdigital.rhclient.room.http.ApiInterface;
+import com.rhdigital.rhclient.room.model.embedded.CourseWithWorkbooks;
+import com.rhdigital.rhclient.room.model.Workbook;
 import java.util.HashMap;
 import java.util.List;
 
@@ -50,6 +50,7 @@ public class RemoteResourceService {
 
   public RemoteResourceService() {
     StorageReference root = firebaseStorage.getReference();
+    // TODO: STORE IN SHARED PREFS
     urlMap.put("l", root.child("programs/posters/drawable-ldpi"));
     urlMap.put("m", root.child("programs/posters/drawable-mdpi"));
     urlMap.put("h", root.child("programs/posters/drawable-hdpi"));
@@ -60,14 +61,6 @@ public class RemoteResourceService {
     urlMap.put("workbook", root.child("programs/workbooks"));
     urlMap.put("doc", root.child("documents"));
     urlMap.put("profile_photo", root.child("profile_photos"));
-  }
-
-  public LiveData<HashMap<String, HashMap<String, Uri>>> getAllWorkbookURI(List<CourseWithWorkbooks> workbooks) {
-    if (liveWorkbookMap == null) {
-      liveWorkbookMap = new MutableLiveData<>();
-    }
-    loadWorkbookUri(workbooks);
-    return liveWorkbookMap;
   }
 
   public LiveData<HashMap<String, Bitmap>> getAllBitmap(Context context, List<RemoteResourceDto> data, int width, int height) {
@@ -108,6 +101,34 @@ public class RemoteResourceService {
     return liveImageMap;
   }
 
+  public LiveData<HashMap<String, Uri>> getAllVideoURI(List<RemoteResourceDto> data, int width, int height) {
+    if (liveVideoUriMap == null) {
+      liveVideoUriMap = new MutableLiveData<>();
+    }
+    for (RemoteResourceDto item: data) {
+      getVideoStorageReference(item.getResourceUrl())
+              .getDownloadUrl()
+              .addOnFailureListener(error -> {
+                liveVideoUriMapSurrogate = null;
+                liveVideoUriMap.setValue(null);
+              })
+              .addOnSuccessListener(uri -> {
+                liveVideoUriMapSurrogate.put(item.getResourceId(), uri);
+                liveVideoUriMap.setValue(liveVideoUriMapSurrogate);
+                Log.d("REMOTE", "URI : " + uri);
+              });
+    }
+    return liveVideoUriMap;
+  }
+
+  public LiveData<HashMap<String, HashMap<String, Uri>>> getAllWorkbookURI(List<CourseWithWorkbooks> workbooks) {
+    if (liveWorkbookMap == null) {
+      liveWorkbookMap = new MutableLiveData<>();
+    }
+    loadWorkbookUri(workbooks);
+    return liveWorkbookMap;
+  }
+
   public LiveData<ResponseBody> downloadWorkbook(String downloadURL) {
     if (apiInterface == null) {
       apiInterface = ApiClient.getRetrofit().create(ApiInterface.class);
@@ -129,26 +150,6 @@ public class RemoteResourceService {
     return liveBinaryDownload;
   }
 
-  public LiveData<HashMap<String, Uri>> getAllVideoURI(List<RemoteResourceDto> data, int width, int height) {
-    if (liveVideoUriMap == null) {
-      liveVideoUriMap = new MutableLiveData<>();
-    }
-    for (RemoteResourceDto item: data) {
-      getVideoStorageReference(item.getResourceUrl())
-              .getDownloadUrl()
-              .addOnFailureListener(error -> {
-                liveVideoUriMapSurrogate = null;
-                liveVideoUriMap.setValue(null);
-              })
-              .addOnSuccessListener(uri -> {
-                liveVideoUriMapSurrogate.put(item.getResourceId(), uri);
-                liveVideoUriMap.setValue(liveVideoUriMapSurrogate);
-                Log.d("REMOTE", "URI : " + uri);
-              });
-    }
-    return liveVideoUriMap;
-  }
-
   public LiveData<HashMap<String, Uri>> getAllDocumentURI(String... docIds) {
     if (liveDocumentMap == null) {
       liveDocumentMap = new MutableLiveData<>();
@@ -157,14 +158,14 @@ public class RemoteResourceService {
     return liveDocumentMap;
   }
 
-//  public LiveData<Bitmap> getProfilePhoto(Context context, String id, int width, int height) {
-//    if (liveProfilePhotoUri == null) {
-//      liveProfilePhotoUri = new MutableLiveData<>();
-//    }
-//    loadProfileImageUri(context, id, width, height);
-//    return liveProfilePhotoUri;
-//  }
-//
+  public LiveData<Bitmap> getProfilePhoto(Context context, String id, int width, int height) {
+    if (liveProfilePhotoUri == null) {
+      liveProfilePhotoUri = new MutableLiveData<>();
+    }
+    loadProfileImageUri(context, id, width, height);
+    return liveProfilePhotoUri;
+  }
+
 
   private void loadWorkbookUri(List<CourseWithWorkbooks> workbooks) {
     for (CourseWithWorkbooks courseWithWorkbooks: workbooks) {
@@ -173,7 +174,6 @@ public class RemoteResourceService {
         getWorkbookStorageReference(workbook.getUrl())
         .getDownloadUrl()
         .addOnFailureListener(error -> {
-          Log.d("REMOTE", "URI FETCH FAILED");
           liveWorkbookMapSurrogate = null;
           liveWorkbookMap.setValue(null);
         })
@@ -188,7 +188,7 @@ public class RemoteResourceService {
     }
   }
 
-  private void loadProfilePosterUri(Context context, String id, int width, int height) {
+  private void loadProfileImageUri(Context context, String id, int width, int height) {
     getProfileImageStorageReference(id)
       .getDownloadUrl()
       .addOnFailureListener(error -> {

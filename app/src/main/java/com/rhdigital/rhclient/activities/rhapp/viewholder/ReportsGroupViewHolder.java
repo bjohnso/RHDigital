@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.rhdigital.rhclient.activities.rhapp.adapters.ReportsRecyclerViewAdapter;
 import com.rhdigital.rhclient.common.ancestors.BaseViewHolder;
-import com.rhdigital.rhclient.database.model.Report;
+import com.rhdigital.rhclient.room.model.Report;
 import com.rhdigital.rhclient.databinding.ItemReportsGroupBinding;
 
 import java.util.List;

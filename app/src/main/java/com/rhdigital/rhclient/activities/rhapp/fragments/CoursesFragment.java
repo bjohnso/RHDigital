@@ -15,18 +15,18 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.rhdigital.rhclient.R;
 import com.rhdigital.rhclient.activities.rhapp.adapters.CoursesRecyclerViewAdapter;
-import com.rhdigital.rhclient.activities.rhapp.adapters.ProgramsRecyclerViewAdapter;
 import com.rhdigital.rhclient.activities.rhapp.viewmodel.CoursesViewModel;
+import com.rhdigital.rhclient.activities.rhapp.viewmodel.RHAppViewModel;
 import com.rhdigital.rhclient.common.dto.VideoControlActionDto;
 import com.rhdigital.rhclient.common.interfaces.OnClickCallback;
 import com.rhdigital.rhclient.common.services.NavigationService;
 import com.rhdigital.rhclient.common.services.VideoPlayerService;
-import com.rhdigital.rhclient.database.model.Course;
-import com.rhdigital.rhclient.database.model.Program;
+import com.rhdigital.rhclient.room.model.Course;
 import com.rhdigital.rhclient.databinding.FragmentCoursesBinding;
 
 import java.util.HashMap;
@@ -41,6 +41,7 @@ public class CoursesFragment extends Fragment {
 
     // VIEW MODEL
     private CoursesViewModel coursesViewModel;
+    private RHAppViewModel rhAppViewModel;
 
     // ADAPTERS
     private CoursesRecyclerViewAdapter coursesRecyclerViewAdapter;
@@ -60,7 +61,7 @@ public class CoursesFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentCoursesBinding.inflate(getLayoutInflater());
-
+        rhAppViewModel = new ViewModelProvider(this).get(RHAppViewModel.class);
         coursesViewModel = new CoursesViewModel(getActivity().getApplication());
         coursesViewModel.init(getArguments().getString("programId"))
                 .observe(getViewLifecycleOwner(), complete -> {

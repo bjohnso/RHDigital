@@ -14,9 +14,9 @@ import androidx.lifecycle.ViewModelStoreOwner;
 import com.rhdigital.rhclient.RHApplication;
 import com.rhdigital.rhclient.common.dto.RemoteResourceDto;
 import com.rhdigital.rhclient.common.services.RemoteResourceService;
-import com.rhdigital.rhclient.database.model.Course;
-import com.rhdigital.rhclient.database.model.Program;
-import com.rhdigital.rhclient.database.repository.RHRepository;
+import com.rhdigital.rhclient.room.model.Course;
+import com.rhdigital.rhclient.room.model.Program;
+import com.rhdigital.rhclient.room.repository.RHRepository;
 
 import java.util.ArrayList;
 import java.util.HashMap;

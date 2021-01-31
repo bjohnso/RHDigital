@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,7 +25,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.rhdigital.rhclient.R;
 
-import com.rhdigital.rhclient.activities.rhapp.RHAppActivity;
 import com.rhdigital.rhclient.activities.rhauth.services.AuthAPIService;
 import com.rhdigital.rhclient.activities.rhauth.services.AuthFieldValidationService;
 import com.rhdigital.rhclient.activities.rhroom.RHRoomActivity;
@@ -34,9 +32,9 @@ import com.rhdigital.rhclient.common.services.NavigationService;
 
 import com.rhdigital.rhclient.common.services.PushNotificationHelperService;
 import com.rhdigital.rhclient.common.util.RHAPIResult;
-import com.rhdigital.rhclient.database.model.User;
+import com.rhdigital.rhclient.room.model.User;
 import com.rhdigital.rhclient.common.interfaces.CallableFunction;
-import com.rhdigital.rhclient.database.viewmodel.UserViewModel;
+import com.rhdigital.rhclient.room.viewmodel.UserViewModel;
 
 import java.util.HashMap;
 import java.util.List;
@@ -107,7 +105,7 @@ public class RHAuthActivity extends AppCompatActivity {
   @Override
   protected void onStart() {
     super.onStart();
-    FirebaseAuth.getInstance().signOut();
+//    FirebaseAuth.getInstance().signOut();
     initRHRoom();
     registerBroadcastReceiver();
     PushNotificationHelperService.getINSTANCE().setContext(this);

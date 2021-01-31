@@ -11,8 +11,8 @@ import com.rhdigital.rhclient.activities.rhapp.viewholder.CourseDescriptionsView
 import com.rhdigital.rhclient.activities.rhapp.viewholder.WorkbooksViewHolder;
 import com.rhdigital.rhclient.common.ancestors.BaseViewHolder;
 import com.rhdigital.rhclient.common.interfaces.OnClickCallback;
-import com.rhdigital.rhclient.database.model.CourseDescription;
-import com.rhdigital.rhclient.database.model.Workbook;
+import com.rhdigital.rhclient.room.model.CourseDescription;
+import com.rhdigital.rhclient.room.model.Workbook;
 
 import java.util.List;
 

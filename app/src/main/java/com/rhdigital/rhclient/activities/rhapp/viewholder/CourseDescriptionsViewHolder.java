@@ -5,7 +5,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import com.rhdigital.rhclient.R;
 import com.rhdigital.rhclient.common.ancestors.BaseViewHolder;
-import com.rhdigital.rhclient.database.model.CourseDescription;
+import com.rhdigital.rhclient.room.model.CourseDescription;
 
 public class CourseDescriptionsViewHolder extends BaseViewHolder {
     TextView tvDescription;

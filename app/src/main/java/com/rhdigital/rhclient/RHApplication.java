@@ -7,9 +7,12 @@ import android.content.res.Configuration;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.rhdigital.rhclient.activities.rhapp.fragments.RHAppFragment;
+
 public class RHApplication extends Application {
 
   private AppCompatActivity currentActivity = null;
+  private RHAppFragment currentFragment = null;
 
   @Override
   public void onCreate() {
@@ -34,4 +37,11 @@ public class RHApplication extends Application {
     return currentActivity;
   }
 
+  public void setCurrentFragment(RHAppFragment currentFragment) {
+    this.currentFragment = currentFragment;
+  }
+
+  public RHAppFragment getCurrentFragment() {
+    return currentFragment;
+  }
 }

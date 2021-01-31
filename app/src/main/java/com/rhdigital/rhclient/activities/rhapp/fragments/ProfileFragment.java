@@ -1,47 +1,56 @@
 package com.rhdigital.rhclient.activities.rhapp.fragments;
 
+import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.rhdigital.rhclient.R;
+import com.rhdigital.rhclient.RHApplication;
 import com.rhdigital.rhclient.activities.rhapp.RHAppActivity;
 import com.rhdigital.rhclient.activities.rhapp.viewmodel.ProfileViewModel;
+import com.rhdigital.rhclient.activities.rhapp.viewmodel.RHAppViewModel;
 import com.rhdigital.rhclient.common.services.NavigationService;
-import com.rhdigital.rhclient.database.model.User;
+import com.rhdigital.rhclient.room.model.User;
 import com.rhdigital.rhclient.databinding.FragmentProfileBinding;
 
-
-public class ProfileFragment extends Fragment {
+public class ProfileFragment extends RHAppFragment {
 
     private final String TAG = "USER_FRAGMENT";
+
+    private RHAppActivity activity;
 
     // VIEW
     private FragmentProfileBinding binding;
 
     // VIEW MODEL
     private ProfileViewModel profileViewModel;
+    private RHAppViewModel rhAppViewModel;
 
     // OBSERVABLES
     private LiveData<User> userObservable;
+    private LiveData<Bitmap> userProfilePhotoObservable;
 
     // OBSERVERS
     private Observer<User> userObserver;
+    private Observer<Bitmap> userProfilePhotoObserver;
 
     private int width = 0;
     private int height = 0;
@@ -51,6 +60,7 @@ public class ProfileFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentProfileBinding.inflate(getLayoutInflater());
 
+        rhAppViewModel = new ViewModelProvider(getActivity()).get(RHAppViewModel.class);
         profileViewModel = new ViewModelProvider(getActivity()).get(ProfileViewModel.class);
         profileViewModel.init();
         binding.setViewModel(profileViewModel);
@@ -63,11 +73,40 @@ public class ProfileFragment extends Fragment {
         return binding.getRoot();
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        this.activity = (RHAppActivity) getActivity();
+        ((RHApplication)activity.getApplication()).setCurrentFragment(this);
+    }
+
     private void initialiseUI() {
+        binding.profileImage.getViewTreeObserver()
+                .addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+          @Override
+          public void onGlobalLayout() {
+            if (binding.profileImage.getHeight() > 0 && binding.profileImage.getWidth() > 0) {
+                binding.profileImage.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                userProfilePhotoObservable = profileViewModel
+                        .getProfilePhoto(
+                                getContext(),
+                  FirebaseAuth.getInstance().getUid(),
+                  binding.profileImage.getWidth(),
+                  binding.profileImage.getHeight());
+              userProfilePhotoObservable.observe(getActivity(), userProfilePhotoObserver);
+            }
+          }
+        });
         calculateImageDimensions();
     }
 
     private void initialiseLiveData() {
+        userProfilePhotoObserver = bitmap -> {
+          if (bitmap != null) {
+            binding.profileImage.setImageBitmap(bitmap);
+          }
+        };
+
         userObserver = new Observer<User>() {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
@@ -75,6 +114,7 @@ public class ProfileFragment extends Fragment {
                 if (u != null) {
                     userObservable.removeObserver(this);
                     profileViewModel.user.setValue(u);
+                    profileViewModel.initUserFieldMap(u);
                 } else {
                     Toast.makeText(getContext(), R.string.server_error_user, Toast.LENGTH_LONG).show();
                 }
@@ -86,6 +126,9 @@ public class ProfileFragment extends Fragment {
     }
 
     private void initialiseClickListeners() {
+        binding.profileImage.setOnClickListener(view -> {
+            openImageChooser();
+        });
         binding.buttonEditProfile.setOnClickListener(view -> {
             NavigationService.getINSTANCE()
                     .navigate(
@@ -93,10 +136,27 @@ public class ProfileFragment extends Fragment {
                             R.id.editProfileFragment, null, null
                     );
         });
+        binding.buttonSettings.setOnClickListener(view ->
+                Toast.makeText(getContext(), getResources().getString(R.string.description_coming_soon), Toast.LENGTH_LONG).show()
+        );
+        binding.buttonAbout.setOnClickListener(view ->
+                Toast.makeText(getContext(), getResources().getString(R.string.description_coming_soon), Toast.LENGTH_LONG).show()
+        );
+        binding.buttonPrivacyPolicy.setOnClickListener(view ->
+                Toast.makeText(getContext(), getResources().getString(R.string.description_coming_soon), Toast.LENGTH_LONG).show()
+        );
         binding.buttonLogout.setOnClickListener(view -> {
             RHAppActivity activity = (RHAppActivity) getActivity();
             activity.logout();
         });
+    }
+
+    private void openImageChooser() {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        String mimeTypes[] = {"image/png", "image/jpeg"};
+        intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
+        getActivity().startActivityForResult(intent, RHAppActivity.IMAGE_PICKER_CODE);
     }
 
     private void calculateImageDimensions() {
@@ -112,5 +172,22 @@ public class ProfileFragment extends Fragment {
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         width = displayMetrics.widthPixels;
         height = Math.round(px);
+    }
+
+    @Override
+    public void onImageUpload() {
+        userProfilePhotoObservable = profileViewModel
+                .getProfilePhoto(
+                        getContext(),
+                        FirebaseAuth.getInstance().getUid(),
+                        binding.profileImage.getWidth(),
+                        binding.profileImage.getHeight());
+        userProfilePhotoObservable.observe(getActivity(), userProfilePhotoObserver);
+    }
+
+    @Override
+    public void onDestroy() {
+        ((RHApplication)activity.getApplication()).setCurrentFragment(null);
+        super.onDestroy();
     }
 }

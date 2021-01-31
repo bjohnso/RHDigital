@@ -47,6 +47,12 @@
   <string name="server_error_email_verification">Error sending email verification link. Please try again later.</string>
   <string name="server_error_email_update">Error updating email address. Please try again later.</string>
 
+  <string name="description_coming_soon">This feature is coming soon.</string>
+
+  //FireStore Update Messages
+  <string name="server_error_user_update">Error updating user information. Please try again later.</string>
+  <string name="user_update">User information successfully updated.</string>
+
   //Input Validation Error Messages
   <string name="user_error_password_length">Sorry, your password needs to be at least 6 characters. Please try again.</string>
   <string name="user_error_auth_credentials">Please enter a valid email address and password.</string>
