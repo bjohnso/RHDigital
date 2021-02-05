@@ -120,7 +120,7 @@ public class EditProfileFragment extends RHAppFragment {
     }
 
     private void initialiseRecyclerViews() {
-        OnClickCallback callback = (object) -> {
+        OnClickCallback callback = (args) -> {
 
             EditProfileDialogDelegate delegate = new EditProfileDialogDelegate() {
                 @Override
@@ -133,7 +133,7 @@ public class EditProfileFragment extends RHAppFragment {
                 public void onComplete(Boolean shouldSave) { }
             };
 
-            UserFieldDto userField = (UserFieldDto) object;
+            UserFieldDto userField = (UserFieldDto) args[0];
             EditProfileDialog dialog = new EditProfileDialog(delegate, userField);
             dialog.show(getParentFragmentManager(), "edit_profile_dialog");
         };

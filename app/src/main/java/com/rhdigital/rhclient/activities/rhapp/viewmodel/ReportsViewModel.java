@@ -1,6 +1,7 @@
 package com.rhdigital.rhclient.activities.rhapp.viewmodel;
 
 import android.app.Application;
+import android.net.Uri;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -10,10 +11,16 @@ import androidx.lifecycle.ViewModelStoreOwner;
 
 import com.rhdigital.rhclient.R;
 import com.rhdigital.rhclient.RHApplication;
+import com.rhdigital.rhclient.common.dto.RemoteResourceDto;
+import com.rhdigital.rhclient.common.services.RemoteResourceService;
 import com.rhdigital.rhclient.room.model.Report;
 import com.rhdigital.rhclient.room.repository.RHRepository;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+
+import okhttp3.ResponseBody;
 
 public class ReportsViewModel extends AndroidViewModel {
 
@@ -37,5 +44,24 @@ public class ReportsViewModel extends AndroidViewModel {
 
     public LiveData<List<Report>> getReports() {
         return rhRepository.getAllAuthorisedReports();
+    }
+
+    public LiveData<HashMap<String, Uri>> getReportUri(List<Report> reports) {
+        List<RemoteResourceDto> data = new ArrayList<>();
+        for (Report report: reports) {
+            // TODO: USE VIDEO THUMBNAILS
+            data.add(
+                    new RemoteResourceDto(
+                            report.getId(),
+                            report.getUrl(),
+                            RemoteResourceDto.REPORT_URI
+                    )
+            );
+        }
+        return new RemoteResourceService().getAllPDFURI(data);
+    }
+
+    public LiveData<ResponseBody> downloadWorkbook(String downloadURL) {
+        return new RemoteResourceService().downloadWorkbook(downloadURL);
     }
 }

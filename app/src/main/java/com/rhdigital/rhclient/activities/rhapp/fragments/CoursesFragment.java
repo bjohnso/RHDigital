@@ -2,6 +2,7 @@ package com.rhdigital.rhclient.activities.rhapp.fragments;
 
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
@@ -28,6 +29,7 @@ import com.rhdigital.rhclient.common.services.NavigationService;
 import com.rhdigital.rhclient.common.services.VideoPlayerService;
 import com.rhdigital.rhclient.room.model.Course;
 import com.rhdigital.rhclient.databinding.FragmentCoursesBinding;
+import com.rhdigital.rhclient.room.model.Report;
 
 import java.util.HashMap;
 import java.util.List;
@@ -111,8 +113,8 @@ public class CoursesFragment extends Fragment {
     }
 
     private void initialiseRecyclerView() {
-        OnClickCallback callback = (action) -> {
-            VideoControlActionDto videoControlAction = (VideoControlActionDto)action;
+        OnClickCallback callback = (args) -> {
+            VideoControlActionDto videoControlAction = (VideoControlActionDto)args[0];
             switch (videoControlAction.getActionType()) {
                 case VideoControlActionDto.MAXIMISE:
                         Bundle bundle = new Bundle();

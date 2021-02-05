@@ -36,8 +36,11 @@ public abstract class ReportDAO extends BaseDAO<Report> {
 
   // AUTH
   @Query("UPDATE reports SET is_authorised = 1 WHERE id = :id")
-  abstract public int authorise(@NonNull String id);
+  abstract public int authorise(String id);
 
-  @Query("UPDATE reports SET is_authorised = 0")
-  abstract public void deauthorise();
+  @Query("UPDATE reports SET is_authorised = 0 WHERE id = :id")
+  abstract public void deauthorise(String id);
+
+  @Query("UPDATE reports SET is_authorised = 0 WHERE is_authorised != 0")
+  abstract public void deauthoriseAll();
 }

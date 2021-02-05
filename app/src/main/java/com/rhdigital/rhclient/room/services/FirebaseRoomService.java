@@ -11,6 +11,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.rhdigital.rhclient.common.dto.PopulateRoomDto;
 import com.rhdigital.rhclient.common.interfaces.CallableFunction;
 import com.rhdigital.rhclient.room.DAO.AuthorisedProgramDAO;
+import com.rhdigital.rhclient.room.DAO.AuthorisedReportDAO;
 import com.rhdigital.rhclient.room.DAO.CourseDAO;
 import com.rhdigital.rhclient.room.DAO.CourseDescriptionDAO;
 import com.rhdigital.rhclient.room.DAO.ProgramDAO;
@@ -20,6 +21,7 @@ import com.rhdigital.rhclient.room.DAO.UserDAO;
 import com.rhdigital.rhclient.room.DAO.WorkbookDAO;
 import com.rhdigital.rhclient.room.RHDatabase;
 import com.rhdigital.rhclient.room.model.AuthorisedProgram;
+import com.rhdigital.rhclient.room.model.AuthorisedReport;
 import com.rhdigital.rhclient.room.model.Course;
 import com.rhdigital.rhclient.room.model.CourseDescription;
 import com.rhdigital.rhclient.room.model.Program;
@@ -61,6 +63,7 @@ public class FirebaseRoomService implements CallableFunction<Object, Void> {
   protected WorkbookDAO workbookDAO;
   protected CourseDescriptionDAO courseDescriptionDAO;
   protected AuthorisedProgramDAO authorisedProgramDAO;
+  protected AuthorisedReportDAO authorisedReportDAO;
   // FIREBASE
   private FirebaseChainBuilder firebaseChainBuilder = new FirebaseChainBuilder();
   private ExecutorService executorService = Executors.newCachedThreadPool();
@@ -255,6 +258,7 @@ public class FirebaseRoomService implements CallableFunction<Object, Void> {
             user
     ));
     insertAuthorisedPrograms(doc, pop);
+    insertAuthorisedReports(doc, pop);
   }
 
   private void insertAuthorisedPrograms(QueryDocumentSnapshot doc, ArrayList<Long> pop) {
@@ -265,6 +269,18 @@ public class FirebaseRoomService implements CallableFunction<Object, Void> {
     for (String id : authorisedPrograms) {
       pop.add(authorisedProgramDAO.insert(
               new AuthorisedProgram(id)
+      ));
+    }
+  }
+
+  private void insertAuthorisedReports(QueryDocumentSnapshot doc, ArrayList<Long> pop) {
+    List<String> authorisedReports =
+            doc.get("authorisedReports") == null ?
+                    Collections.emptyList() :
+                    (List<String>) doc.get("authorisedReports");
+    for (String id : authorisedReports) {
+      pop.add(authorisedReportDAO.insert(
+              new AuthorisedReport(id)
       ));
     }
   }

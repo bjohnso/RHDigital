@@ -9,6 +9,7 @@ import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import com.rhdigital.rhclient.room.DAO.AuthorisedProgramDAO;
+import com.rhdigital.rhclient.room.DAO.AuthorisedReportDAO;
 import com.rhdigital.rhclient.room.DAO.CourseDAO;
 import com.rhdigital.rhclient.room.DAO.CourseDescriptionDAO;
 import com.rhdigital.rhclient.room.DAO.ProgramDAO;
@@ -18,6 +19,7 @@ import com.rhdigital.rhclient.room.DAO.embedded.CourseWithWorkbooksDAO;
 import com.rhdigital.rhclient.room.DAO.UserDAO;
 import com.rhdigital.rhclient.room.DAO.WorkbookDAO;
 import com.rhdigital.rhclient.room.model.AuthorisedProgram;
+import com.rhdigital.rhclient.room.model.AuthorisedReport;
 import com.rhdigital.rhclient.room.model.Course;
 import com.rhdigital.rhclient.room.model.CourseDescription;
 import com.rhdigital.rhclient.room.model.Program;
@@ -31,11 +33,12 @@ import com.rhdigital.rhclient.room.model.Workbook;
         CourseDescription.class,
         Program.class,
         AuthorisedProgram.class,
+        AuthorisedReport.class,
         Report.class,
         User.class,
         Video.class,
         Workbook.class
-}, version = 1, exportSchema = false)
+}, version = 2, exportSchema = false)
 public abstract class RHDatabase extends RoomDatabase {
 
     private static volatile RHDatabase INSTANCE;
@@ -48,6 +51,7 @@ public abstract class RHDatabase extends RoomDatabase {
     public abstract WorkbookDAO workbookDAO();
     public abstract CourseWithWorkbooksDAO courseWithWorkbooksDAO();
     public abstract AuthorisedProgramDAO authorisedProgramDAO();
+    public abstract AuthorisedReportDAO authorisedReportDAO();
 
     public static RHDatabase getDatabase(final Context context) {
         if (INSTANCE == null) {

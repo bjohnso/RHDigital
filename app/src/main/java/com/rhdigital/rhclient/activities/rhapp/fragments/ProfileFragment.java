@@ -31,6 +31,8 @@ import com.rhdigital.rhclient.common.services.NavigationService;
 import com.rhdigital.rhclient.room.model.User;
 import com.rhdigital.rhclient.databinding.FragmentProfileBinding;
 
+import java.util.HashMap;
+
 public class ProfileFragment extends RHAppFragment {
 
     private final String TAG = "USER_FRAGMENT";
@@ -46,11 +48,11 @@ public class ProfileFragment extends RHAppFragment {
 
     // OBSERVABLES
     private LiveData<User> userObservable;
-    private LiveData<Bitmap> userProfilePhotoObservable;
+    private LiveData<HashMap<String, Bitmap>> userProfilePhotoObservable;
 
     // OBSERVERS
     private Observer<User> userObserver;
-    private Observer<Bitmap> userProfilePhotoObserver;
+    private Observer<HashMap<String, Bitmap>> userProfilePhotoObserver;
 
     private int width = 0;
     private int height = 0;
@@ -101,9 +103,11 @@ public class ProfileFragment extends RHAppFragment {
     }
 
     private void initialiseLiveData() {
-        userProfilePhotoObserver = bitmap -> {
-          if (bitmap != null) {
-            binding.profileImage.setImageBitmap(bitmap);
+        userProfilePhotoObserver = map -> {
+          if (map != null && map.get(FirebaseAuth.getInstance().getUid()) != null) {
+            binding.profileImage.setImageBitmap(
+                    map.get(FirebaseAuth.getInstance().getUid())
+            );
           }
         };
 

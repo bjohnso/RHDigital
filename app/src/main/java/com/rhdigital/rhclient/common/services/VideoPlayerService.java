@@ -1,8 +1,6 @@
 package com.rhdigital.rhclient.common.services;
 
 import android.content.Context;
-import android.net.Uri;
-import android.util.Log;
 
 import androidx.lifecycle.LifecycleOwner;
 
@@ -24,7 +22,6 @@ import java.util.List;
 public class VideoPlayerService {
 
   private static VideoPlayerService INSTANCE;
-  private boolean isFullScreen = false;
   private HashMap<String, VideoPlayerDto> videoPlayerMap = new HashMap<>();
   private String preserve;
 
@@ -46,7 +43,11 @@ public class VideoPlayerService {
   private void attachNewVideoStream(Context context, VideoPlayerDto videoPlayer) {
       RemoteResourceService remoteResourceService = new RemoteResourceService();
       List<RemoteResourceDto> resourceList = Arrays.asList(
-              new RemoteResourceDto(videoPlayer.getVideo().getId(), videoPlayer.getVideo().getVideoUrl())
+              new RemoteResourceDto(
+                      videoPlayer.getVideo().getId(),
+                      videoPlayer.getVideo().getVideoUrl(),
+                      RemoteResourceDto.VIDEO_URI
+              )
       );
       remoteResourceService.getAllVideoURI(resourceList, 0,0).observe((LifecycleOwner) context, resources -> {
         if (resources != null) {
@@ -117,113 +118,5 @@ public class VideoPlayerService {
       this.preserve = videoId;
   }
 
-    public String getPreserve() { return preserve; }
-
-    //  public void initPlayer(Context context, VideoPlayerDto videoPlayer) {
-//    if (isFullScreen && validateViewHolderID(video.getId())) {
-//      Log.d("VIDEO_PLAYER_SERVICE", "MINIMISE");
-//      playerMinimise(context, view);
-//      return;
-//    } else if (!isFullScreen) {
-//      // TODO : USE NAVIGATION SERVICE TO PASS ID FROM VIEWHOLDER TO FULLSCREENFRAGMENT FOR THIS COMPARISON
-//      if (minPlayerView != null && maxPlayerView == null && id == null) {
-//        Log.d("VIDEOPLAYERSERVICE", "MAXIMISE - THERE IS ALREADY AN ACTIVE VIDEO RENDER... CASTING THIS TO FULLSCREEN");
-//        playerMaximise(context, view);
-//        return;
-//      } else {
-//        if (minPlayerView != null) {
-//          Log.d("VIDEOPLAYERSERVICE", "DUPLICATE ATTACH - THERE IS ALREADY AN ACTIVE VIDEO RENDER... DESTROYING CURRENT RENDER");
-//          if (currentHolder != null)
-//            currentHolder.revealPlayer(false);
-//          destroyVideo();
-//        }
-//        Log.d("VIDEOPLAYERSERVICE", "NEW ATTACH - CREATING VIDEO RENDER");
-//        minPlayerView = view;
-//        minPlayerID = id;
-//        if (player == null) {
-//          player = new SimpleExoPlayer.Builder(context).build();
-//        }
-//
-//        DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(
-//          context,
-//          Util.getUserAgent(
-//            context,
-//            context.getString(R.string.app_name)));
-//        mediaSource = new ProgressiveMediaSource.Factory(dataSourceFactory)
-//          .createMediaSource(Uri.parse(url));
-//
-//        minPlayerView.setPlayer(player);
-//        enableVideo();
-//      }
-//    }
-//  }
-
-//  private void playerMaximise (Context context, PlayerView view) {
-//    maxPlayerView = view;
-//    if (minPlayerView != null) {
-//      if (player == null) {
-//        player = new SimpleExoPlayer.Builder(context).build();
-//      }
-//      PlayerView.switchTargetView(player, minPlayerView, view);
-//    }
-//    isFullScreen = true;
-//  }
-//
-//  private void playerMinimise (Context context, PlayerView view) {
-//    minPlayerView = view;
-//    Log.d("VIDEOPLAYERSERVICE", "PLAYER IS MINIMISING");
-//    if (maxPlayerView != null) {
-//      Log.d("VIDEOPLAYERSERVICE", "MAX PLAYER FOUND");
-//      if (player == null) {
-//        player = new SimpleExoPlayer.Builder(context).build();
-//      }
-//      PlayerView.switchTargetView(player, maxPlayerView, view);
-//    }
-//    maxPlayerView = null;
-//    isFullScreen = false;
-//  }
-//
-//  public void enableVideo() {
-//    isVideoEnabled = true;
-//    player.prepare(mediaSource);
-//  }
-//
-//  public boolean validateViewHolderID(String id) {
-//    return this.minPlayerID.equals(id) ? true : false;
-//  }
-//
-//  public boolean isVideoEnabled() {
-//    return isVideoEnabled;
-//  }
-//
-//  public void destroyVideo() {
-//    Log.d("VIDEOPLAYERSERVICE", "DESTROYED");
-//    isVideoEnabled = false;
-//    minPlayerView = null;
-//    currentHolder = null;
-//    maxPlayerView = null;
-//    if (player != null)
-//      player.release();
-//    player = null;
-//  }
-//
-//  public SimpleExoPlayer getPlayer() {
-//    return player;
-//  }
-//
-//  public PlayerView getMaxPlayerView() {
-//    return maxPlayerView;
-//  }
-//
-//  public PlayerView getMinPlayerView() {
-//    return minPlayerView;
-//  }
-//
-//  public boolean isFullScreen() {
-//    return isFullScreen;
-//  }
-//
-//  public void toggleFullscreen() {
-//    this.isFullScreen = !isFullScreen;
-//  }
+  public String getPreserve() { return preserve; }
 }

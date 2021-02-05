@@ -137,10 +137,11 @@ public class ProgramsFragment extends Fragment {
     }
 
     private void initialiseRecyclerView() {
-        OnClickCallback callback = (program) -> {
+        OnClickCallback callback = (args) -> {
+            Program program = (Program)args[0];
             if (program != null) {
                 Bundle bundle = new Bundle();
-                bundle.putString("programId", ((Program)program).getId());
+                bundle.putString("programId", program.getId());
                 NavigationService.getINSTANCE()
                         .navigate(
                                 getActivity().getLocalClassName(),
