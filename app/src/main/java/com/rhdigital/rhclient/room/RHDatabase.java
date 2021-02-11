@@ -38,7 +38,7 @@ import com.rhdigital.rhclient.room.model.Workbook;
         User.class,
         Video.class,
         Workbook.class
-}, version = 2, exportSchema = false)
+}, version = 1, exportSchema = false)
 public abstract class RHDatabase extends RoomDatabase {
 
     private static volatile RHDatabase INSTANCE;

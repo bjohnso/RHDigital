@@ -3,6 +3,7 @@ package com.rhdigital.rhclient.room.services;
 import android.util.Log;
 
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.rhdigital.rhclient.common.interfaces.CallableFunction;
@@ -22,13 +23,24 @@ public class FirebaseChainBuilder implements CallableFunction<Object, Object> {
     AtomicReference<Task<QuerySnapshot>> querySnapshotTask = new AtomicReference<>();
     collectionKey = (String) args[0];
     FirebaseFirestore firestore = FirebaseFirestore.getInstance();
-    firestore.collection(collectionKey)
-            .get()
-            .addOnCompleteListener(task -> {
-              querySnapshotMap.put(collectionKey, task.getResult());
-              querySnapshotTask.set(task);
-              semaphore.release();
-            });
+    if (collectionKey.equals("users")) {
+      firestore.collection(collectionKey)
+              .whereEqualTo("__name__", FirebaseAuth.getInstance().getUid())
+              .get()
+              .addOnCompleteListener(task -> {
+                querySnapshotMap.put(collectionKey, task.getResult());
+                querySnapshotTask.set(task);
+                semaphore.release();
+              });
+    } else {
+      firestore.collection(collectionKey)
+              .get()
+              .addOnCompleteListener(task -> {
+                querySnapshotMap.put(collectionKey, task.getResult());
+                querySnapshotTask.set(task);
+                semaphore.release();
+              });
+    }
     semaphore.acquire();
     return querySnapshotTask.get();
   }
