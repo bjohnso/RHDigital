@@ -28,7 +28,7 @@ android {
     buildTypes {
         release {
             debuggable false
-            minifyEnabled true
+            minifyEnabled false
             signingConfig signingConfigs.release
             firebaseAppDistribution {
                 appId = "1:610202242963:android:d9b80d35f38e5739d9a266"
