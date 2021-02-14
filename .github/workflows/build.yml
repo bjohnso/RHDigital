@@ -3,7 +3,7 @@ name: Build APK
 on:
   push:
     branches:
-      - deploy
+      - develop
 
 jobs:
   build:
@@ -43,7 +43,7 @@ jobs:
           rm ${HOME}/commits.txt
 
       - name: Build Release
-        run: ./gradlew clean assembleRelease
+        run: ./gradlew clean assembleRelease appDistributionUploadRelease
 
       - name: upload artifact to Firebase App Distribution
         uses: wzieba/Firebase-Distribution-Github-Action@v1.2.1

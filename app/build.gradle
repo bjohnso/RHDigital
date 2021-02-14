@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.firebase.appdistribution'
 
 android {
     compileSdkVersion 30
@@ -26,7 +27,15 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled false
+            debuggable false
+            minifyEnabled true
+            signingConfig signingConfigs.release
+            firebaseAppDistribution {
+                appId = "1:610202242963:android:d9b80d35f38e5739d9a266"
+                releaseNotesFile = "release_notes.txt"
+                groups = "closed-release"
+                serviceCredentialsFile = "app/src/main/firebase-distribution-creds.json"
+            }
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
