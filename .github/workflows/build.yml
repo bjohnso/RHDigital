@@ -15,7 +15,6 @@ jobs:
         with:
           fetch-depth: 0
 
-#     UPDATE BUILD VERSION
     - name: Increment Versions
       id: increment_versions
       run: |
