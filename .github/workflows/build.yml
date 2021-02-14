@@ -1,0 +1,70 @@
+name: Build APK
+
+on:
+  push:
+    branches:
+      - deploy
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Set Up JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+
+      - name: Install Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+          architecture: 'x64'
+
+      - name: Log Commits
+        run: |
+          git log -10 --pretty=format:"%s" > ${HOME}/commits.txt
+
+      - name: Print Commit Logs
+        run: |
+          cat ${HOME}/commits.txt
+
+      - name: Build Slack Message
+        run: |
+          python ./.github/workflows/build_slack_message.py ${HOME}/commits.txt
+
+      - name: Remove Commit Logs
+        run: |
+          rm ${HOME}/commits.txt
+
+      - name: Build Release
+        run: ./gradlew clean assembleRelease
+
+      - name: upload artifact to Firebase App Distribution
+        uses: wzieba/Firebase-Distribution-Github-Action@v1.2.1
+        with:
+          appId: ${{secrets.FIREBASE_APP_ID}}
+          token: ${{secrets.FIREBASE_TOKEN}}
+          groups: Debug
+          file: app/build/outputs/apk/debug/app-debug.apk
+
+      - name: Stringify Slack Json
+        id: slack_stringify
+        run: |
+          echo "::set-output name=stringify::$(python "./.github/workflows/stringify.py" "./.github/workflows/slack_message_template.json" --escape)"
+
+      - name: Notify slack
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+        uses: pullreminders/slack-action@master
+        with:
+          args: "${{ steps.slack_stringify.outputs.stringify }}"
+
+      - name: print
+        run: |
+          echo "${{ steps.slack_escape_quotes.outputs.escape_quotes }}"

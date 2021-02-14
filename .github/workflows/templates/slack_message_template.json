@@ -1,0 +1,23 @@
+{
+    "blocks": [
+        {
+            "text": {
+                "text": "A New RHApp Android Build is now available :rocket:",
+                "type": "plain_text",
+                "emoji": true
+            },
+            "type": "section"
+        },
+        {
+            "type": "divider"
+        },
+        {
+            "text": {
+                "text": "",
+                "type": "mrkdwn"
+            },
+            "type": "section"
+        }
+    ],
+    "channel": "C01LTJ95MFG"
+}
