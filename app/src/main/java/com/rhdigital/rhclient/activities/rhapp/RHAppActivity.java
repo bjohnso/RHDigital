@@ -130,6 +130,8 @@ public class RHAppActivity extends AppCompatActivity {
     binding.getViewModel().authorisePrograms().observe(this, authorisedPrograms ->
             binding.getViewModel().authoriseReports().observe(this, authorisedReports ->
                     initNavGraph()));
+
+
   }
 
   private void initNavGraph() {
