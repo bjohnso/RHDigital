@@ -6,6 +6,8 @@
     <uses-permission android:name="android.permission.CAMERA"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
+    <uses-permission android:name="android.permission.INTERNET"/>
     <application
         android:usesCleartextTraffic="true"
         android:name=".RHApplication"
@@ -33,6 +35,11 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
+
+        <activity android:name="com.rhdigital.rhclient.activities.rhpayment.RHPaymentActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity,MissingClass">
+        </activity>
 
       <service android:name=".common.services.FirebasePushNotificationService"
         android:exported="false">

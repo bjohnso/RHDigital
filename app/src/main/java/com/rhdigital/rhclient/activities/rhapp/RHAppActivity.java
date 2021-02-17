@@ -14,6 +14,7 @@ import android.os.Environment;
 import android.os.ParcelFileDescriptor;
 import android.os.StrictMode;
 import android.provider.MediaStore;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -31,6 +32,7 @@ import com.rhdigital.rhclient.RHApplication;
 import com.rhdigital.rhclient.activities.rhapp.fragments.RHAppFragment;
 import com.rhdigital.rhclient.activities.rhapp.viewmodel.RHAppViewModel;
 import com.rhdigital.rhclient.activities.rhauth.RHAuthActivity;
+import com.rhdigital.rhclient.activities.rhpayment.RHPaymentActivity;
 import com.rhdigital.rhclient.common.providers.CustomFileProvider;
 import com.rhdigital.rhclient.common.services.FirebaseUploadService;
 import com.rhdigital.rhclient.common.services.NavigationService;
@@ -102,11 +104,21 @@ public class RHAppActivity extends AppCompatActivity {
       }
     });
 
+
     binding.buttonAction.setOnClickListener(view -> {
       RHAppFragment currentFragment = ((RHApplication)getApplication())
               .getCurrentFragment();
       if (currentFragment != null) {
         currentFragment.onAction();
+      } else {
+        launchPaymentActivity();
+      }
+    });
+
+    binding.buttonEnrollNow.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        launchPaymentActivity();
       }
     });
 
@@ -279,6 +291,8 @@ public class RHAppActivity extends AppCompatActivity {
 
   public void launchPaymentActivity() {
     //TODO: LAUNCH PAYMENTS ACTIVITY
+    Intent paymentIntent = new Intent(this, RHPaymentActivity.class);
+    startActivity(paymentIntent);
   }
 
   public void logout() {
