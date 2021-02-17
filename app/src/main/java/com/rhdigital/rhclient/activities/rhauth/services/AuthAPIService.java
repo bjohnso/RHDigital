@@ -128,7 +128,7 @@ public class AuthAPIService implements CallableFunction<Object, RHAPIResult> {
       return (RHAPIResult) method.invoke(this, pair.second);
     } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
       e.printStackTrace();
-    };
+    }
     return null;
   }
 

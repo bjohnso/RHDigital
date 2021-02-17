@@ -14,6 +14,5 @@
     android:indeterminateTint="@color/active"
     app:layout_constraintBottom_toTopOf="@+id/button"
     app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/nav_host_sign_up" />
+    app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

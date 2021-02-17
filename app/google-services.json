@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "610202242963",
+    "firebase_url": "https://rh-digital-f9ec9.firebaseio.com",
+    "project_id": "rh-digital-f9ec9",
+    "storage_bucket": "rh-digital-f9ec9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:610202242963:android:d9b80d35f38e5739d9a266",
+        "android_client_info": {
+          "package_name": "com.rhdigital.rhclient"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "610202242963-5n350krulmkc4a5nposgt5c9atirs3ok.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.rhdigital.rhclient",
+            "certificate_hash": "13f0f9f52d5ca5250442b016bb097307c9718bcc"
+          }
+        },
+        {
+          "client_id": "610202242963-uc523qg83vg6dhp1amc4ufonvvraot4m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAYLbk6AZJXXiSApfgkT_Rrib9Zikq55ms"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "610202242963-uc523qg83vg6dhp1amc4ufonvvraot4m.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

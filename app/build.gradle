@@ -1,20 +1,41 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.firebase.appdistribution'
 
 android {
     compileSdkVersion 30
-    buildToolsVersion "29.0.3"
+    buildToolsVersion "30.0.3"
+    lintOptions {
+        abortOnError false
+    }
     defaultConfig {
         applicationId "com.rhdigital.rhclient"
         minSdkVersion 23
         targetSdkVersion 30
-        versionCode 1
+        versionCode 3
         versionName "1.0"
+        archivesBaseName="rhdigital"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+    signingConfigs {
+        release {
+            storeFile file('../keys/rhdigital_release.keystore')
+            storePassword "rhdigital"
+            keyAlias "release"
+            keyPassword "rhdigital"
+        }
     }
     buildTypes {
         release {
+            debuggable false
             minifyEnabled false
+            signingConfig signingConfigs.release
+            firebaseAppDistribution {
+                appId = "1:610202242963:android:d9b80d35f38e5739d9a266"
+                releaseNotesFile = "release_notes.txt"
+                groups = "closed-release"
+                serviceCredentialsFile = "app/src/main/firebase-distribution-creds.json"
+            }
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }

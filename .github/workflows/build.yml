@@ -1,0 +1,75 @@
+name: Build APK
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Increment Versions
+        id: increment_versions
+        run: |
+          python ./.github/workflows/update_versions.py
+
+      - name: Push updates
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Updated build versions"
+          git push
+
+      - name: Set Up JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+
+      - name: Install Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+          architecture: 'x64'
+
+      - name: Log Commits
+        run: |
+          git log -10 --pretty=format:"%s" > ${HOME}/commits.txt
+
+      - name: Print Commit Logs
+        run: |
+          cat ${HOME}/commits.txt
+
+      - name: Build Slack Message
+        run: |
+          python ./.github/workflows/build_slack_message.py ${HOME}/commits.txt
+
+      - name: Remove Commit Logs
+        run: |
+          rm ${HOME}/commits.txt
+
+      - name: Build Release
+        run: ./gradlew clean assembleRelease appDistributionUploadRelease
+
+      - name: Stringify Slack Json
+        id: slack_stringify
+        run: |
+          echo "::set-output name=stringify::$(python "./.github/workflows/stringify.py" "./.github/workflows/slack_message_template.json" --escape)"
+
+      - name: Notify slack
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+        uses: pullreminders/slack-action@master
+        with:
+          args: "${{ steps.slack_stringify.outputs.stringify }}"
+
+      - name: print
+        run: |
+          echo "${{ steps.slack_escape_quotes.outputs.escape_quotes }}"

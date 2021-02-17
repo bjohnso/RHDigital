@@ -71,15 +71,17 @@ public class PushNotificationHelperService {
   }
 
   public void saveTokenRemote() {
-    FirebaseInstanceId.getInstance().getInstanceId()
-      .addOnCompleteListener(task -> {
-        if (task.isSuccessful()) {
-          String token = task.getResult().getToken();
-          remoteDB.collection("users")
-            .document(FirebaseAuth.getInstance().getUid())
-            .update("pushNotificationToken", token);
-        }
-      });
+    if (FirebaseAuth.getInstance().getUid() != null) {
+      FirebaseInstanceId.getInstance().getInstanceId()
+              .addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                  String token = task.getResult().getToken();
+                  remoteDB.collection("users")
+                          .document(FirebaseAuth.getInstance().getUid())
+                          .update("pushNotificationToken", token);
+                }
+              });
+    }
   }
 
   public void sendNotificationToLifeCycleOwner(String title, String body) {
