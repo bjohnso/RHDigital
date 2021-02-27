@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import okhttp3.ResponseBody;
+
 public class CoursesViewModel extends AndroidViewModel {
 
     public LiveData<Program> program;
@@ -73,5 +75,9 @@ public class CoursesViewModel extends AndroidViewModel {
             );
         }
         return new RemoteResourceService().getAllBitmap(context, data, width, height);
+    }
+
+    public LiveData<ResponseBody> downloadFile(String downloadURL) {
+        return new RemoteResourceService().downloadFile(downloadURL);
     }
 }

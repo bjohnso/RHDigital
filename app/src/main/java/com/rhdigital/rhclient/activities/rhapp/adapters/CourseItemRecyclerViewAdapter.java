@@ -1,5 +1,6 @@
 package com.rhdigital.rhclient.activities.rhapp.adapters;
 
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -14,6 +15,7 @@ import com.rhdigital.rhclient.common.interfaces.OnClickCallback;
 import com.rhdigital.rhclient.room.model.CourseDescription;
 import com.rhdigital.rhclient.room.model.Workbook;
 
+import java.util.HashMap;
 import java.util.List;
 
 public class CourseItemRecyclerViewAdapter extends RecyclerView.Adapter<BaseViewHolder> {
@@ -22,7 +24,8 @@ public class CourseItemRecyclerViewAdapter extends RecyclerView.Adapter<BaseView
     public static final int DESCRIPTION = 1;
 
     private List<Workbook> workbooks;
-    private OnClickCallback callback;
+    private OnClickCallback workbookCallback;
+    private HashMap<String, Uri> uriMap;
     private List<CourseDescription> descriptions;
 
     @NonNull
@@ -47,16 +50,18 @@ public class CourseItemRecyclerViewAdapter extends RecyclerView.Adapter<BaseView
     public void onBindViewHolder(@NonNull BaseViewHolder holder, int position) {
         if (workbooks != null) {
             Workbook workbook = workbooks.get(position);
-            holder.bind(workbook);
+            holder.bind(workbook, uriMap.get(workbook.getId()), workbookCallback);
         } else if (descriptions != null) {
             CourseDescription courseDescription = descriptions.get(position);
             holder.bind(courseDescription);
         }
     }
 
-    public void setWorkbooks(List<Workbook> workbooks) {
+    public void setWorkbooks(List<Workbook> workbooks, HashMap<String, Uri> uriMap, OnClickCallback workbookCallback) {
         this.descriptions = null;
         this.workbooks = workbooks;
+        this.workbookCallback = workbookCallback;
+        this.uriMap = uriMap;
         notifyDataSetChanged();
     }
 

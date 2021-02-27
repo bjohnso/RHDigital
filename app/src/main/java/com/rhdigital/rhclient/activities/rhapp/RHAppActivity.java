@@ -110,6 +110,10 @@ public class RHAppActivity extends AppCompatActivity {
       }
     });
 
+    binding.buttonEnroll.setOnClickListener(view -> {
+      Toast.makeText(this, getResources().getString(R.string.description_coming_soon), Toast.LENGTH_LONG).show();
+    });
+
     binding.bottomNavigationView.setOnNavigationItemSelectedListener(item ->  {
       switch (item.getItemId()){
         case R.id.bottom_nav_programs:

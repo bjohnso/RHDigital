@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -167,7 +168,7 @@ public class RemoteResourceService {
     return livePDFMap;
   }
 
-  public LiveData<ResponseBody> downloadWorkbook(String downloadURL) {
+  public LiveData<ResponseBody> downloadFile(String downloadURL) {
     if (apiInterface == null) {
       apiInterface = ApiClient.getRetrofit().create(ApiInterface.class);
     }

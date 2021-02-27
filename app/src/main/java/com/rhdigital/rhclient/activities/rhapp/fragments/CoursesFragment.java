@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +21,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.rhdigital.rhclient.R;
+import com.rhdigital.rhclient.activities.rhapp.RHAppActivity;
 import com.rhdigital.rhclient.activities.rhapp.adapters.CoursesRecyclerViewAdapter;
 import com.rhdigital.rhclient.activities.rhapp.viewmodel.CoursesViewModel;
 import com.rhdigital.rhclient.activities.rhapp.viewmodel.RHAppViewModel;
@@ -30,6 +32,7 @@ import com.rhdigital.rhclient.common.services.VideoPlayerService;
 import com.rhdigital.rhclient.room.model.Course;
 import com.rhdigital.rhclient.databinding.FragmentCoursesBinding;
 import com.rhdigital.rhclient.room.model.Report;
+import com.rhdigital.rhclient.room.model.Workbook;
 
 import java.util.HashMap;
 import java.util.List;
@@ -37,6 +40,8 @@ import java.util.List;
 public class CoursesFragment extends Fragment {
 
     private final String TAG = "COURSES_FRAGMENT";
+
+    private RHAppActivity activity;
 
     // VIEW
     private FragmentCoursesBinding binding;
@@ -76,6 +81,12 @@ public class CoursesFragment extends Fragment {
         return binding.getRoot();
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        activity = (RHAppActivity) getActivity();
+    }
+
     private void initialiseUI() {
         calculateImageDimensions();
         initialiseRecyclerView();
@@ -113,7 +124,7 @@ public class CoursesFragment extends Fragment {
     }
 
     private void initialiseRecyclerView() {
-        OnClickCallback callback = (args) -> {
+        OnClickCallback videoCallback = (args) -> {
             VideoControlActionDto videoControlAction = (VideoControlActionDto)args[0];
             switch (videoControlAction.getActionType()) {
                 case VideoControlActionDto.MAXIMISE:
@@ -126,7 +137,21 @@ public class CoursesFragment extends Fragment {
                                 );
             }
         };
-        coursesRecyclerViewAdapter = new CoursesRecyclerViewAdapter(coursesViewModel.program.getValue(), callback);
+
+        OnClickCallback workbookCallback = (args) -> {
+            String url = (args[1]).toString();
+            coursesViewModel.downloadFile(url)
+                    .observe(getViewLifecycleOwner(), res -> {
+                        if (res != null) {
+                            Workbook report = (Workbook)args[0];
+                            activity.writeFileToDisk(report.getTitle(), res);
+                        } else{
+                            Toast.makeText(getContext(), "Download Failed", Toast.LENGTH_LONG).show();
+                        }
+                    });
+        };
+
+        coursesRecyclerViewAdapter = new CoursesRecyclerViewAdapter(coursesViewModel.program.getValue(), videoCallback, workbookCallback);
         binding.coursesRecycler.setHasFixedSize(true);
         binding.coursesRecycler.setItemViewCacheSize(10);
         binding.coursesRecycler.setDrawingCacheEnabled(true);

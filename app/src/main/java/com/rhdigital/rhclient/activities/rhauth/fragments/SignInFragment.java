@@ -64,7 +64,6 @@ public class SignInFragment extends Fragment {
     //Observables
 
     private TextView line;
-    private TextView welcome;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -78,7 +77,6 @@ public class SignInFragment extends Fragment {
         signUpRedirect = (LinearLayout) view.findViewById(R.id.sign_up_redirect);
 
         line = (TextView) view.findViewById(R.id.line);
-        welcome = (TextView) view.findViewById(R.id.welcome);
 
       return view;
     }

@@ -33,8 +33,6 @@ public class ReportsViewHolder extends BaseViewHolder {
         this.uri = uri;
         this.onClickCallback = onClickCallback;
         tvTitle.setText(report.getTitle());
-        imageButton.setOnClickListener(view -> {
-            onClickCallback.invoke(report, uri);
-        });
+        imageButton.setOnClickListener(view -> onClickCallback.invoke(report, uri));
     }
 }

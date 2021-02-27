@@ -2,6 +2,7 @@ package com.rhdigital.rhclient.activities.rhapp.viewholder;
 
 import android.app.Application;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -33,6 +34,7 @@ import com.rhdigital.rhclient.room.model.Video;
 import com.rhdigital.rhclient.room.model.Workbook;
 import com.rhdigital.rhclient.databinding.ItemCoursesBinding;
 
+import java.util.HashMap;
 import java.util.List;
 
 public class CoursesViewHolder extends PlayerViewHolder {
@@ -49,8 +51,12 @@ public class CoursesViewHolder extends PlayerViewHolder {
     private ImageButton maximiseButton;
 
     private CourseItemRecyclerViewAdapter courseItemRecyclerViewAdapter;
+
     private Observer<List<Workbook>> workbooksObserver;
     private LiveData<List<Workbook>> workbooksObservable;
+
+    private Observer<HashMap<String, Uri>> workbookUriMapObserver;
+    private LiveData<HashMap<String, Uri>> workbookUriMapObservable;
 
     private Observer<Video> videoObserver;
     private LiveData<Video> videoObservable;
@@ -64,6 +70,7 @@ public class CoursesViewHolder extends PlayerViewHolder {
     private VideoPlayerService videoPlayerService;
 
     private OnClickCallback videoCallback;
+    private OnClickCallback workbookCallback;
 
     private Course course;
     private Video video;
@@ -100,9 +107,11 @@ public class CoursesViewHolder extends PlayerViewHolder {
 
     public void bind(@NonNull Program program,
                      @NonNull Course course, Bitmap bitmap,
-                     @NonNull OnClickCallback videoCallback) {
+                     @NonNull OnClickCallback videoCallback,
+                     @NonNull OnClickCallback workbookCallback) {
         this.course = course;
         this.videoCallback = videoCallback;
+        this.workbookCallback = workbookCallback;
 
         binding.setCourse(course);
 
@@ -145,7 +154,22 @@ public class CoursesViewHolder extends PlayerViewHolder {
             public void onChanged(List<Workbook> workbooks) {
                 if (workbooks != null) {
                     workbooksObservable.removeObserver(this);
-                        onUpdateWorkbooks(workbooks);
+                    courseItemViewModel.workbooks = workbooks;
+
+                    workbookUriMapObservable = courseItemViewModel.getWorkBookUriMap();
+                    workbookUriMapObservable.observe((LifecycleOwner) itemView.getContext(), workbookUriMapObserver);
+                } else {
+                    Toast.makeText(itemView.getContext(), R.string.server_error_workbooks, Toast.LENGTH_LONG).show();
+                }
+            }
+        };
+
+        workbookUriMapObserver = new Observer<HashMap<String, Uri>>() {
+            @Override
+            public void onChanged(HashMap<String, Uri> uriHashMap) {
+                if (uriHashMap != null) {
+                    workbookUriMapObservable.removeObserver(this);
+                    onUpdateWorkbooks(courseItemViewModel.workbooks, uriHashMap);
                 } else {
                     Toast.makeText(itemView.getContext(), R.string.server_error_workbooks, Toast.LENGTH_LONG).show();
                 }
@@ -222,8 +246,8 @@ public class CoursesViewHolder extends PlayerViewHolder {
         });
     }
 
-    private void onUpdateWorkbooks(List<Workbook> workbooks) {
-        courseItemRecyclerViewAdapter.setWorkbooks(workbooks);
+    private void onUpdateWorkbooks(List<Workbook> workbooks, HashMap<String, Uri> workbooksUriMap) {
+        courseItemRecyclerViewAdapter.setWorkbooks(workbooks, workbooksUriMap, workbookCallback);
     }
 
     private void onUpdateCourseDescriptions(List<CourseDescription> descriptions) {

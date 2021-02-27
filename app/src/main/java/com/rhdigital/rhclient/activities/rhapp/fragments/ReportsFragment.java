@@ -147,8 +147,8 @@ public class ReportsFragment extends Fragment {
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void onUpdateReports(List<Report> reports, HashMap<String, Uri> uriMap) {
         OnClickCallback callback = (args) -> {
-            String url = ((Uri)args[1]).toString();
-            reportsViewModel.downloadWorkbook(url)
+            String url = (args[1]).toString();
+            reportsViewModel.downloadFile(url)
                     .observe(getViewLifecycleOwner(), res -> {
                         if (res != null) {
                             Report report = (Report)args[0];

@@ -22,11 +22,13 @@ public class CoursesRecyclerViewAdapter extends RecyclerView.Adapter<PlayerViewH
     private Program program;
     private List<Course> courses;
     private OnClickCallback videoCallback;
+    private OnClickCallback workbookCallback;
     private HashMap<String, Bitmap> imageBitMap;
 
-    public CoursesRecyclerViewAdapter(Program program, OnClickCallback videoCallback) {
+    public CoursesRecyclerViewAdapter(Program program, OnClickCallback videoCallback, OnClickCallback workbookCallback) {
         this.program = program;
         this.videoCallback = videoCallback;
+        this.workbookCallback = workbookCallback;
     }
 
     @NonNull
@@ -47,7 +49,8 @@ public class CoursesRecyclerViewAdapter extends RecyclerView.Adapter<PlayerViewH
                     program,
                     course,
                     imageBitMap.get(course.getId()),
-                    videoCallback
+                    videoCallback,
+                    workbookCallback
             );
         }
     }

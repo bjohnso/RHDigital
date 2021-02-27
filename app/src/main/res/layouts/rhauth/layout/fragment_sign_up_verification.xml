@@ -175,15 +175,15 @@
       android:textColor="@color/link_text_faded"
       android:textSize="13sp" />
 
-    <TextView
-      android:layout_width="wrap_content"
-      android:layout_height="match_parent"
-      android:gravity="center"
-      android:padding="2dp"
-      android:text="Change email."
-      android:textAllCaps="false"
-      android:textColor="@color/link_text_highlight"
-      android:textSize="13sp" />
+<!--    <TextView-->
+<!--      android:layout_width="wrap_content"-->
+<!--      android:layout_height="match_parent"-->
+<!--      android:gravity="center"-->
+<!--      android:padding="2dp"-->
+<!--      android:text="Change email."-->
+<!--      android:textAllCaps="false"-->
+<!--      android:textColor="@color/link_text_highlight"-->
+<!--      android:textSize="13sp" />-->
 
   </LinearLayout>
 
