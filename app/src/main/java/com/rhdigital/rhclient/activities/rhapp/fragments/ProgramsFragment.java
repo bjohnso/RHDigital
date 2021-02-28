@@ -2,8 +2,10 @@ package com.rhdigital.rhclient.activities.rhapp.fragments;
 
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +20,9 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.facebook.shimmer.Shimmer;
+import com.facebook.shimmer.ShimmerDrawable;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.tabs.TabLayout;
 import com.rhdigital.rhclient.R;
 import com.rhdigital.rhclient.activities.rhapp.adapters.ProgramsRecyclerViewAdapter;
@@ -73,6 +78,24 @@ public class ProgramsFragment extends Fragment {
       return binding.getRoot();
     }
 
+    @Override
+    public void onPause() {
+        hideShimmer();
+        super.onPause();
+    }
+
+    private void showShimmer() {
+        binding.programsRecycler.setVisibility(View.GONE);
+        binding.shimmerContainer.setVisibility(View.VISIBLE);
+        binding.shimmerContainer.startShimmer();
+    }
+
+    private void hideShimmer() {
+        binding.shimmerContainer.stopShimmer();
+        binding.shimmerContainer.setVisibility(View.GONE);
+        binding.programsRecycler.setVisibility(View.VISIBLE);
+    }
+
     private void initialiseUI() {
         calculateImageDimensions();
         initialiseTabLayout();
@@ -80,6 +103,7 @@ public class ProgramsFragment extends Fragment {
     }
 
     private void initialiseLiveData() {
+        showShimmer();
         programsPosterObserver = new Observer<HashMap<String, Bitmap>>() {
             @Override
             public void onChanged(HashMap<String, Bitmap> posterMap) {
@@ -87,6 +111,7 @@ public class ProgramsFragment extends Fragment {
                 if (programs.size() == posterMap.size()) {
                   programsPosterObservable.removeObserver(this);
                   onUpdateProgramPosters(posterMap);
+                  hideShimmer();
                 }
               } else {
                 Toast.makeText(getContext(), R.string.server_error_courses, Toast.LENGTH_LONG).show();

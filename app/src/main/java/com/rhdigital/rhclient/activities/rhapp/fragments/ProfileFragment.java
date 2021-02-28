@@ -76,6 +76,24 @@ public class ProfileFragment extends RHAppFragment {
     }
 
     @Override
+    public void onPause() {
+        hideShimmer();
+        super.onPause();
+    }
+
+    private void showShimmer() {
+        binding.profileImage.setVisibility(View.GONE);
+        binding.shimmerContainer.setVisibility(View.VISIBLE);
+        binding.shimmerContainer.startShimmer();
+    }
+
+    private void hideShimmer() {
+        binding.shimmerContainer.stopShimmer();
+        binding.shimmerContainer.setVisibility(View.GONE);
+        binding.profileImage.setVisibility(View.VISIBLE);
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
         this.activity = (RHAppActivity) getActivity();
@@ -96,6 +114,7 @@ public class ProfileFragment extends RHAppFragment {
                   binding.profileImage.getWidth(),
                   binding.profileImage.getHeight());
               userProfilePhotoObservable.observe(getActivity(), userProfilePhotoObserver);
+              showShimmer();
             }
           }
         });
@@ -104,11 +123,12 @@ public class ProfileFragment extends RHAppFragment {
 
     private void initialiseLiveData() {
         userProfilePhotoObserver = map -> {
-          if (map != null && map.get(FirebaseAuth.getInstance().getUid()) != null) {
-            binding.profileImage.setImageBitmap(
-                    map.get(FirebaseAuth.getInstance().getUid())
-            );
-          }
+            hideShimmer();
+            if (map != null && map.get(FirebaseAuth.getInstance().getUid()) != null) {
+                binding.profileImage.setImageBitmap(
+                        map.get(FirebaseAuth.getInstance().getUid())
+                );
+            }
         };
 
         userObserver = new Observer<User>() {
@@ -180,6 +200,7 @@ public class ProfileFragment extends RHAppFragment {
 
     @Override
     public void onImageUpload() {
+        showShimmer();
         userProfilePhotoObservable = profileViewModel
                 .getProfilePhoto(
                         getContext(),

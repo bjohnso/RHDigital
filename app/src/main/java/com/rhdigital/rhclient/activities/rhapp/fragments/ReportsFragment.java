@@ -81,6 +81,24 @@ public class ReportsFragment extends Fragment {
     }
 
     @Override
+    public void onPause() {
+        hideShimmer();
+        super.onPause();
+    }
+
+    private void showShimmer() {
+        binding.reportsRecycler.setVisibility(View.GONE);
+        binding.shimmerContainer.setVisibility(View.VISIBLE);
+        binding.shimmerContainer.startShimmer();
+    }
+
+    private void hideShimmer() {
+        binding.shimmerContainer.stopShimmer();
+        binding.shimmerContainer.setVisibility(View.GONE);
+        binding.reportsRecycler.setVisibility(View.VISIBLE);
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
         activity = (RHAppActivity) getActivity();
@@ -92,6 +110,7 @@ public class ReportsFragment extends Fragment {
     }
 
     private void initialiseLiveData() {
+        showShimmer();
         reportsRecyclerViewAdapter = new ReportsRecyclerViewAdapter();
         reportsObserver = new Observer<List<Report>>() {
             @RequiresApi(api = Build.VERSION_CODES.N)
@@ -105,6 +124,7 @@ public class ReportsFragment extends Fragment {
                             if (uriMap != null) {
                                 reportsUriObservable.removeObserver(this);
                                 onUpdateReports(reports, uriMap);
+                                hideShimmer();
                             }
                         }
                     };
