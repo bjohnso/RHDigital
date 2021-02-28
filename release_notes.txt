@@ -1,0 +1,8 @@
+This release includes
+
+-Registration
+-Access to course video content
+-Workbook downloads
+-Share research downloads
+-User profile
+
