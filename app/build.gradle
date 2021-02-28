@@ -51,20 +51,19 @@ android {
     }
     sourceSets {
       main {
-        res.srcDirs =
-          [
-            'src/main/res/layouts/rhapp',
-            'src/main/res/layouts/rhapp/programs',
-            'src/main/res/layouts/rhapp/reports',
-            'src/main/res/layouts/rhapp/profile',
-            'src/main/res/layouts/rhauth',
-            'src/main/res/layouts/rhpayment',
-            'src/main/res/layouts/rhsplash',
-            'src/main/res/layouts/rhloader',
-            'src/main/res/layouts/rhcommon',
-            'src/main/res/layouts',
-            'src/main/res'
-         ]
+          res.srcDirs = [
+                  'src/main/res/layouts/rhapp',
+                  'src/main/res/layouts/rhapp/programs',
+                  'src/main/res/layouts/rhapp/reports',
+                  'src/main/res/layouts/rhapp/profile',
+                  'src/main/res/layouts/rhauth',
+                  'src/main/res/layouts/rhpayment',
+                  'src/main/res/layouts/rhsplash',
+                  'src/main/res/layouts/rhloader',
+                  'src/main/res/layouts/rhcommon',
+                  'src/main/res/layouts',
+                  'src/main/res'
+          ]
       }
     }
 }
@@ -122,5 +121,8 @@ dependencies {
 
     // IOUtils
     implementation 'commons-io:commons-io:2.6'
+
+    //Lottie
+    implementation 'com.airbnb.android:lottie:3.4.4'
 
 }
