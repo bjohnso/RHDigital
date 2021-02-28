@@ -14,7 +14,7 @@ android {
         applicationId "com.rhdigital.rhclient"
         minSdkVersion 23
         targetSdkVersion 30
-        versionCode 6
+        versionCode 7
         versionName "1.0"
         archivesBaseName="rhdigital"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
