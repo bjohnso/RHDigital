@@ -35,7 +35,8 @@ android {
             firebaseAppDistribution {
                 appId = "1:610202242963:android:d9b80d35f38e5739d9a266"
                 releaseNotesFile = "release_notes.txt"
-                groups = ["internal"]
+                groups = "internal"
+//                groups = "internal, clients_restricted, clients_premium"
                 serviceCredentialsFile = "app/src/main/firebase-distribution-creds.json"
             }
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
