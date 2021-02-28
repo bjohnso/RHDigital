@@ -47,6 +47,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import okhttp3.ResponseBody;
 
@@ -108,6 +112,10 @@ public class RHAppActivity extends AppCompatActivity {
       if (currentFragment != null) {
         currentFragment.onAction();
       }
+    });
+
+    binding.buttonEnroll.setOnClickListener(view -> {
+      Toast.makeText(this, getResources().getString(R.string.description_coming_soon), Toast.LENGTH_LONG).show();
     });
 
     binding.bottomNavigationView.setOnNavigationItemSelectedListener(item ->  {
@@ -210,19 +218,20 @@ public class RHAppActivity extends AppCompatActivity {
       this.fileName = fileName;
       this.fileResponseBody = responseBody;
     } else {
-      try {
-        InputStream in = responseBody.byteStream();
-        OutputStream out = new FileOutputStream(file);
-        IOUtils.copy(in, out);
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-      Uri uri = CustomFileProvider
-              .getUriForFile(this,
-                      getApplicationContext().getPackageName() + ".provider",
-                      file);
-      sendNotification(uri, "New PDF Download", fileName);
-      Toast.makeText(this, "Download Complete", Toast.LENGTH_LONG).show();
+      ExecutorService executorService = Executors.newSingleThreadExecutor();
+      executorService.submit(() -> {
+        try {
+          InputStream in = responseBody.byteStream();
+          OutputStream out = new FileOutputStream(file);
+          IOUtils.copy(in, out);
+          Uri uri = CustomFileProvider.getUriForFile(getApplicationContext(), getApplicationContext().getPackageName() + ".provider", file);
+          sendNotification(uri, "New PDF Download", fileName);
+          return true;
+        } catch (IOException e) {
+          e.printStackTrace();
+          return false;
+        }
+      });
     }
   }
 

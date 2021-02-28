@@ -49,6 +49,11 @@
 
   <string name="description_coming_soon">This feature is coming soon.</string>
 
+  //Loading
+  <string name="content_downloading">Downloading content...</string>
+  <string name="content_downloading_failed">Download failed</string>
+  <string name="content_downloading_success">Download complete</string>
+
   //FireStore Update Messages
   <string name="server_error_user_update">Error updating user information. Please try again later.</string>
   <string name="user_update">User information successfully updated.</string>

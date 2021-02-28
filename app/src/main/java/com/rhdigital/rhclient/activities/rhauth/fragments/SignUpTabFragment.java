@@ -40,7 +40,7 @@ public class SignUpTabFragment extends Fragment {
     NavigationService.getINSTANCE().initNav(getClass().getName(),
       navController,
       R.navigation.sign_up_nav_graph,
-      R.id.signUpPhoneFragment);
+      R.id.signUpEmailFragment);
     tabLayout.addOnTabSelectedListener(new TabOnClick(getClass().getName()));
     signInRedirect.setOnClickListener(new RedirectSignInOnClick(getActivity().getLocalClassName()));
   }
@@ -69,10 +69,10 @@ public class SignUpTabFragment extends Fragment {
     @Override
     public void onTabSelected(TabLayout.Tab tab) {
       switch (tab.getPosition()){
+//        case 0:
+//          NavigationService.getINSTANCE().navigate(className, R.id.signUpPhoneFragment, null, null);
+//          break;
         case 0:
-          NavigationService.getINSTANCE().navigate(className, R.id.signUpPhoneFragment, null, null);
-          break;
-        case 1:
           NavigationService.getINSTANCE().navigate(className, R.id.signUpEmailFragment, null, null);
           break;
       }

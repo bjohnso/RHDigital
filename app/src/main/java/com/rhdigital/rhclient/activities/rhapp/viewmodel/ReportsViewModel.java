@@ -49,7 +49,6 @@ public class ReportsViewModel extends AndroidViewModel {
     public LiveData<HashMap<String, Uri>> getReportUri(List<Report> reports) {
         List<RemoteResourceDto> data = new ArrayList<>();
         for (Report report: reports) {
-            // TODO: USE VIDEO THUMBNAILS
             data.add(
                     new RemoteResourceDto(
                             report.getId(),
@@ -61,7 +60,7 @@ public class ReportsViewModel extends AndroidViewModel {
         return new RemoteResourceService().getAllPDFURI(data);
     }
 
-    public LiveData<ResponseBody> downloadWorkbook(String downloadURL) {
-        return new RemoteResourceService().downloadWorkbook(downloadURL);
+    public LiveData<ResponseBody> downloadFile(String downloadURL) {
+        return new RemoteResourceService().downloadFile(downloadURL);
     }
 }

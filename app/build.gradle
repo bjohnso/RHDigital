@@ -1,6 +1,8 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'com.google.firebase.appdistribution'
+apply plugin: "androidx.navigation.safeargs"
 
 android {
     compileSdkVersion 30
@@ -33,7 +35,7 @@ android {
             firebaseAppDistribution {
                 appId = "1:610202242963:android:d9b80d35f38e5739d9a266"
                 releaseNotesFile = "release_notes.txt"
-                groups = "closed-release"
+                groups = ["internal"]
                 serviceCredentialsFile = "app/src/main/firebase-distribution-creds.json"
             }
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
@@ -49,78 +51,81 @@ android {
     }
     sourceSets {
       main {
-        res.srcDirs =
-          [
-            'src/main/res/layouts/rhapp',
-            'src/main/res/layouts/rhapp/programs',
-            'src/main/res/layouts/rhapp/reports',
-            'src/main/res/layouts/rhapp/profile',
-            'src/main/res/layouts/rhauth',
-            'src/main/res/layouts/rhpayment',
-            'src/main/res/layouts/rhsplash',
-            'src/main/res/layouts/rhloader',
-            'src/main/res/layouts/rhcommon',
-            'src/main/res/layouts',
-            'src/main/res'
-         ]
+          res.srcDirs = [
+                  'src/main/res/layouts/rhapp',
+                  'src/main/res/layouts/rhapp/programs',
+                  'src/main/res/layouts/rhapp/reports',
+                  'src/main/res/layouts/rhapp/profile',
+                  'src/main/res/layouts/rhauth',
+                  'src/main/res/layouts/rhpayment',
+                  'src/main/res/layouts/rhsplash',
+                  'src/main/res/layouts/rhloader',
+                  'src/main/res/layouts/rhcommon',
+                  'src/main/res/layouts',
+                  'src/main/res'
+          ]
       }
     }
 }
 
 dependencies {
-  // Common
-  implementation fileTree(dir: 'libs', include: ['*.jar'])
-  implementation 'androidx.appcompat:appcompat:1.2.0'
+    // Common
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'androidx.appcompat:appcompat:1.2.0'
 
-  // Testing
-  testImplementation 'junit:junit:4.13.1'
-  androidTestImplementation 'androidx.test:runner:1.3.0'
-  androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    // Testing
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test:runner:1.3.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
-  // UI
-  implementation 'androidx.core:core:1.3.2'
-  implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
-  implementation 'androidx.recyclerview:recyclerview:1.1.0'
-  implementation 'com.google.android.material:material:1.2.1'
+    // UI
+    implementation 'androidx.core:core:1.3.2'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    implementation 'androidx.recyclerview:recyclerview:1.1.0'
+    implementation 'com.google.android.material:material:1.3.0'
 
-  // GLIDE
-  implementation 'com.github.bumptech.glide:glide:4.11.0'
+    // GLIDE
+    implementation 'com.github.bumptech.glide:glide:4.12.0'
 
-  // ROOM & Database
-  implementation 'androidx.room:room-runtime:2.2.6'
-  annotationProcessor "androidx.room:room-compiler:2.2.6"
-  implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+    // ROOM & Database
+    implementation 'androidx.room:room-runtime:2.2.6'
+    annotationProcessor "androidx.room:room-compiler:2.2.6"
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
 
-  //Retrofit
-  implementation 'com.squareup.retrofit2:retrofit:2.9.0'
-  implementation 'com.google.code.gson:gson:2.8.6'
-  implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    //Retrofit
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.google.code.gson:gson:2.8.6'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
 
-  // Import the BoM for the Firebase platform
-  implementation platform('com.google.firebase:firebase-bom:25.12.0')
+    // Import the BoM for the Firebase platform
+    implementation platform('com.google.firebase:firebase-bom:26.5.0')
 
-  // Firebase & Firestore
-  implementation 'com.google.firebase:firebase-functions:19.2.0'
-  implementation 'com.google.firebase:firebase-analytics:18.0.0'
-  implementation 'com.google.firebase:firebase-firestore:22.0.1'
-  implementation 'com.google.firebase:firebase-storage:19.2.1'
-  implementation 'com.google.firebase:firebase-auth:20.0.1'
-  implementation 'com.google.firebase:firebase-messaging:21.0.1'
-  implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    // Firebase & Firestore
+    implementation 'com.google.firebase:firebase-functions'
+    implementation 'com.google.firebase:firebase-analytics'
+    implementation 'com.google.firebase:firebase-firestore'
+    implementation 'com.google.firebase:firebase-storage'
+    implementation 'com.google.firebase:firebase-auth'
+    implementation 'com.google.firebase:firebase-messaging'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 
-  // Exo Player
-  implementation 'com.google.android.exoplayer:exoplayer:2.11.4'
+    // Exo Player
+    implementation 'com.google.android.exoplayer:exoplayer:2.11.4'
 
-  // Navigation
-  implementation "androidx.navigation:navigation-fragment:2.3.2"
-  implementation "androidx.navigation:navigation-ui:2.3.2"
+    // Navigation
+    implementation "androidx.navigation:navigation-fragment:2.3.3"
+    implementation "androidx.navigation:navigation-ui:2.3.3"
 
-  // hdodenhof
-  implementation 'de.hdodenhof:circleimageview:3.1.0'
+    // hdodenhof
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
 
-  // IOUtils
-  implementation 'commons-io:commons-io:2.6'
+    // IOUtils
+    implementation 'commons-io:commons-io:2.6'
 
-  apply plugin: "androidx.navigation.safeargs"
+    //Lottie
+    implementation 'com.airbnb.android:lottie:3.4.4'
+
+    //Animation
+    implementation 'com.facebook.shimmer:shimmer:0.5.0'
 
 }

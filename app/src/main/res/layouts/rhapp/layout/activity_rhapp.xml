@@ -87,6 +87,7 @@
         app:layout_constraintBottom_toBottomOf="parent">
 
       <Button
+          android:id="@+id/buttonEnroll"
           android:layout_width="300dp"
           android:layout_height="50dp"
           android:background="@color/active"

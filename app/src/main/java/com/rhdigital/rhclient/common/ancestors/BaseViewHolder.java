@@ -26,13 +26,15 @@ public class BaseViewHolder extends RecyclerView.ViewHolder {
 
     public void bind(Program program, Bitmap bitmap) {}
 
-    public void bind(Program program, Course course, Bitmap bitmap, OnClickCallback videoCallback) {}
+    public void bind(Program program, Course course, Bitmap bitmap, OnClickCallback videoCallback, OnClickCallback workbookCallback) {}
 
     public void bind(Course course) {}
 
     public void bind(CourseDescription courseDescription) {}
 
     public void bind(Workbook workbook) {}
+
+    public void bind(Workbook workbook, Uri uri, OnClickCallback onClickCallback) {}
 
     public void bind(Report report, Uri uri, OnClickCallback onClickCallback) {}
 

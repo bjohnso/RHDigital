@@ -6,6 +6,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.rhdigital.rhclient.R;
 import com.rhdigital.rhclient.common.ancestors.BaseViewHolder;
@@ -16,14 +17,14 @@ public class ReportsViewHolder extends BaseViewHolder {
 
     private Report report;
     private TextView tvTitle;
-    private ImageButton imageButton;
+    private ConstraintLayout container;
     private OnClickCallback onClickCallback;
     private Uri uri;
 
     public ReportsViewHolder(@NonNull View itemView) {
         super(itemView);
         tvTitle = itemView.findViewById(R.id.tvTitle);
-        imageButton = itemView.findViewById(R.id.imageButton);
+        container = itemView.findViewById(R.id.clContainer);
     }
 
     @Override
@@ -33,8 +34,6 @@ public class ReportsViewHolder extends BaseViewHolder {
         this.uri = uri;
         this.onClickCallback = onClickCallback;
         tvTitle.setText(report.getTitle());
-        imageButton.setOnClickListener(view -> {
-            onClickCallback.invoke(report, uri);
-        });
+        container.setOnClickListener(view -> onClickCallback.invoke(report, uri));
     }
 }

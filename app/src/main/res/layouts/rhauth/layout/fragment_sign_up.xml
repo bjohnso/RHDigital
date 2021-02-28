@@ -44,10 +44,10 @@
     app:tabSelectedTextColor="@color/white"
     app:tabTextColor="@color/link_text_faded">
 
-    <com.google.android.material.tabs.TabItem
-      android:layout_width="20dp"
-      android:layout_height="wrap_content"
-      android:text="PHONE NUMBER" />
+<!--    <com.google.android.material.tabs.TabItem-->
+<!--      android:layout_width="20dp"-->
+<!--      android:layout_height="wrap_content"-->
+<!--      android:text="PHONE NUMBER" />-->
 
     <com.google.android.material.tabs.TabItem
       android:layout_width="20dp"

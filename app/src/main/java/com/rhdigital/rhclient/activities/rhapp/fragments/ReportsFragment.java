@@ -1,6 +1,5 @@
 package com.rhdigital.rhclient.activities.rhapp.fragments;
 
-import android.content.Intent;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Build;
@@ -24,11 +23,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.rhdigital.rhclient.R;
 import com.rhdigital.rhclient.activities.rhapp.RHAppActivity;
 import com.rhdigital.rhclient.activities.rhapp.adapters.ReportsRecyclerViewAdapter;
+import com.rhdigital.rhclient.activities.rhapp.dialogs.DownloadingDialog;
 import com.rhdigital.rhclient.activities.rhapp.viewmodel.RHAppViewModel;
 import com.rhdigital.rhclient.activities.rhapp.viewmodel.ReportsViewModel;
-import com.rhdigital.rhclient.common.dto.VideoControlActionDto;
 import com.rhdigital.rhclient.common.interfaces.OnClickCallback;
-import com.rhdigital.rhclient.common.services.NavigationService;
 import com.rhdigital.rhclient.room.model.Report;
 import com.rhdigital.rhclient.databinding.FragmentReportsBinding;
 
@@ -81,6 +79,24 @@ public class ReportsFragment extends Fragment {
     }
 
     @Override
+    public void onPause() {
+        hideShimmer();
+        super.onPause();
+    }
+
+    private void showShimmer() {
+        binding.reportsRecycler.setVisibility(View.GONE);
+        binding.shimmerContainer.setVisibility(View.VISIBLE);
+        binding.shimmerContainer.startShimmer();
+    }
+
+    private void hideShimmer() {
+        binding.shimmerContainer.stopShimmer();
+        binding.shimmerContainer.setVisibility(View.GONE);
+        binding.reportsRecycler.setVisibility(View.VISIBLE);
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
         activity = (RHAppActivity) getActivity();
@@ -92,6 +108,7 @@ public class ReportsFragment extends Fragment {
     }
 
     private void initialiseLiveData() {
+        showShimmer();
         reportsRecyclerViewAdapter = new ReportsRecyclerViewAdapter();
         reportsObserver = new Observer<List<Report>>() {
             @RequiresApi(api = Build.VERSION_CODES.N)
@@ -105,6 +122,7 @@ public class ReportsFragment extends Fragment {
                             if (uriMap != null) {
                                 reportsUriObservable.removeObserver(this);
                                 onUpdateReports(reports, uriMap);
+                                hideShimmer();
                             }
                         }
                     };
@@ -147,14 +165,16 @@ public class ReportsFragment extends Fragment {
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void onUpdateReports(List<Report> reports, HashMap<String, Uri> uriMap) {
         OnClickCallback callback = (args) -> {
-            String url = ((Uri)args[1]).toString();
-            reportsViewModel.downloadWorkbook(url)
+            String url = (args[1]).toString();
+            DownloadingDialog downloadingDialog = presentDownloadingDialog();
+            reportsViewModel.downloadFile(url)
                     .observe(getViewLifecycleOwner(), res -> {
                         if (res != null) {
                             Report report = (Report)args[0];
                             activity.writeFileToDisk(report.getTitle(), res);
+                            downloadingDialog.onSuccess();
                         } else{
-                            Toast.makeText(getContext(), "Download Failed", Toast.LENGTH_LONG).show();
+                            downloadingDialog.onFailure();
                         }
                     });
         };
@@ -166,5 +186,11 @@ public class ReportsFragment extends Fragment {
             reportGroupings.put(report.getMonth(), grouping);
         }
         reportsRecyclerViewAdapter.setReportGroups(reportGroupings, uriMap, callback);
+    }
+
+    private DownloadingDialog presentDownloadingDialog() {
+        DownloadingDialog downloadingDialog = new DownloadingDialog();
+        downloadingDialog.show(getParentFragmentManager(), "downloading_dialog");
+        return downloadingDialog;
     }
 }
