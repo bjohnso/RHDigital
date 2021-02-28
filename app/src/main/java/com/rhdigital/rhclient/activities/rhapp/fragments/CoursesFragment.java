@@ -2,10 +2,8 @@ package com.rhdigital.rhclient.activities.rhapp.fragments;
 
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,13 +12,13 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.rhdigital.rhclient.R;
+import com.rhdigital.rhclient.RHApplication;
 import com.rhdigital.rhclient.activities.rhapp.RHAppActivity;
 import com.rhdigital.rhclient.activities.rhapp.adapters.CoursesRecyclerViewAdapter;
 import com.rhdigital.rhclient.activities.rhapp.dialogs.DownloadingDialog;
@@ -32,13 +30,12 @@ import com.rhdigital.rhclient.common.services.NavigationService;
 import com.rhdigital.rhclient.common.services.VideoPlayerService;
 import com.rhdigital.rhclient.room.model.Course;
 import com.rhdigital.rhclient.databinding.FragmentCoursesBinding;
-import com.rhdigital.rhclient.room.model.Report;
 import com.rhdigital.rhclient.room.model.Workbook;
 
 import java.util.HashMap;
 import java.util.List;
 
-public class CoursesFragment extends Fragment {
+public class CoursesFragment extends RHAppFragment {
 
     private final String TAG = "COURSES_FRAGMENT";
 
@@ -86,6 +83,25 @@ public class CoursesFragment extends Fragment {
     public void onStart() {
         super.onStart();
         activity = (RHAppActivity) getActivity();
+        ((RHApplication)activity.getApplication()).setCurrentFragment(null);
+    }
+
+    @Override
+    public void onPause() {
+        hideShimmer();
+        super.onPause();
+    }
+
+    private void showShimmer() {
+        binding.coursesRecycler.setVisibility(View.GONE);
+        binding.shimmerContainer.setVisibility(View.VISIBLE);
+        binding.shimmerContainer.startShimmer();
+    }
+
+    private void hideShimmer() {
+        binding.shimmerContainer.stopShimmer();
+        binding.shimmerContainer.setVisibility(View.GONE);
+        binding.coursesRecycler.setVisibility(View.VISIBLE);
     }
 
     private void initialiseUI() {
@@ -94,6 +110,7 @@ public class CoursesFragment extends Fragment {
     }
 
     private void initialiseLiveData() {
+        showShimmer();
         coursesPosterObserver = new Observer<HashMap<String, Bitmap>>() {
             @Override
             public void onChanged(HashMap<String, Bitmap> posterMap) {
@@ -105,6 +122,7 @@ public class CoursesFragment extends Fragment {
                 } else {
                     Toast.makeText(getContext(), R.string.server_error_courses, Toast.LENGTH_LONG).show();
                 }
+                hideShimmer();
             }
         };
 

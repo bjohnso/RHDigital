@@ -44,6 +44,7 @@ public class CoursesViewModel extends AndroidViewModel {
             ViewModelStoreOwner viewModelStoreOwner =
                     (ViewModelStoreOwner) ((RHApplication)getApplication()).getCurrentActivity();
             RHAppViewModel rhAppViewModel = new ViewModelProvider(viewModelStoreOwner).get(RHAppViewModel.class);
+            rhAppViewModel.isFullscreenMode.setValue(false);
             rhAppViewModel.isEnrollState.setValue(!program.isAuthorised());
             rhAppViewModel.isActionButtonActive.setValue(false);
             rhAppViewModel.isBackButtonActive.setValue(true);

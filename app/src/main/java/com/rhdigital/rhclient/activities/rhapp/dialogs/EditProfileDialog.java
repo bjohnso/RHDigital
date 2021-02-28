@@ -54,9 +54,14 @@ public class EditProfileDialog extends DialogFragment {
     }
 
     private void bindUI() {
-        tvProperty.setText(userField.getField());
+        UserFieldDto userFieldDto = new UserFieldDto(
+                userField.getField(),
+                userField.getValue(),
+                userField.getType()
+        );
+        tvProperty.setText(userFieldDto.getValue());
 
-        if (userField.getType() == UserFieldDto.COUNTRY) {
+        if (userFieldDto.getType() == UserFieldDto.COUNTRY) {
             list.setVisibility(View.VISIBLE);
             etValue.setVisibility(View.GONE);
 
@@ -74,31 +79,31 @@ public class EditProfileDialog extends DialogFragment {
                     new EditProfileArrayAdapter(
                             getContext(),
                             countries,
-                            countries.indexOf(userField.getValue()),
-                            userField
+                            countries.indexOf(userFieldDto.getValue()),
+                            userFieldDto
                     )
             );
 
         } else {
             list.setVisibility(View.GONE);
             etValue.setVisibility(View.VISIBLE);
-            etValue.setText(userField.getValue());
+            etValue.setText(userFieldDto.getValue());
         }
 
         buttonCancel.setOnClickListener(view -> {
-            delegate.onComplete(userField);
+            delegate.onComplete(userFieldDto);
             dismiss();
         });
 
         buttonOk.setOnClickListener(view -> {
             if (etValue.getVisibility() == View.VISIBLE) {
-                userField.setValue(etValue.getText().toString());
+                userFieldDto.setValue(etValue.getText().toString());
             }
             delegate.onComplete(
                     new UserFieldDto(
-                            userField.getField(),
-                            userField.getValue(),
-                            userField.getType()
+                            userFieldDto.getField(),
+                            userFieldDto.getValue(),
+                            userFieldDto.getType()
                     )
             );
             dismiss();

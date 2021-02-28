@@ -97,7 +97,7 @@ public class ProfileFragment extends RHAppFragment {
     public void onStart() {
         super.onStart();
         this.activity = (RHAppActivity) getActivity();
-        ((RHApplication)activity.getApplication()).setCurrentFragment(this);
+        ((RHApplication)activity.getApplication()).setCurrentFragment(null);
     }
 
     private void initialiseUI() {
@@ -212,7 +212,6 @@ public class ProfileFragment extends RHAppFragment {
 
     @Override
     public void onDestroy() {
-        ((RHApplication)activity.getApplication()).setCurrentFragment(null);
         super.onDestroy();
     }
 }

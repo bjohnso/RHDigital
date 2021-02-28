@@ -12,9 +12,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Observer;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -30,11 +28,6 @@ import com.rhdigital.rhclient.common.dto.UserFieldDto;
 import com.rhdigital.rhclient.common.interfaces.OnClickCallback;
 import com.rhdigital.rhclient.common.services.NavigationService;
 import com.rhdigital.rhclient.databinding.FragmentEditProfileBinding;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
 
 public class EditProfileFragment extends RHAppFragment {
 
@@ -81,6 +74,7 @@ public class EditProfileFragment extends RHAppFragment {
     }
 
     private void saveUserDetails() {
+        MutableLiveData<Boolean> navigate = new MutableLiveData<>();
         profileViewModel.updateRemoteUser()
                 .addOnCompleteListener(result -> {
                     if (result.isSuccessful()) {
@@ -89,7 +83,6 @@ public class EditProfileFragment extends RHAppFragment {
                                 getResources().getString(R.string.user_update),
                                 Toast.LENGTH_LONG
                         ).show();
-                        profileViewModel.fetchRemoteUser().observe(getViewLifecycleOwner(), inserts -> navigateBack());
                     } else {
                         Toast.makeText(
                                 getActivity(),
@@ -97,7 +90,15 @@ public class EditProfileFragment extends RHAppFragment {
                                 Toast.LENGTH_LONG
                         ).show();
                     }
+                    navigate.postValue(true);
                 });
+
+        navigate.observe(getViewLifecycleOwner(), value ->
+                profileViewModel.fetchRemoteUser().observe(getViewLifecycleOwner(), result -> {
+                    Log.e("SYNC WITH REMOTE", "" + result);
+                    navigateBack();
+                })
+        );
     }
 
     private void presentConfirmationDialog() {
@@ -189,7 +190,6 @@ public class EditProfileFragment extends RHAppFragment {
 
     @Override
     public void onDestroy() {
-        ((RHApplication)getActivity().getApplication()).setCurrentFragment(null);
         super.onDestroy();
     }
 }
