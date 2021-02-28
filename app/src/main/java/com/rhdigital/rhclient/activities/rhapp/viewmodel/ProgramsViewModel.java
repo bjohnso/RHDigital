@@ -36,6 +36,7 @@ public class ProgramsViewModel extends AndroidViewModel {
     ViewModelStoreOwner viewModelStoreOwner =
             (ViewModelStoreOwner) ((RHApplication)getApplication()).getCurrentActivity();
     RHAppViewModel rhAppViewModel = new ViewModelProvider(viewModelStoreOwner).get(RHAppViewModel.class);
+    rhAppViewModel.isFullscreenMode.setValue(false);
     rhAppViewModel.isEnrollState.setValue(false);
     rhAppViewModel.isActionButtonActive.setValue(false);
     rhAppViewModel.isBackButtonActive.setValue(false);

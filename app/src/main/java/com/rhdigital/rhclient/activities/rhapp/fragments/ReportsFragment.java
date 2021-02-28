@@ -21,6 +21,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.rhdigital.rhclient.R;
+import com.rhdigital.rhclient.RHApplication;
 import com.rhdigital.rhclient.activities.rhapp.RHAppActivity;
 import com.rhdigital.rhclient.activities.rhapp.adapters.ReportsRecyclerViewAdapter;
 import com.rhdigital.rhclient.activities.rhapp.dialogs.DownloadingDialog;
@@ -35,7 +36,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-public class ReportsFragment extends Fragment {
+public class ReportsFragment extends RHAppFragment {
 
     private final String TAG = "REPORTS_FRAGMENT";
 
@@ -79,6 +80,13 @@ public class ReportsFragment extends Fragment {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        this.activity = (RHAppActivity) getActivity();
+        ((RHApplication)activity.getApplication()).setCurrentFragment(null);
+    }
+
+    @Override
     public void onPause() {
         hideShimmer();
         super.onPause();
@@ -94,12 +102,6 @@ public class ReportsFragment extends Fragment {
         binding.shimmerContainer.stopShimmer();
         binding.shimmerContainer.setVisibility(View.GONE);
         binding.reportsRecycler.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        activity = (RHAppActivity) getActivity();
     }
 
     private void initialiseUI() {

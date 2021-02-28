@@ -6,12 +6,9 @@ import android.graphics.Bitmap;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.collection.ArrayMap;
 import androidx.lifecycle.AndroidViewModel;
-import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelStoreOwner;
 
@@ -20,7 +17,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 import com.rhdigital.rhclient.R;
 import com.rhdigital.rhclient.RHApplication;
-import com.rhdigital.rhclient.activities.rhapp.RHAppActivity;
 import com.rhdigital.rhclient.common.dto.PopulateRoomDto;
 import com.rhdigital.rhclient.common.dto.RemoteResourceDto;
 import com.rhdigital.rhclient.common.dto.UserFieldDto;
@@ -30,10 +26,8 @@ import com.rhdigital.rhclient.room.model.User;
 import com.rhdigital.rhclient.room.repository.RHRepository;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.List;
 
 public class ProfileViewModel extends AndroidViewModel {
 
@@ -53,6 +47,8 @@ public class ProfileViewModel extends AndroidViewModel {
         ViewModelStoreOwner viewModelStoreOwner =
                 (ViewModelStoreOwner) ((RHApplication)getApplication()).getCurrentActivity();
         RHAppViewModel rhAppViewModel = new ViewModelProvider(viewModelStoreOwner).get(RHAppViewModel.class);
+        rhAppViewModel.isFullscreenMode.setValue(false);
+        rhAppViewModel.isEnrollState.setValue(false);
         rhAppViewModel.isActionButtonActive.setValue(false);
         rhAppViewModel.isBackButtonActive.setValue(false);
         rhAppViewModel.isTitleCenter.setValue(false);
@@ -63,6 +59,8 @@ public class ProfileViewModel extends AndroidViewModel {
         ViewModelStoreOwner viewModelStoreOwner =
                 (ViewModelStoreOwner) ((RHApplication)getApplication()).getCurrentActivity();
         RHAppViewModel rhAppViewModel = new ViewModelProvider(viewModelStoreOwner).get(RHAppViewModel.class);
+        rhAppViewModel.isFullscreenMode.setValue(false);
+        rhAppViewModel.isEnrollState.setValue(false);
         rhAppViewModel.isActionButtonActive.setValue(true);
         rhAppViewModel.isBackButtonActive.setValue(true);
         rhAppViewModel.isTitleCenter.setValue(false);

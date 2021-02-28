@@ -2,10 +2,8 @@ package com.rhdigital.rhclient.activities.rhapp.fragments;
 
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,17 +12,15 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.facebook.shimmer.Shimmer;
-import com.facebook.shimmer.ShimmerDrawable;
-import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.tabs.TabLayout;
 import com.rhdigital.rhclient.R;
+import com.rhdigital.rhclient.RHApplication;
+import com.rhdigital.rhclient.activities.rhapp.RHAppActivity;
 import com.rhdigital.rhclient.activities.rhapp.adapters.ProgramsRecyclerViewAdapter;
 import com.rhdigital.rhclient.activities.rhapp.viewmodel.RHAppViewModel;
 import com.rhdigital.rhclient.common.interfaces.OnClickCallback;
@@ -36,9 +32,11 @@ import com.rhdigital.rhclient.activities.rhapp.viewmodel.ProgramsViewModel;
 import java.util.HashMap;
 import java.util.List;
 
-public class ProgramsFragment extends Fragment {
+public class ProgramsFragment extends RHAppFragment {
 
     private final String TAG = "PROGRAMS_FRAGMENT";
+
+    private RHAppActivity activity;
 
     // VIEW
     private FragmentProgramsBinding binding;
@@ -76,6 +74,13 @@ public class ProgramsFragment extends Fragment {
       initialiseUI();
 
       return binding.getRoot();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        this.activity = (RHAppActivity) getActivity();
+        ((RHApplication)activity.getApplication()).setCurrentFragment(null);
     }
 
     @Override
