@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.rhdigital.rhclient.R;
 import com.rhdigital.rhclient.activities.rhapp.RHAppActivity;
 import com.rhdigital.rhclient.activities.rhapp.adapters.CoursesRecyclerViewAdapter;
+import com.rhdigital.rhclient.activities.rhapp.dialogs.DownloadingDialog;
 import com.rhdigital.rhclient.activities.rhapp.viewmodel.CoursesViewModel;
 import com.rhdigital.rhclient.activities.rhapp.viewmodel.RHAppViewModel;
 import com.rhdigital.rhclient.common.dto.VideoControlActionDto;
@@ -140,13 +141,15 @@ public class CoursesFragment extends Fragment {
 
         OnClickCallback workbookCallback = (args) -> {
             String url = (args[1]).toString();
+            DownloadingDialog downloadingDialog = presentDownloadingDialog();
             coursesViewModel.downloadFile(url)
                     .observe(getViewLifecycleOwner(), res -> {
                         if (res != null) {
                             Workbook report = (Workbook)args[0];
                             activity.writeFileToDisk(report.getTitle(), res);
+                            downloadingDialog.onSuccess();
                         } else{
-                            Toast.makeText(getContext(), "Download Failed", Toast.LENGTH_LONG).show();
+                            downloadingDialog.onFailure();
                         }
                     });
         };
@@ -158,6 +161,12 @@ public class CoursesFragment extends Fragment {
         binding.coursesRecycler.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_AUTO);
         binding.coursesRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.coursesRecycler.setAdapter(coursesRecyclerViewAdapter);
+    }
+
+    private DownloadingDialog presentDownloadingDialog() {
+        DownloadingDialog downloadingDialog = new DownloadingDialog();
+        downloadingDialog.show(getParentFragmentManager(), "downloading_dialog");
+        return downloadingDialog;
     }
 
     private void calculateImageDimensions() {
