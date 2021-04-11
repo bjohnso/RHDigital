@@ -54,9 +54,18 @@ public class RHAuthActivity extends AppCompatActivity {
   private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
     @Override
     public void onReceive(Context context, Intent intent) {
-      String title = "Email Verification";
-      PushNotificationHelperService.getINSTANCE().displayNotification(title, intent.getStringExtra(title));
-      emailVerificationResult.postValue(intent.getStringExtra("Email Verification"));
+      if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+        FirebaseAuth.getInstance()
+                .getCurrentUser()
+                .reload()
+                .addOnCompleteListener(task -> {
+                  if (task.isSuccessful()) {
+                    String title = "Email Verification";
+                    PushNotificationHelperService.getINSTANCE().displayNotification(title, intent.getStringExtra(title));
+                    initRHRoom();
+                  }
+                });
+      }
     }
   };
 
